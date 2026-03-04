@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>写作工作台 - 网文助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* 莫兰迪暖色系 - 浅色模式 */
+            --bg-primary: #F7F5F3;
+            --bg-secondary: #EDE8E3;
+            --bg-tertiary: #E5DFD8;
+            --bg-card: #FAF8F6;
+            --text-primary: #4A4541;
+            --text-secondary: #8B8279;
+            --text-muted: #B5ADA3;
+            --accent-primary: #C4A88C;
+            --accent-secondary: #D4B5A8;
+            --accent-tertiary: #A8B5A0;
+            --accent-warning: #D4A574;
+            --accent-success: #9CAF94;
+            --border: #D9D3CC;
+            --shadow: rgba(74, 69, 65, 0.08);
+            --highlight: rgba(196, 168, 140, 0.15);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #2D2A28;
+            --bg-secondary: #3D3835;
+            --bg-tertiary: #4A4541;
+            --bg-card: #35312E;
+            --text-primary: #E8E4E0;
+            --text-secondary: #B5ADA3;
+            --text-muted: #7A7269;
+            --accent-primary: #D4B896;
+            --accent-secondary: #E5C4B8;
+            --accent-tertiary: #B8C4B0;
+            --accent-warning: #E5B88A;
+            --accent-success: #A8BFA0;
+            --border: #4A4541;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --highlight: rgba(212, 184, 150, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            height: 56px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .novel-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .novel-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .chapter-name {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding-left: 12px;
+            border-left: 1px solid var(--border);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .save-btn {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 56px - 48px);
+            overflow: hidden;
+        }
+
+        /* Left Sidebar */
+        .sidebar-left {
+            width: 240px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-section {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .add-btn {
+            width: 20px;
+            height: 20px;
+            border: none;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .volume-item {
+            margin-bottom: 8px;
+        }
+
+        .volume-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .volume-header:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .volume-toggle {
+            font-size: 10px;
+            color: var(--text-muted);
+            transition: transform 0.2s;
+        }
+
+        .volume-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .chapter-list {
+            padding-left: 20px;
+        }
+
+        .chapter-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+            transition: all 0.2s;
+        }
+
+        .chapter-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .chapter-item.active {
+            background: var(--highlight);
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+
+        .chapter-item::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-success);
+        }
+
+        .chapter-item.active::before {
+            background: var(--accent-primary);
+            box-shadow: 0 0 0 2px var(--highlight);
+        }
+
+        .mindmap-toggle {
+            margin-top: 12px;
+            padding: 10px;
+            background: var(--bg-tertiary);
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mindmap-toggle:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* Center Editor */
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+            overflow: hidden;
+        }
+
+        .editor-header {
+            padding: 20px 40px 0;
+        }
+
+        .editor-title {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            outline: none;
+            margin-bottom: 8px;
+        }
+
+        .editor-title::placeholder {
+            color: var(--text-muted);
+        }
+
+        .editor-content {
+            flex: 1;
+            padding: 20px 40px;
+            overflow-y: auto;
+        }
+
+        .editor-textarea {
+            width: 100%;
+            min-height: 100%;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-primary);
+            outline: none;
+            resize: none;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        .editor-footer {
+            padding: 12px 40px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stats {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+
+        .checkpoint-badge {
+            background: var(--highlight);
+            color: var(--accent-primary);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Right Panel - Inspiration Spark */
+        .sidebar-right {
+            width: 320px;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .spark-header {
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: white;
+        }
+
+        .spark-title {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .spark-subtitle {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        .spark-analyzing {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .dot-flashing {
+            display: inline-flex;
+            gap: 3px;
+        }
+
+        .dot-flashing span {
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: dot-flashing 1.4s infinite ease-in-out both;
+        }
+
+        .dot-flashing span:nth-child(1) { animation-delay: -0.32s; }
+        .dot-flashing span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes dot-flashing {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .spark-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .insight-card {
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .insight-label {
+            font-size: 11px;
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .insight-text {
+            font-size: 13px;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .suggestion-list {
+            margin-top: 12px;
+        }
+
+        .suggestion-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .suggestion-item {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .suggestion-item:hover {
+            border-color: var(--accent-primary);
+            transform: translateX(2px);
+        }
+
+        .suggestion-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .suggestion-text {
+            font-size: 12px;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        .suggestion-tag {
+            display: inline-block;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 6px;
+            background: var(--highlight);
+            color: var(--accent-primary);
+        }
+
+        .quick-actions {
+            padding: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .quick-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .quick-btn {
+            background: var(--bg-tertiary);
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .quick-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        /* Bottom Toolbar */
+        .bottom-toolbar {
+            height: 48px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+        }
+
+        .toolbar-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .toolbar-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .toolbar-btn {
+            background: var(--bg-tertiary);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .toolbar-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .toolbar-divider {
+            width: 1px;
+            height: 20px;
+            background: var(--border);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .insight-card {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .insight-card:nth-child(1) { animation-delay: 0.1s; }
+        .insight-card:nth-child(2) { animation-delay: 0.2s; }
+        .insight-card:nth-child(3) { animation-delay: 0.3s; }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .sidebar-right {
+                width: 280px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar-left {
+                width: 200px;
+            }
+            .sidebar-right {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-left {
+                display: none;
+            }
+            .editor-content {
+                padding: 16px 20px;
+            }
+            .editor-header {
+                padding: 16px 20px 0;
+            }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="back-btn">
+                <span>◀</span>
+                <span>返回作品</span>
+            </button>
+            <div class="novel-info">
+                <span class="novel-title">《至尊龙婿》</span>
+                <span class="chapter-name">第15章 打脸丈母娘</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="icon-btn" title="保存" onclick="saveContent()">💾</button>
+            <button class="icon-btn" title="历史版本">⌛</button>
+            <button class="icon-btn" title="切换主题" onclick="toggleTheme()">🌙</button>
+            <button class="icon-btn" title="设置">⚙️</button>
+            <button class="icon-btn" title="个人中心">👤</button>
+            <button class="save-btn">发布章节</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Sidebar - Chapter Navigation -->
+        <aside class="sidebar-left">
+            <div class="sidebar-section">
+                <div class="sidebar-title">
+                    <span>📚 章节导航</span>
+                    <button class="add-btn">+</button>
+                </div>
+
+                <div class="volume-item">
+                    <div class="volume-header" onclick="toggleVolume(this)">
+                        <span class="volume-toggle">▼</span>
+                        <span>第一卷：觉醒</span>
+                        <span style="margin-left: auto; font-size: 11px; color: var(--text-muted);">24章</span>
+                    </div>
+                    <div class="chapter-list">
+                        <div class="chapter-item">第1章 龙王归来</div>
+                        <div class="chapter-item">第2章 离婚协议</div>
+                        <div class="chapter-item">第3章 身份暴露</div>
+                        <div class="chapter-item">...</div>
+                        <div class="chapter-item active">第15章 打脸丈母娘</div>
+                        <div class="chapter-item">第16章 宴会风波</div>
+                    </div>
+                </div>
+
+                <div class="volume-item">
+                    <div class="volume-header" onclick="toggleVolume(this)">
+                        <span class="volume-toggle collapsed">▼</span>
+                        <span>第二卷：崛起</span>
+                        <span style="margin-left: auto; font-size: 11px; color: var(--text-muted);">规划中</span>
+                    </div>
+                    <div class="chapter-list" style="display: none;">
+                        <div class="chapter-item" style="opacity: 0.5;">第25章 待添加</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="mindmap-toggle" onclick="showMindmap()">
+                    🧠 思维导图视图
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">
+                    <span>🏷️ 人物卡</span>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                    <span style="background: var(--highlight); color: var(--accent-primary); padding: 4px 10px; border-radius: 12px; font-size: 11px; cursor: pointer;">林尘</span>
+                    <span style="background: var(--bg-tertiary); color: var(--text-secondary); padding: 4px 10px; border-radius: 12px; font-size: 11px; cursor: pointer;">苏清雪</span>
+                    <span style="background: var(--bg-tertiary); color: var(--text-secondary); padding: 4px 10px; border-radius: 12px; font-size: 11px; cursor: pointer;">王美凤</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center - Editor -->
+        <main class="editor-container">
+            <div class="editor-header">
+                <input type="text" class="editor-title" value="第15章 打脸丈母娘" placeholder="输入章节标题...">
+            </div>
+            <div class="editor-content">
+                <textarea class="editor-textarea" id="editor" placeholder="开始你的创作...
+
+林尘拎着外卖盒站在别墅门口，看着眼前趾高气扬的丈母娘王美凤，心中涌起一股复杂的情绪。
+
+三年了。
+
+三年前，他是林家弃子，被赶出家门，流落街头。是苏清雪收留了他，不顾家人反对，执意与他结婚。
+
+这三年来，他受尽冷眼，被丈母娘指着鼻子骂废物，被小舅子呼来喝去，被苏家所有人看不起。
+
+但他都忍了。
+
+因为他在等，等一个机会。
+
+"你这种废物也配进我苏家的门？"王美凤冷笑一声，眼神里满是鄙夷，"清雪真是瞎了眼，怎么会看上你这种送外卖的穷鬼！"
+
+林尘握紧了拳头，指甲深深陷入掌心。
+
+【】"妈，林尘他..."
+
+身后传来苏清雪的声音，带着几分无奈和疲惫。
+
+【】"闭嘴！"王美凤厉声打断，"今天可是张少来的日子，你要是让这废物坏了好事，我饶不了你！"
+
+张少？
+
+林尘眼神一凝。
+
+他听说过这个名字，张家的独子，最近一直在追求苏清雪。看来，今天这场戏，是唱给他看的。
+
+（继续写作...）"></textarea>
+            </div>
+            <div class="editor-footer">
+                <div class="stats">
+                    <div class="stat-item">
+                        <span>📝</span>
+                        <span>字数: <span class="stat-value" id="wordCount">3,240</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <span>📖</span>
+                        <span>预估阅读: <span class="stat-value">8分钟</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <span>🎯</span>
+                        <span>今日目标: <span class="stat-value">3,240 / 4,000</span></span>
+                    </div>
+                </div>
+                <span class="checkpoint-badge">✓ 适合设为付费卡点</span>
+            </div>
+        </main>
+
+        <!-- Right Sidebar - Inspiration Spark -->
+        <aside class="sidebar-right">
+            <div class="spark-header">
+                <div class="spark-title">
+                    <span>💡</span>
+                    <span>灵感火花</span>
+                </div>
+                <div class="spark-subtitle">AI 实时分析剧情，提供写作建议</div>
+                <div class="spark-analyzing" id="analyzing">
+                    <span>正在分析</span>
+                    <span class="dot-flashing">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="spark-content">
+                <div class="insight-card">
+                    <div class="insight-label">🎯 剧情节点检测</div>
+                    <div class="insight-text">
+                        检测到<strong>"主角受辱 → 身份即将揭晓"</strong>的经典爽文结构。当前情绪铺垫已到位，读者期待值处于高点。
+                    </div>
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-label">📊 节奏分析</div>
+                    <div class="insight-text">
+                        本章已写 3,240 字，建议再写 <strong>600-800 字</strong>达到理想卡点位置。当前冲突强度：🔥🔥🔥🔥⚪
+                    </div>
+                </div>
+
+                <div class="suggestion-list">
+                    <div class="suggestion-title">🎭 建议剧情走向</div>
+
+                    <div class="suggestion-item" onclick="applySuggestion(1)">
+                        <span class="suggestion-num">1</span>
+                        <span class="suggestion-text">
+                            <strong>直接亮出龙王令</strong><br>
+                            林尘不再隐忍，直接掏出象征身份的龙王令，当场打脸丈母娘和张少。
+                        </span>
+                        <span class="suggestion-tag">高爽点 · 快节奏</span>
+                    </div>
+
+                    <div class="suggestion-item" onclick="applySuggestion(2)">
+                        <span class="suggestion-num">2</span>
+                        <span class="suggestion-text">
+                            <strong>先隐忍，暗中布局</strong><br>
+                            林尘暂时退让，但暗中通知手下，让张家在关键时刻出丑。
+                        </span>
+                        <span class="suggestion-tag">埋伏笔 · 后续爆发</span>
+                    </div>
+
+                    <div class="suggestion-item" onclick="applySuggestion(3)">
+                        <span class="suggestion-num">3</span>
+                        <span class="suggestion-text">
+                            <strong>第三方介入打断</strong><br>
+                            正当冲突升级时，一位神秘老者出现，称林尘为"少主"，身份曝光更戏剧化。
+                        </span>
+                        <span class="suggestion-tag">神转折 · 悬念强</span>
+                    </div>
+                </div>
+
+                <div class="insight-card" style="margin-top: 16px;">
+                    <div class="insight-label">💭 人物情绪提示</div>
+                    <div class="insight-text" style="font-size: 12px;">
+                        <strong>王美凤：</strong>势利、急躁、以女儿为筹码<br>
+                        <strong>苏清雪：</strong>无奈、心疼但无力反抗<br>
+                        <strong>林尘：</strong>隐忍中带着即将爆发的压抑
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <div class="quick-title">快捷生成</div>
+                <div class="quick-grid">
+                    <button class="quick-btn" onclick="generateName('char')">👤 人名</button>
+                    <button class="quick-btn" onclick="generateName('place')">📍 地名</button>
+                    <button class="quick-btn" onclick="generateName('skill')">⚔️ 功法</button>
+                    <button class="quick-btn" onclick="generateName('org')">🏛️ 势力</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Bottom Toolbar -->
+    <div class="bottom-toolbar">
+        <span class="toolbar-label">快捷输入：</span>
+        <div class="toolbar-btns">
+            <button class="toolbar-btn" onclick="insertText('【】')">【】对话</button>
+            <button class="toolbar-btn" onclick="insertText('（）')">（）心理</button>
+            <button class="toolbar-btn" onclick="insertText('……')">……省略</button>
+            <button class="toolbar-btn" onclick="insertText('\n——\n')">——分割线</button>
+        </div>
+        <div class="toolbar-divider"></div>
+        <button class="toolbar-btn" onclick="generateName('random')">🎲 随机取名</button>
+    </div>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+
+            const themeBtn = document.querySelector('.icon-btn[onclick="toggleTheme()"]');
+            themeBtn.textContent = newTheme === 'light' ? '🌙' : '☀️';
+        }
+
+        // Volume Toggle
+        function toggleVolume(header) {
+            const toggle = header.querySelector('.volume-toggle');
+            const list = header.nextElementSibling;
+
+            if (list.style.display === 'none') {
+                list.style.display = 'block';
+                toggle.classList.remove('collapsed');
+            } else {
+                list.style.display = 'none';
+                toggle.classList.add('collapsed');
+            }
+        }
+
+        // Word Count
+        const editor = document.getElementById('editor');
+        const wordCountEl = document.getElementById('wordCount');
+
+        editor.addEventListener('input', function() {
+            const text = this.value;
+            // 简单统计中文字符和英文单词
+            const cnCount = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
+            const enCount = (text.match(/[a-zA-Z]+/g) || []).length;
+            const total = cnCount + enCount;
+            wordCountEl.textContent = total.toLocaleString();
+
+            // 触发灵感火花重新分析（模拟）
+            triggerAnalysis();
+        });
+
+        // Insert Text
+        function insertText(text) {
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            const value = editor.value;
+
+            editor.value = value.substring(0, start) + text + value.substring(end);
+            editor.focus();
+
+            // 设置光标位置
+            const newPos = start + (text.includes('【') || text.includes('（') ? 1 : Math.floor(text.length / 2));
+            editor.setSelectionRange(newPos, newPos);
+        }
+
+        // Generate Name (Mock)
+        function generateName(type) {
+            const names = {
+                char: ['林尘', '苏清雪', '萧战', '叶凡', '秦羽', '韩立', '石昊'],
+                place: ['苍玄大陆', '天元城', '青云宗', '万妖山脉', '幽冥海'],
+                skill: ['九转龙神功', '太虚剑诀', '焚天烈焰掌', '乾坤大挪移'],
+                org: ['龙神殿', '天机阁', '万剑宗', '暗影楼', '药王谷'],
+                random: ['神秘老者', '黑衣人', '白衣女子', '金甲护卫']
+            };
+
+            const list = names[type] || names.random;
+            const name = list[Math.floor(Math.random() * list.length)];
+
+            insertText(name);
+        }
+
+        // Apply Suggestion
+        function applySuggestion(num) {
+            const suggestions = {
+                1: '\n\n林尘深吸一口气，从怀中缓缓掏出一枚古朴的令牌。\n\n令牌通体漆黑，正面雕刻着一条栩栩如生的五爪金龙，背面是两个苍劲有力的大字——龙王！\n\n"这是...龙王令？！"张少瞳孔骤缩，脸色瞬间惨白。\n\n王美凤还没反应过来："什么龙王令？林尘你拿块破牌子想吓唬谁..."\n\n"啪！"\n\n张少一巴掌扇在她脸上，浑身颤抖："闭嘴！你知不知道，拥有龙王令的人，就是龙神殿的主人！"',
+                2: '\n\n林尘眼中寒光一闪，却很快收敛。\n\n"好，我走。"\n\n他转身离去，没人看见他嘴角那抹冰冷的笑意。\n\n走出苏家别墅，林尘掏出手机，拨通了一个号码。\n\n"暗影，我要张家的所有资料。另外，通知各大世家，今晚的宴会，我会亲自到场。"\n\n"是，龙王！"',
+                3: '\n\n正当剑拔弩张之际，一辆黑色劳斯莱斯幻影缓缓停在别墅门前。\n\n车门打开，一位身着唐装的白发老者快步走出，径直来到林尘面前，恭敬地弯腰行礼：\n\n"老奴来迟，请少主恕罪！"\n\n全场死寂。\n\n王美凤瞪大眼睛："少...少主？"\n\n张少脸色狂变："你是...林家的林老？！"'
+            };
+
+            insertText(suggestions[num]);
+        }
+
+        // Trigger Analysis (Mock)
+        let analysisTimeout;
+        function triggerAnalysis() {
+            const analyzingEl = document.getElementById('analyzing');
+            analyzingEl.style.display = 'flex';
+
+            clearTimeout(analysisTimeout);
+            analysisTimeout = setTimeout(() => {
+                analyzingEl.style.display = 'none';
+            }, 1500);
+        }
+
+        // Save Content (Mock)
+        function saveContent() {
+            const btn = document.querySelector('.save-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '已保存 ✓';
+            btn.style.background = 'var(--accent-success)';
+
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '';
+            }, 2000);
+        }
+
+        // Show Mindmap (Mock)
+        function showMindmap() {
+            alert('思维导图视图：\n\n这里会展示整本书的章节结构思维导图，支持拖拽调整顺序、可视化查看剧情脉络。');
+        }
+
+        // Auto-save every 30 seconds
+        setInterval(() => {
+            console.log('Auto-saved at', new Date().toLocaleTimeString());
+        }, 30000);
+
+        // Initial animation
+        setTimeout(() => {
+            document.getElementById('analyzing').style.display = 'none';
+        }, 2000);
+    </script>
+</body>
+</html>

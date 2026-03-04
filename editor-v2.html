@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>写作工作台 - 网文助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #F7F5F3;
+            --bg-secondary: #EDE8E3;
+            --bg-tertiary: #E5DFD8;
+            --bg-card: #FAF8F6;
+            --text-primary: #4A4541;
+            --text-secondary: #8B8279;
+            --text-muted: #B5ADA3;
+            --accent-primary: #C4A88C;
+            --accent-secondary: #D4B5A8;
+            --accent-tertiary: #A8B5A0;
+            --accent-warning: #D4A574;
+            --accent-success: #9CAF94;
+            --accent-danger: #D4A5A5;
+            --border: #D9D3CC;
+            --shadow: rgba(74, 69, 65, 0.08);
+            --shadow-lg: rgba(74, 69, 65, 0.15);
+            --highlight: rgba(196, 168, 140, 0.15);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #2D2A28;
+            --bg-secondary: #3D3835;
+            --bg-tertiary: #4A4541;
+            --bg-card: #35312E;
+            --text-primary: #E8E4E0;
+            --text-secondary: #B5ADA3;
+            --text-muted: #7A7269;
+            --accent-primary: #D4B896;
+            --accent-secondary: #E5C4B8;
+            --accent-tertiary: #B8C4B0;
+            --accent-warning: #E5B88A;
+            --accent-success: #A8BFA0;
+            --accent-danger: #E5A8A8;
+            --border: #4A4541;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --shadow-lg: rgba(0, 0, 0, 0.5);
+            --highlight: rgba(212, 184, 150, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            height: 56px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .novel-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .novel-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .chapter-name {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding-left: 12px;
+            border-left: 1px solid var(--border);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .icon-btn .tooltip {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .icon-btn:hover .tooltip {
+            opacity: 1;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 56px - 48px);
+            overflow: hidden;
+        }
+
+        .main-container.focus-mode {
+            height: 100vh;
+        }
+
+        .main-container.focus-mode .sidebar-left,
+        .main-container.focus-mode .sidebar-right,
+        .main-container.focus-mode .bottom-toolbar,
+        .main-container.focus-mode .header {
+            display: none;
+        }
+
+        .main-container.focus-mode .editor-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Left Sidebar */
+        .sidebar-left {
+            width: 240px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-section {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .add-btn {
+            width: 20px;
+            height: 20px;
+            border: none;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .volume-item {
+            margin-bottom: 8px;
+        }
+
+        .volume-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .volume-header:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .volume-toggle {
+            font-size: 10px;
+            color: var(--text-muted);
+            transition: transform 0.2s;
+        }
+
+        .volume-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .chapter-list {
+            padding-left: 20px;
+        }
+
+        .chapter-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .chapter-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .chapter-item.active {
+            background: var(--highlight);
+            color: var(--accent-primary);
+            font-weight: 500;
+            border-left: 3px solid var(--accent-primary);
+            margin-left: -3px;
+        }
+
+        .chapter-item::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-success);
+        }
+
+        .chapter-item.active::before {
+            background: var(--accent-primary);
+            box-shadow: 0 0 0 2px var(--highlight);
+        }
+
+        .chapter-item .dirty-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-danger);
+            border-radius: 50%;
+            margin-left: auto;
+            display: none;
+        }
+
+        .chapter-item.dirty .dirty-dot {
+            display: block;
+        }
+
+        .mindmap-toggle {
+            margin-top: 12px;
+            padding: 10px;
+            background: var(--bg-tertiary);
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mindmap-toggle:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* Center Editor */
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+            overflow: hidden;
+        }
+
+        .editor-header {
+            padding: 20px 40px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .editor-title {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .editor-title::placeholder {
+            color: var(--text-muted);
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .editor-content {
+            flex: 1;
+            padding: 20px 40px;
+            overflow-y: auto;
+        }
+
+        .editor-textarea {
+            width: 100%;
+            min-height: 100%;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-primary);
+            outline: none;
+            resize: none;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        .editor-footer {
+            padding: 12px 40px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stats {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+
+        .stat-value.new {
+            color: var(--accent-success);
+        }
+
+        .checkpoint-badge {
+            background: var(--highlight);
+            color: var(--accent-primary);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: help;
+            position: relative;
+        }
+
+        .checkpoint-badge:hover::after {
+            content: "本章已超过 3000 字，且检测到冲突高潮，适合设置付费卡点";
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            margin-bottom: 8px;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            white-space: nowrap;
+            z-index: 100;
+            box-shadow: 0 4px 12px var(--shadow-lg);
+        }
+
+        /* Right Sidebar */
+        .sidebar-right {
+            width: 320px;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .spark-header {
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .spark-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .spark-subtitle {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .spark-tabs {
+            display: flex;
+            gap: 4px;
+            margin-top: 12px;
+        }
+
+        .spark-tab {
+            flex: 1;
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .spark-tab:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .spark-tab.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .spark-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .spark-panel {
+            display: none;
+        }
+
+        .spark-panel.active {
+            display: block;
+        }
+
+        .insight-card {
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .insight-label {
+            font-size: 11px;
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .insight-text {
+            font-size: 13px;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .suggestion-list {
+            margin-top: 12px;
+        }
+
+        .suggestion-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .suggestion-item {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .suggestion-item:hover {
+            border-color: var(--accent-primary);
+            transform: translateX(2px);
+        }
+
+        .suggestion-item.expanded {
+            border-color: var(--accent-primary);
+            background: var(--highlight);
+        }
+
+        .suggestion-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .suggestion-text {
+            font-size: 12px;
+            color: var(--text-primary);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .suggestion-item.expanded .suggestion-text {
+            -webkit-line-clamp: unset;
+        }
+
+        .suggestion-tag {
+            display: inline-block;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 6px;
+            background: var(--highlight);
+            color: var(--accent-primary);
+        }
+
+        .suggestion-actions {
+            display: none;
+            gap: 6px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .suggestion-item.expanded .suggestion-actions {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .suggestion-action-btn {
+            padding: 4px 10px;
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-size: 11px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .suggestion-action-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .custom-input-area {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .custom-input-area textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 12px;
+            resize: vertical;
+            min-height: 60px;
+            font-family: inherit;
+        }
+
+        .custom-input-area textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .quick-btn {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .quick-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .stats-detail {
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 12px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-row:last-child {
+            border-bottom: none;
+        }
+
+        .stats-row .value {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        /* Bottom Toolbar */
+        .bottom-toolbar {
+            height: 48px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+        }
+
+        .toolbar-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .toolbar-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .toolbar-btn {
+            background: var(--bg-tertiary);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .toolbar-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .toolbar-divider {
+            width: 1px;
+            height: 20px;
+            background: var(--border);
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            min-width: 400px;
+            max-width: 90vw;
+            box-shadow: 0 20px 60px var(--shadow-lg);
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .modal-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn.primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .modal-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Character Popover */
+        .popover {
+            position: absolute;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 8px 24px var(--shadow-lg);
+            z-index: 100;
+            min-width: 200px;
+            display: none;
+        }
+
+        .popover.active {
+            display: block;
+        }
+
+        .popover-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .popover-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .popover-role {
+            font-size: 11px;
+            color: var(--accent-primary);
+            background: var(--highlight);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .popover-info {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .popover-info div {
+            margin-bottom: 4px;
+        }
+
+        .popover-actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Find Replace Modal */
+        .find-replace-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .input-row label {
+            width: 50px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .input-row input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        .input-row input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .find-options {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .find-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .find-option input {
+            cursor: pointer;
+        }
+
+        .find-result {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            box-shadow: 0 4px 12px var(--shadow-lg);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.active {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .sidebar-right {
+                width: 280px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar-left {
+                width: 200px;
+            }
+            .sidebar-right {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-left {
+                display: none;
+            }
+            .editor-content {
+                padding: 16px 20px;
+            }
+            .editor-header {
+                padding: 16px 20px 0;
+            }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="goBack()">
+                <span>◀</span>
+                <span>返回作品</span>
+            </button>
+            <div class="novel-info">
+                <span class="novel-title">《至尊龙婿》</span>
+                <span class="chapter-name" id="headerChapterName">第15章 打脸丈母娘</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="icon-btn" title="保存" onclick="saveContent()">
+                💾
+                <span class="tooltip">保存 Ctrl+S</span>
+            </button>
+            <button class="icon-btn" title="查找替换" onclick="openFindReplace()">
+                🔍
+                <span class="tooltip">查找 Ctrl+F</span>
+            </button>
+            <button class="icon-btn" title="专注模式" onclick="toggleFocusMode()">
+                🎯
+                <span class="tooltip">专注模式</span>
+            </button>
+            <button class="icon-btn" title="历史版本">⌛</button>
+            <button class="icon-btn" title="切换主题" onclick="toggleTheme()">
+                🌙
+                <span class="tooltip" id="themeTooltip">切换深色</span>
+            </button>
+            <button class="icon-btn" title="设置">⚙️</button>
+            <button class="icon-btn" title="个人中心">👤</button>
+            <button class="btn-secondary" onclick="saveDraft()">保存草稿</button>
+            <button class="btn-primary" onclick="publishChapter()">发布章节</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container" id="mainContainer">
+        <!-- Left Sidebar -->
+        <aside class="sidebar-left">
+            <div class="sidebar-section">
+                <div class="sidebar-title">
+                    <span>📚 章节导航</span>
+                    <button class="add-btn">+</button>
+                </div>
+
+                <div class="volume-item">
+                    <div class="volume-header" onclick="toggleVolume(this)">
+                        <span class="volume-toggle">▼</span>
+                        <span>第一卷：觉醒</span>
+                        <span style="margin-left: auto; font-size: 11px; color: var(--text-muted);">24章</span>
+                    </div>
+                    <div class="chapter-list">
+                        <div class="chapter-item" data-chapter="1" onclick="switchChapter(1)">
+                            第1章 龙王归来
+                            <span class="dirty-dot"></span>
+                        </div>
+                        <div class="chapter-item" data-chapter="2" onclick="switchChapter(2)">
+                            第2章 离婚协议
+                            <span class="dirty-dot"></span>
+                        </div>
+                        <div class="chapter-item" data-chapter="3" onclick="switchChapter(3)">
+                            第3章 身份暴露
+                            <span class="dirty-dot"></span>
+                        </div>
+                        <div class="chapter-item" data-chapter="14" onclick="switchChapter(14)">
+                            第14章 宴会邀请
+                            <span class="dirty-dot"></span>
+                        </div>
+                        <div class="chapter-item active dirty" data-chapter="15" onclick="switchChapter(15)">
+                            第15章 打脸丈母娘
+                            <span class="dirty-dot"></span>
+                        </div>
+                        <div class="chapter-item" data-chapter="16" onclick="switchChapter(16)">
+                            第16章 宴会风波
+                            <span class="dirty-dot"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="volume-item">
+                    <div class="volume-header" onclick="toggleVolume(this)">
+                        <span class="volume-toggle collapsed">▼</span>
+                        <span>第二卷：崛起</span>
+                        <span style="margin-left: auto; font-size: 11px; color: var(--text-muted);">规划中</span>
+                    </div>
+                    <div class="chapter-list" style="display: none;">
+                        <div class="chapter-item" style="opacity: 0.5;">
+                            第25章 待添加
+                            <span class="dirty-dot"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="mindmap-toggle" onclick="showMindmap()">
+                    🧠 思维导图视图
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">
+                    <span>🏷️ 人物卡</span>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                    <span class="character-tag" style="background: var(--highlight); color: var(--accent-primary); padding: 4px 10px; border-radius: 12px; font-size: 11px; cursor: pointer;" onclick="showCharacterPopover(this, '林尘')">林尘</span>
+                    <span class="character-tag" style="background: var(--bg-tertiary); color: var(--text-secondary); padding: 4px 10px; border-radius: 12px; font-size: 11px; cursor: pointer;" onclick="showCharacterPopover(this, '苏清雪')">苏清雪</span>
+                    <span class="character-tag" style="background: var(--bg-tertiary); color: var(--text-secondary); padding: 4px 10px; border-radius: 12px; font-size: 11px; cursor: pointer;" onclick="showCharacterPopover(this, '王美凤')">王美凤</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center Editor -->
+        <main class="editor-container">
+            <div class="editor-header">
+                <input type="text" class="editor-title" id="chapterTitle" value="第15章 打脸丈母娘" placeholder="输入章节标题...">
+                <div class="editor-actions">
+                    <button class="icon-btn" onclick="toggleFocusMode()" title="进入专注模式">🎯</button>
+                </div>
+            </div>
+            <div class="editor-content">
+                <textarea class="editor-textarea" id="editor" placeholder="开始你的创作...">林尘拎着外卖盒站在别墅门口，看着眼前趾高气扬的丈母娘王美凤，心中涌起一股复杂的情绪。
+
+三年了。
+
+三年前，他是林家弃子，被赶出家门，流落街头。是苏清雪收留了他，不顾家人反对，执意与他结婚。
+
+这三年来，他受尽冷眼，被丈母娘指着鼻子骂废物，被小舅子呼来喝去，被苏家所有人看不起。
+
+但他都忍了。
+
+因为他在等，等一个机会。
+
+"你这种废物也配进我苏家的门？"王美凤冷笑一声，眼神里满是鄙夷，"清雪真是瞎了眼，怎么会看上你这种送外卖的穷鬼！"
+
+林尘握紧了拳头，指甲深深陷入掌心。
+
+【】"妈，林尘他..."
+
+身后传来苏清雪的声音，带着几分无奈和疲惫。
+
+【】"闭嘴！"王美凤厉声打断，"今天可是张少来的日子，你要是让这废物坏了好事，我饶不了你！"
+
+张少？
+
+林尘眼神一凝。
+
+他听说过这个名字，张家的独子，最近一直在追求苏清雪。看来，今天这场戏，是唱给他看的。
+
+（继续写作...）</textarea>
+            </div>
+            <div class="editor-footer">
+                <div class="stats">
+                    <div class="stat-item">
+                        <span>📝</span>
+                        <span>本章: <span class="stat-value" id="wordCountTotal">3,240</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <span>✍️</span>
+                        <span>新增: +<span class="stat-value new" id="wordCountNew">0</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <span>📖</span>
+                        <span>预估: <span class="stat-value">8分钟</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <span>🎯</span>
+                        <span>目标: <span class="stat-value">3,240 / 4,000</span></span>
+                    </div>
+                </div>
+                <span class="checkpoint-badge">✓ 适合设为付费卡点</span>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="sidebar-right">
+            <div class="spark-header">
+                <div class="spark-title">
+                    <span>💡</span>
+                    <span>灵感火花</span>
+                </div>
+                <div class="spark-subtitle">AI 实时分析剧情，提供写作建议</div>
+                <div class="spark-tabs">
+                    <button class="spark-tab active" onclick="switchTab('analysis')">剧情分析</button>
+                    <button class="spark-tab" onclick="switchTab('tools')">快捷工具</button>
+                </div>
+            </div>
+
+            <div class="spark-content">
+                <!-- Analysis Panel -->
+                <div class="spark-panel active" id="panel-analysis">
+                    <div class="insight-card">
+                        <div class="insight-label">🎯 剧情节点检测</div>
+                        <div class="insight-text">
+                            检测到<strong>"主角受辱 → 身份即将揭晓"</strong>的经典爽文结构。当前情绪铺垫已到位，读者期待值处于高点。
+                        </div>
+                    </div>
+
+                    <div class="insight-card">
+                        <div class="insight-label">📊 节奏分析</div>
+                        <div class="insight-text">
+                            本章已写 <strong>3,240 字</strong>，建议再写 <strong>600-800 字</strong>达到理想卡点位置。当前冲突强度：🔥🔥🔥🔥⚪
+                        </div>
+                    </div>
+
+                    <div class="suggestion-list">
+                        <div class="suggestion-title">🎭 建议剧情走向</div>
+
+                        <div class="suggestion-item" onclick="toggleSuggestion(this)">
+                            <span class="suggestion-num">1</span>
+                            <span class="suggestion-text">
+                                <strong>直接亮出龙王令</strong><br>
+                                林尘不再隐忍，直接掏出象征身份的龙王令，当场打脸丈母娘和张少。
+                            </span>
+                            <span class="suggestion-tag">高爽点 · 快节奏</span>
+                            <div class="suggestion-actions">
+                                <button class="suggestion-action-btn" onclick="applySuggestion(1, 'cursor')">插入到光标</button>
+                                <button class="suggestion-action-btn" onclick="applySuggestion(1, 'new')">插入到新段</button>
+                                <button class="suggestion-action-btn" onclick="copySuggestion(1)">复制</button>
+                                <button class="suggestion-action-btn" onclick="previewSuggestion(1)">预览</button>
+                            </div>
+                        </div>
+
+                        <div class="suggestion-item" onclick="toggleSuggestion(this)">
+                            <span class="suggestion-num">2</span>
+                            <span class="suggestion-text">
+                                <strong>先隐忍，暗中布局</strong><br>
+                                林尘暂时退让，但暗中通知手下，让张家在关键时刻出丑。
+                            </span>
+                            <span class="suggestion-tag">埋伏笔 · 后续爆发</span>
+                            <div class="suggestion-actions">
+                                <button class="suggestion-action-btn" onclick="applySuggestion(2, 'cursor')">插入到光标</button>
+                                <button class="suggestion-action-btn" onclick="applySuggestion(2, 'new')">插入到新段</button>
+                                <button class="suggestion-action-btn" onclick="copySuggestion(2)">复制</button>
+                                <button class="suggestion-action-btn" onclick="previewSuggestion(2)">预览</button>
+                            </div>
+                        </div>
+
+                        <div class="suggestion-item" onclick="toggleSuggestion(this)">
+                            <span class="suggestion-num">3</span>
+                            <span class="suggestion-text">
+                                <strong>第三方介入打断</strong><br>
+                                正当冲突升级时，一位神秘老者出现，称林尘为"少主"，身份曝光更戏剧化。
+                            </span>
+                            <span class="suggestion-tag">神转折 · 悬念强</span>
+                            <div class="suggestion-actions">
+                                <button class="suggestion-action-btn" onclick="applySuggestion(3, 'cursor')">插入到光标</button>
+                                <button class="suggestion-action-btn" onclick="applySuggestion(3, 'new')">插入到新段</button>
+                                <button class="suggestion-action-btn" onclick="copySuggestion(3)">复制</button>
+                                <button class="suggestion-action-btn" onclick="previewSuggestion(3)">预览</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="custom-input-area">
+                        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">都不满意？告诉我你的想法：</div>
+                        <textarea id="customSuggestion" placeholder="输入你想要的剧情方向..."></textarea>
+                        <button class="btn-primary" style="width: 100%; margin-top: 8px; padding: 8px;" onclick="submitCustomSuggestion()">提交自定义方向</button>
+                    </div>
+
+                    <div class="insight-card" style="margin-top: 16px;">
+                        <div class="insight-label">💭 人物情绪提示</div>
+                        <div class="insight-text" style="font-size: 12px;">
+                            <strong>王美凤：</strong>势利、急躁、以女儿为筹码<br>
+                            <strong>苏清雪：</strong>无奈、心疼但无力反抗<br>
+                            <strong>林尘：</strong>隐忍中带着即将爆发的压抑
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tools Panel -->
+                <div class="spark-panel" id="panel-tools">
+                    <div class="stats-detail">
+                        <div class="stats-row">
+                            <span>本章总字数</span>
+                            <span class="value" id="statsTotal">3,240</span>
+                        </div>
+                        <div class="stats-row">
+                            <span>本次新增</span>
+                            <span class="value" id="statsNew">0</span>
+                        </div>
+                        <div class="stats-row">
+                            <span>今日累计</span>
+                            <span class="value">3,240</span>
+                        </div>
+                        <div class="stats-row">
+                            <span>目标完成度</span>
+                            <span class="value">81%</span>
+                        </div>
+                        <div class="stats-row">
+                            <span>预计剩余时间</span>
+                            <span class="value">15分钟</span>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">快捷生成</div>
+                    <div class="quick-grid">
+                        <button class="quick-btn" onclick="generateName('char')">👤 人名</button>
+                        <button class="quick-btn" onclick="generateName('place')">📍 地名</button>
+                        <button class="quick-btn" onclick="generateName('skill')">⚔️ 功法</button>
+                        <button class="quick-btn" onclick="generateName('org')">🏛️ 势力</button>
+                        <button class="quick-btn" onclick="generateName('random')">🎲 随机</button>
+                        <button class="quick-btn" onclick="openFindReplace()">🔍 查找</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Bottom Toolbar -->
+    <div class="bottom-toolbar" id="bottomToolbar">
+        <span class="toolbar-label">快捷输入：</span>
+        <div class="toolbar-btns">
+            <button class="toolbar-btn" onclick="insertText('【】')">【】对话</button>
+            <button class="toolbar-btn" onclick="insertText('（）')">（）心理</button>
+            <button class="toolbar-btn" onclick="insertText('……')">……省略</button>
+            <button class="toolbar-btn" onclick="insertText('\n——\n')">——分割线</button>
+            <button class="toolbar-btn" onclick="insertText('🔥')">🔥 爽点</button>
+            <button class="toolbar-btn" onclick="insertText('💔')">💔 虐点</button>
+        </div>
+        <div class="toolbar-divider"></div>
+        <button class="toolbar-btn" onclick="generateName('random')">🎲 随机取名</button>
+    </div>
+
+    <!-- Character Popover -->
+    <div class="popover" id="characterPopover">
+        <div class="popover-header">
+            <span class="popover-name" id="popoverName">林尘</span>
+            <span class="popover-role" id="popoverRole">主角</span>
+        </div>
+        <div class="popover-info" id="popoverInfo">
+            <div><strong>身份：</strong>龙王殿主，林家弃子</div>
+            <div><strong>性格：</strong>隐忍、护短、重情义</div>
+            <div><strong>当前状态：</strong>即将爆发</div>
+            <div><strong>人物弧光：</strong>废物 → 王者归来</div>
+        </div>
+        <div class="popover-actions">
+            <button class="suggestion-action-btn" onclick="insertText(document.getElementById('popoverName').textContent)">插入人名</button>
+            <button class="suggestion-action-btn" onclick="showToast('查看完整档案功能开发中')">完整档案</button>
+        </div>
+    </div>
+
+    <!-- Unsaved Changes Modal -->
+    <div class="modal-overlay" id="unsavedModal">
+        <div class="modal">
+            <div class="modal-title">⚠️ 有未保存的修改</div>
+            <div class="modal-content">
+                当前章节有未保存的内容，切换前是否保存？
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="cancelSwitch()">取消</button>
+                <button class="modal-btn secondary" onclick="discardAndSwitch()">放弃修改</button>
+                <button class="modal-btn primary" onclick="saveAndSwitch()">保存并切换</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Find Replace Modal -->
+    <div class="modal-overlay" id="findReplaceModal">
+        <div class="modal" style="min-width: 500px;">
+            <div class="modal-title">🔍 查找替换</div>
+            <div class="find-replace-inputs">
+                <div class="input-row">
+                    <label>查找</label>
+                    <input type="text" id="findInput" placeholder="输入要查找的内容...">
+                </div>
+                <div class="input-row">
+                    <label>替换</label>
+                    <input type="text" id="replaceInput" placeholder="输入替换内容...">
+                </div>
+            </div>
+            <div class="find-options">
+                <label class="find-option">
+                    <input type="checkbox" id="caseSensitive"> 区分大小写
+                </label>
+                <label class="find-option">
+                    <input type="checkbox" id="wholeWord"> 全字匹配
+                </label>
+            </div>
+            <div class="find-result" id="findResult"></div>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeFindReplace()">关闭</button>
+                <button class="modal-btn secondary" onclick="findNext()">查找下一处</button>
+                <button class="modal-btn primary" onclick="replaceAll()">全部替换</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // State
+        let currentChapter = 15;
+        let isDirty = false;
+        let originalContent = '';
+        let pendingChapter = null;
+        let initialWordCount = 3240;
+        let wordCountAtOpen = 3240;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const editor = document.getElementById('editor');
+            originalContent = editor.value;
+            wordCountAtOpen = countWords(editor.value);
+
+            // Auto-save every 30 seconds
+            setInterval(() => {
+                if (isDirty) {
+                    console.log('Auto-saved at', new Date().toLocaleTimeString());
+                    showToast('已自动保存');
+                }
+            }, 30000);
+        });
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+
+            const themeBtn = document.querySelector('.icon-btn[onclick="toggleTheme()"]');
+            themeBtn.innerHTML = newTheme === 'light' ? '🌙<span class="tooltip" id="themeTooltip">切换深色</span>' : '☀️<span class="tooltip" id="themeTooltip">切换浅色</span>';
+        }
+
+        // Volume Toggle
+        function toggleVolume(header) {
+            const toggle = header.querySelector('.volume-toggle');
+            const list = header.nextElementSibling;
+
+            if (list.style.display === 'none') {
+                list.style.display = 'block';
+                toggle.classList.remove('collapsed');
+            } else {
+                list.style.display = 'none';
+                toggle.classList.add('collapsed');
+            }
+        }
+
+        // Word Count
+        function countWords(text) {
+            const cnCount = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
+            const enCount = (text.match(/[a-zA-Z]+/g) || []).length;
+            return cnCount + enCount;
+        }
+
+        const editor = document.getElementById('editor');
+        const wordCountTotalEl = document.getElementById('wordCountTotal');
+        const wordCountNewEl = document.getElementById('wordCountNew');
+        const statsTotalEl = document.getElementById('statsTotal');
+        const statsNewEl = document.getElementById('statsNew');
+
+        editor.addEventListener('input', function() {
+            const text = this.value;
+            const total = countWords(text);
+            const newWords = Math.max(0, total - wordCountAtOpen);
+
+            wordCountTotalEl.textContent = total.toLocaleString();
+            wordCountNewEl.textContent = newWords.toLocaleString();
+            statsTotalEl.textContent = total.toLocaleString();
+            statsNewEl.textContent = newWords.toLocaleString();
+
+            // Mark as dirty if content changed
+            if (text !== originalContent) {
+                if (!isDirty) {
+                    isDirty = true;
+                    document.querySelector('.chapter-item.active').classList.add('dirty');
+                }
+            } else {
+                isDirty = false;
+                document.querySelector('.chapter-item.active').classList.remove('dirty');
+            }
+        });
+
+        // Chapter Switch with Save Check
+        function switchChapter(chapterId) {
+            if (isDirty && chapterId !== currentChapter) {
+                pendingChapter = chapterId;
+                document.getElementById('unsavedModal').classList.add('active');
+                return;
+            }
+
+            doSwitchChapter(chapterId);
+        }
+
+        function doSwitchChapter(chapterId) {
+            // Remove active from current
+            document.querySelector('.chapter-item.active').classList.remove('active');
+
+            // Add active to new
+            const newChapterEl = document.querySelector(`.chapter-item[data-chapter="${chapterId}"]`);
+            newChapterEl.classList.add('active');
+
+            // Update current
+            currentChapter = chapterId;
+            isDirty = false;
+
+            // Mock loading different content
+            const titles = {
+                1: '第1章 龙王归来',
+                2: '第2章 离婚协议',
+                3: '第3章 身份暴露',
+                14: '第14章 宴会邀请',
+                15: '第15章 打脸丈母娘',
+                16: '第16章 宴会风波'
+            };
+
+            document.getElementById('chapterTitle').value = titles[chapterId] || `第${chapterId}章`;
+            document.getElementById('headerChapterName').textContent = titles[chapterId] || `第${chapterId}章`;
+
+            // Reset word count tracking
+            wordCountAtOpen = countWords(editor.value);
+            wordCountNewEl.textContent = '0';
+            statsNewEl.textContent = '0';
+
+            showToast(`已切换到${titles[chapterId]}`);
+        }
+
+        function cancelSwitch() {
+            document.getElementById('unsavedModal').classList.remove('active');
+            pendingChapter = null;
+        }
+
+        function discardAndSwitch() {
+            document.getElementById('unsavedModal').classList.remove('active');
+            document.querySelector('.chapter-item.active').classList.remove('dirty');
+            isDirty = false;
+            if (pendingChapter) {
+                doSwitchChapter(pendingChapter);
+                pendingChapter = null;
+            }
+        }
+
+        function saveAndSwitch() {
+            saveContent();
+            document.getElementById('unsavedModal').classList.remove('active');
+            if (pendingChapter) {
+                doSwitchChapter(pendingChapter);
+                pendingChapter = null;
+            }
+        }
+
+        // Insert Text
+        function insertText(text) {
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            const value = editor.value;
+
+            editor.value = value.substring(0, start) + text + value.substring(end);
+            editor.focus();
+
+            const newPos = start + (text.includes('【') || text.includes('（') ? 1 : Math.floor(text.length / 2));
+            editor.setSelectionRange(newPos, newPos);
+
+            // Trigger input event
+            editor.dispatchEvent(new Event('input'));
+        }
+
+        // Generate Name
+        function generateName(type) {
+            const names = {
+                char: ['林尘', '苏清雪', '萧战', '叶凡', '秦羽', '韩立', '石昊', '楚风', '唐三'],
+                place: ['苍玄大陆', '天元城', '青云宗', '万妖山脉', '幽冥海', '神魔战场'],
+                skill: ['九转龙神功', '太虚剑诀', '焚天烈焰掌', '乾坤大挪移', '不灭金身'],
+                org: ['龙神殿', '天机阁', '万剑宗', '暗影楼', '药王谷', '星辰宫'],
+                random: ['神秘老者', '黑衣人', '白衣女子', '金甲护卫', '灰袍道人']
+            };
+
+            const list = names[type] || names.random;
+            const name = list[Math.floor(Math.random() * list.length)];
+
+            insertText(name);
+            showToast(`已生成：${name}`);
+        }
+
+        // Suggestion Actions
+        function toggleSuggestion(item) {
+            // Close other expanded items
+            document.querySelectorAll('.suggestion-item.expanded').forEach(el => {
+                if (el !== item) el.classList.remove('expanded');
+            });
+
+            item.classList.toggle('expanded');
+        }
+
+        const suggestions = {
+            1: '\n\n林尘深吸一口气，从怀中缓缓掏出一枚古朴的令牌。\n\n令牌通体漆黑，正面雕刻着一条栩栩如生的五爪金龙，背面是两个苍劲有力的大字——龙王！\n\n"这是...龙王令？！"张少瞳孔骤缩，脸色瞬间惨白。\n\n王美凤还没反应过来："什么龙王令？林尘你拿块破牌子想吓唬谁..."\n\n"啪！"\n\n张少一巴掌扇在她脸上，浑身颤抖："闭嘴！你知不知道，拥有龙王令的人，就是龙神殿的主人！"',
+            2: '\n\n林尘眼中寒光一闪，却很快收敛。\n\n"好，我走。"\n\n他转身离去，没人看见他嘴角那抹冰冷的笑意。\n\n走出苏家别墅，林尘掏出手机，拨通了一个号码。\n\n"暗影，我要张家的所有资料。另外，通知各大世家，今晚的宴会，我会亲自到场。"\n\n"是，龙王！"',
+            3: '\n\n正当剑拔弩张之际，一辆黑色劳斯莱斯幻影缓缓停在别墅门前。\n\n车门打开，一位身着唐装的白发老者快步走出，径直来到林尘面前，恭敬地弯腰行礼：\n\n"老奴来迟，请少主恕罪！"\n\n全场死寂。\n\n王美凤瞪大眼睛："少...少主？"\n\n张少脸色狂变："你是...林家的林老？！"'
+        };
+
+        function applySuggestion(num, mode) {
+            const text = suggestions[num];
+
+            if (mode === 'new') {
+                insertText('\n\n' + text);
+            } else {
+                insertText(text);
+            }
+
+            showToast('已插入建议内容');
+        }
+
+        function copySuggestion(num) {
+            navigator.clipboard.writeText(suggestions[num]).then(() => {
+                showToast('已复制到剪贴板');
+            });
+        }
+
+        function previewSuggestion(num) {
+            showToast('预览功能：\n\n' + suggestions[num].substring(0, 100) + '...');
+        }
+
+        function submitCustomSuggestion() {
+            const input = document.getElementById('customSuggestion');
+            const text = input.value.trim();
+
+            if (!text) {
+                showToast('请先输入你的想法');
+                return;
+            }
+
+            showToast('已收到你的建议，AI 正在生成...');
+            input.value = '';
+
+            // Mock AI response
+            setTimeout(() => {
+                showToast('已根据你的方向生成新建议！');
+            }, 1500);
+        }
+
+        // Tab Switch
+        function switchTab(tab) {
+            document.querySelectorAll('.spark-tab').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.spark-panel').forEach(el => el.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(`panel-${tab}`).classList.add('active');
+        }
+
+        // Character Popover
+        function showCharacterPopover(element, name) {
+            const popover = document.getElementById('characterPopover');
+            const rect = element.getBoundingClientRect();
+
+            const characters = {
+                '林尘': {
+                    role: '主角',
+                    info: '<div><strong>身份：</strong>龙王殿主，林家弃子</div><div><strong>性格：</strong>隐忍、护短、重情义</div><div><strong>当前状态：</strong>即将爆发</div><div><strong>人物弧光：</strong>废物 → 王者归来</div>'
+                },
+                '苏清雪': {
+                    role: '女主',
+                    info: '<div><strong>身份：</strong>苏家千金，林尘妻子</div><div><strong>性格：</strong>温柔、坚强、重感情</div><div><strong>当前状态：</strong>左右为难</div><div><strong>人物弧光：</strong>富家女 → 真爱觉醒</div>'
+                },
+                '王美凤': {
+                    role: '反派',
+                    info: '<div><strong>身份：</strong>苏清雪母亲</div><div><strong>性格：</strong>势利、贪婪、目光短浅</div><div><strong>当前状态：</strong>作死边缘</div><div><strong>人物弧光：</strong>一直作死 → 被打脸</div>'
+                }
+            };
+
+            const char = characters[name] || { role: '角色', info: '<div>暂无详细信息</div>' };
+
+            document.getElementById('popoverName').textContent = name;
+            document.getElementById('popoverRole').textContent = char.role;
+            document.getElementById('popoverInfo').innerHTML = char.info;
+
+            popover.style.left = rect.left + 'px';
+            popover.style.top = (rect.bottom + 8) + 'px';
+            popover.classList.add('active');
+
+            // Close on click outside
+            setTimeout(() => {
+                document.addEventListener('click', closePopover);
+            }, 0);
+        }
+
+        function closePopover(e) {
+            const popover = document.getElementById('characterPopover');
+            if (!popover.contains(e.target)) {
+                popover.classList.remove('active');
+                document.removeEventListener('click', closePopover);
+            }
+        }
+
+        // Focus Mode
+        function toggleFocusMode() {
+            const container = document.getElementById('mainContainer');
+            container.classList.toggle('focus-mode');
+
+            if (container.classList.contains('focus-mode')) {
+                showToast('已进入专注模式，按 Esc 退出');
+                editor.focus();
+            }
+        }
+
+        // Find Replace
+        function openFindReplace() {
+            document.getElementById('findReplaceModal').classList.add('active');
+            document.getElementById('findInput').focus();
+        }
+
+        function closeFindReplace() {
+            document.getElementById('findReplaceModal').classList.remove('active');
+        }
+
+        let findIndex = 0;
+        let findMatches = [];
+
+        function findNext() {
+            const findText = document.getElementById('findInput').value;
+            if (!findText) return;
+
+            const content = editor.value;
+            findMatches = [];
+            let pos = 0;
+
+            while ((pos = content.indexOf(findText, pos)) !== -1) {
+                findMatches.push(pos);
+                pos += findText.length;
+            }
+
+            if (findMatches.length === 0) {
+                document.getElementById('findResult').textContent = '未找到匹配内容';
+                return;
+            }
+
+            document.getElementById('findResult').textContent = `找到 ${findMatches.length} 处匹配`;
+
+            // Highlight next match
+            if (findIndex >= findMatches.length) findIndex = 0;
+            const matchPos = findMatches[findIndex];
+            editor.focus();
+            editor.setSelectionRange(matchPos, matchPos + findText.length);
+            findIndex++;
+        }
+
+        function replaceAll() {
+            const findText = document.getElementById('findInput').value;
+            const replaceText = document.getElementById('replaceInput').value;
+
+            if (!findText) return;
+
+            const content = editor.value;
+            const newContent = content.split(findText).join(replaceText);
+            const count = (content.match(new RegExp(findText, 'g')) || []).length;
+
+            editor.value = newContent;
+            editor.dispatchEvent(new Event('input'));
+
+            document.getElementById('findResult').textContent = `已替换 ${count} 处`;
+            showToast(`成功替换 ${count} 处`);
+        }
+
+        // Save & Publish
+        function saveContent() {
+            originalContent = editor.value;
+            isDirty = false;
+            document.querySelector('.chapter-item.active').classList.remove('dirty');
+            showToast('保存成功');
+        }
+
+        function saveDraft() {
+            saveContent();
+        }
+
+        function publishChapter() {
+            saveContent();
+            showToast('章节已发布，进入审核流程');
+        }
+
+        // Go Back
+        function goBack() {
+            if (isDirty) {
+                pendingChapter = 'back';
+                document.getElementById('unsavedModal').classList.add('active');
+                return;
+            }
+            showToast('返回作品列表');
+        }
+
+        // Mindmap
+        function showMindmap() {
+            showToast('思维导图视图开发中...');
+        }
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('active');
+
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + S = Save
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveContent();
+            }
+
+            // Ctrl/Cmd + F = Find
+            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                e.preventDefault();
+                openFindReplace();
+            }
+
+            // Ctrl/Cmd + Z = Undo (browser default works, but we can enhance)
+
+            // Esc = Close modals or exit focus mode
+            if (e.key === 'Escape') {
+                const container = document.getElementById('mainContainer');
+                if (container.classList.contains('focus-mode')) {
+                    container.classList.remove('focus-mode');
+                } else {
+                    closeFindReplace();
+                    document.getElementById('unsavedModal').classList.remove('active');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

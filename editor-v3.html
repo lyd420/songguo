@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>写作工作台 - 网文助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #F7F5F3;
+            --bg-secondary: #EDE8E3;
+            --bg-tertiary: #E5DFD8;
+            --bg-card: #FAF8F6;
+            --text-primary: #4A4541;
+            --text-secondary: #8B8279;
+            --text-muted: #B5ADA3;
+            --accent-primary: #C4A88C;
+            --accent-secondary: #D4B5A8;
+            --accent-tertiary: #A8B5A0;
+            --accent-warning: #D4A574;
+            --accent-success: #9CAF94;
+            --accent-danger: #D4A5A5;
+            --border: #D9D3CC;
+            --shadow: rgba(74, 69, 65, 0.08);
+            --shadow-lg: rgba(74, 69, 65, 0.15);
+            --highlight: rgba(196, 168, 140, 0.15);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #2D2A28;
+            --bg-secondary: #3D3835;
+            --bg-tertiary: #4A4541;
+            --bg-card: #35312E;
+            --text-primary: #E8E4E0;
+            --text-secondary: #B5ADA3;
+            --text-muted: #7A7269;
+            --accent-primary: #D4B896;
+            --accent-secondary: #E5C4B8;
+            --accent-tertiary: #B8C4B0;
+            --accent-warning: #E5B88A;
+            --accent-success: #A8BFA0;
+            --accent-danger: #E5A8A8;
+            --border: #4A4541;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --shadow-lg: rgba(0, 0, 0, 0.5);
+            --highlight: rgba(212, 184, 150, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            height: 56px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .novel-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .novel-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .chapter-name {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding-left: 12px;
+            border-left: 1px solid var(--border);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .icon-btn .tooltip {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .icon-btn:hover .tooltip {
+            opacity: 1;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 56px);
+            overflow: hidden;
+        }
+
+        .main-container.focus-mode {
+            height: 100vh;
+        }
+
+        .main-container.focus-mode .sidebar-left,
+        .main-container.focus-mode .floating-ai-btn,
+        .main-container.focus-mode .ai-panel,
+        .main-container.focus-mode .header {
+            display: none;
+        }
+
+        .main-container.focus-mode .editor-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Left Sidebar */
+        .sidebar-left {
+            width: 240px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-section {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .add-btn {
+            width: 20px;
+            height: 20px;
+            border: none;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .volume-item {
+            margin-bottom: 8px;
+        }
+
+        .volume-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .volume-header:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .volume-toggle {
+            font-size: 10px;
+            color: var(--text-muted);
+            transition: transform 0.2s;
+        }
+
+        .volume-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .chapter-list {
+            padding-left: 20px;
+        }
+
+        .chapter-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .chapter-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .chapter-item.active {
+            background: var(--highlight);
+            color: var(--accent-primary);
+            font-weight: 500;
+            border-left: 3px solid var(--accent-primary);
+            margin-left: -3px;
+        }
+
+        .chapter-item::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-success);
+        }
+
+        .chapter-item.active::before {
+            background: var(--accent-primary);
+            box-shadow: 0 0 0 2px var(--highlight);
+        }
+
+        .chapter-item .dirty-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-danger);
+            border-radius: 50%;
+            margin-left: auto;
+            display: none;
+        }
+
+        .chapter-item.dirty .dirty-dot {
+            display: block;
+        }
+
+        /* Center Editor */
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .editor-header {
+            padding: 20px 40px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .editor-title {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .editor-title::placeholder {
+            color: var(--text-muted);
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .editor-content {
+            flex: 1;
+            padding: 20px 40px;
+            overflow-y: auto;
+        }
+
+        .editor-textarea {
+            width: 100%;
+            min-height: 100%;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-primary);
+            outline: none;
+            resize: none;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        .editor-footer {
+            padding: 12px 40px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stats {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+
+        .stat-value.new {
+            color: var(--accent-success);
+        }
+
+        /* Floating AI Button */
+        .floating-ai-btn {
+            position: fixed;
+            right: 24px;
+            bottom: 80px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px var(--shadow-lg);
+            transition: all 0.3s;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .floating-ai-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 24px var(--shadow-lg);
+        }
+
+        .floating-ai-btn.has-suggestion {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 4px 16px var(--shadow-lg); }
+            50% { box-shadow: 0 4px 24px var(--accent-primary); }
+        }
+
+        .floating-ai-btn .badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 18px;
+            height: 18px;
+            background: var(--accent-danger);
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* AI Panel */
+        .ai-panel {
+            position: fixed;
+            right: 24px;
+            bottom: 150px;
+            width: 380px;
+            max-height: 70vh;
+            background: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px var(--shadow-lg);
+            border: 1px solid var(--border);
+            z-index: 101;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .ai-panel.active {
+            display: flex;
+        }
+
+        .ai-panel-header {
+            padding: 16px 20px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ai-panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-panel-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .ai-panel-tabs {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+
+        .ai-tab {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .ai-tab:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .ai-tab.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .ai-panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .ai-panel-section {
+            display: none;
+        }
+
+        .ai-panel-section.active {
+            display: block;
+        }
+
+        /* Diagnosis Cards */
+        .diagnosis-card {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .diagnosis-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .diagnosis-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .diagnosis-icon.structure {
+            background: var(--highlight);
+            color: var(--accent-primary);
+        }
+
+        .diagnosis-icon.emotion {
+            background: rgba(212, 181, 168, 0.2);
+            color: var(--accent-secondary);
+        }
+
+        .diagnosis-icon.pacing {
+            background: rgba(168, 181, 160, 0.2);
+            color: var(--accent-tertiary);
+        }
+
+        .diagnosis-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .diagnosis-status {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        .diagnosis-status.good {
+            background: rgba(156, 175, 148, 0.2);
+            color: var(--accent-success);
+        }
+
+        .diagnosis-status.warning {
+            background: rgba(212, 165, 116, 0.2);
+            color: var(--accent-warning);
+        }
+
+        .diagnosis-content {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Structure Progress */
+        .structure-progress {
+            display: flex;
+            gap: 4px;
+            margin-top: 12px;
+        }
+
+        .structure-step {
+            flex: 1;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .structure-step.completed {
+            background: var(--accent-success);
+        }
+
+        .structure-step.current {
+            background: var(--accent-primary);
+            animation: pulse-step 2s infinite;
+        }
+
+        @keyframes pulse-step {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .structure-step::after {
+            content: attr(data-label);
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        /* Emotion Chart */
+        .emotion-chart {
+            height: 80px;
+            margin-top: 12px;
+            position: relative;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .emotion-line {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            right: 8px;
+            height: 60px;
+        }
+
+        .emotion-curve {
+            width: 100%;
+            height: 100%;
+        }
+
+        .emotion-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4px;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        /* Template Cards */
+        .template-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .template-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateX(2px);
+        }
+
+        .template-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .template-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .template-structure {
+            display: flex;
+            gap: 4px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .template-step {
+            font-size: 10px;
+            padding: 3px 8px;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 4px;
+        }
+
+        /* Word Distribution */
+        .word-dist {
+            margin-top: 12px;
+        }
+
+        .dist-bar {
+            display: flex;
+            height: 24px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .dist-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .dist-segment.begin { background: var(--accent-primary); }
+        .dist-segment.middle { background: var(--accent-secondary); }
+        .dist-segment.end { background: var(--accent-tertiary); }
+
+        .dist-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* Writer Block Help */
+        .block-help {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .block-help-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .block-help-text {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .block-help-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .block-help-btn {
+            padding: 6px 12px;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .block-help-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Quick Actions in Panel */
+        .quick-actions-compact {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .quick-action-btn {
+            padding: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            border-radius: 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .quick-action-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .quick-action-btn .icon {
+            font-size: 16px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            min-width: 400px;
+            max-width: 90vw;
+            box-shadow: 0 20px 60px var(--shadow-lg);
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .modal-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn.primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .modal-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            box-shadow: 0 4px 12px var(--shadow-lg);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.active {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        /* Template Detail Modal */
+        .template-detail-content {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .template-structure-detail {
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+        }
+
+        .template-step-detail {
+            display: flex;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .template-step-detail:last-child {
+            border-bottom: none;
+        }
+
+        .template-step-num {
+            width: 24px;
+            height: 24px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .template-step-content {
+            flex: 1;
+        }
+
+        .template-step-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .template-step-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar-left {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-left {
+                display: none;
+            }
+            .editor-content {
+                padding: 16px 20px;
+            }
+            .editor-header {
+                padding: 16px 20px 0;
+            }
+            .ai-panel {
+                width: calc(100vw - 48px);
+                right: 24px;
+                left: 24px;
+            }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="goBack()">
+                <span>◀</span>
+                <span>返回作品</span>
+            </button>
+            <div class="novel-info">
+                <span class="novel-title">《至尊龙婿》</span>
+                <span class="chapter-name" id="headerChapterName">第15章 打脸丈母娘</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="icon-btn" title="保存" onclick="saveContent()">
+                💾
+                <span class="tooltip">保存 Ctrl+S</span>
+            </button>
+            <button class="icon-btn" title="专注模式" onclick="toggleFocusMode()">
+                🎯
+                <span class="tooltip">专注模式</span>
+            </button>
+            <button class="icon-btn" title="切换主题" onclick="toggleTheme()">
+                🌙
+                <span class="tooltip" id="themeTooltip">切换深色</span>
+            </button>
+            <button class="btn-secondary" onclick="saveDraft()">保存草稿</button>
+            <button class="btn-primary" onclick="publishChapter()">发布章节</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container" id="mainContainer">
+        <!-- Left Sidebar -->
+        <aside class="sidebar-left">
+            <div class="sidebar-section">
+                <div class="sidebar-title">
+                    <span>📚 章节导航</span>
+                    <button class="add-btn">+</button>
+                </div>
+
+                <div class="volume-item">
+                    <div class="volume-header" onclick="toggleVolume(this)">
+                        <span class="volume-toggle">▼</span>
+                        <span>第一卷：觉醒</span>
+                        <span style="margin-left: auto; font-size: 11px; color: var(--text-muted);">24章</span>
+                    </div>
+                    <div class="chapter-list">
+                        <div class="chapter-item" data-chapter="1" onclick="switchChapter(1)">
+                            第1章 龙王归来
+                            <span class="dirty-dot"></span>
+                        </div>
+                        <div class="chapter-item" data-chapter="2" onclick="switchChapter(2)">
+                            第2章 离婚协议
+                            <span class="dirty-dot"></span>
+                        </div>
+                        <div class="chapter-item" data-chapter="3" onclick="switchChapter(3)">
+                            第3章 身份暴露
+                            <span class="dirty-dot"></span>
+                        </div>
+                        <div class="chapter-item" data-chapter="14" onclick="switchChapter(14)">
+                            第14章 宴会邀请
+                            <span class="dirty-dot"></span>
+                        </div>
+                        <div class="chapter-item active dirty" data-chapter="15" onclick="switchChapter(15)">
+                            第15章 打脸丈母娘
+                            <span class="dirty-dot"></span>
+                        </div>
+                        <div class="chapter-item" data-chapter="16" onclick="switchChapter(16)">
+                            第16章 宴会风波
+                            <span class="dirty-dot"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="volume-item">
+                    <div class="volume-header" onclick="toggleVolume(this)">
+                        <span class="volume-toggle collapsed">▼</span>
+                        <span>第二卷：崛起</span>
+                        <span style="margin-left: auto; font-size: 11px; color: var(--text-muted);">规划中</span>
+                    </div>
+                    <div class="chapter-list" style="display: none;">
+                        <div class="chapter-item" style="opacity: 0.5;">
+                            第25章 待添加
+                            <span class="dirty-dot"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">
+                    <span>🏷️ 人物卡</span>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                    <span style="background: var(--highlight); color: var(--accent-primary); padding: 4px 10px; border-radius: 12px; font-size: 11px; cursor: pointer;">林尘</span>
+                    <span style="background: var(--bg-tertiary); color: var(--text-secondary); padding: 4px 10px; border-radius: 12px; font-size: 11px; cursor: pointer;">苏清雪</span>
+                    <span style="background: var(--bg-tertiary); color: var(--text-secondary); padding: 4px 10px; border-radius: 12px; font-size: 11px; cursor: pointer;">王美凤</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center Editor -->
+        <main class="editor-container">
+            <div class="editor-header">
+                <input type="text" class="editor-title" id="chapterTitle" value="第15章 打脸丈母娘" placeholder="输入章节标题...">
+                <div class="editor-actions">
+                    <button class="icon-btn" onclick="toggleFocusMode()" title="进入专注模式">🎯</button>
+                </div>
+            </div>
+            <div class="editor-content">
+                <textarea class="editor-textarea" id="editor" placeholder="开始你的创作...
+
+写作小贴士：
+• 本章建议字数：3000-4000字
+• 打脸章节推荐结构：受辱→隐忍→反击→震惊→余波
+• 保持情绪递进，让读者爽到飞起"></textarea>
+            </div>
+            <div class="editor-footer">
+                <div class="stats">
+                    <div class="stat-item">
+                        <span>📝</span>
+                        <span>本章: <span class="stat-value" id="wordCountTotal">0</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <span>✍️</span>
+                        <span>新增: +<span class="stat-value new" id="wordCountNew">0</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <span>🎯</span>
+                        <span>目标: <span class="stat-value">0 / 4,000</span></span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Floating AI Button -->
+    <button class="floating-ai-btn" id="aiBtn" onclick="toggleAIPanel()">
+        💡
+        <span class="badge" id="aiBadge" style="display: none;">1</span>
+    </button>
+
+    <!-- AI Panel -->
+    <div class="ai-panel" id="aiPanel">
+        <div class="ai-panel-header">
+            <div class="ai-panel-title">
+                <span>🔍</span>
+                <span>本章诊断</span>
+            </div>
+            <button class="ai-panel-close" onclick="toggleAIPanel()">×</button>
+        </div>
+
+        <div class="ai-panel-tabs">
+            <button class="ai-tab active" onclick="switchAITab('diagnosis')">诊断分析</button>
+            <button class="ai-tab" onclick="switchAITab('templates')">结构模板</button>
+            <button class="ai-tab" onclick="switchAITab('tools')">快捷工具</button>
+        </div>
+
+        <div class="ai-panel-content">
+            <!-- Diagnosis Tab -->
+            <div class="ai-panel-section active" id="ai-diagnosis">
+                <!-- Structure Diagnosis -->
+                <div class="diagnosis-card">
+                    <div class="diagnosis-header">
+                        <div class="diagnosis-icon structure">📐</div>
+                        <div class="diagnosis-title">结构完整性</div>
+                        <div class="diagnosis-status warning">进行中</div>
+                    </div>
+                    <div class="diagnosis-content">
+                        检测到本章正在构建"打脸"结构。建议按照以下节奏推进：
+                    </div>
+                    <div class="structure-progress">
+                        <div class="structure-step completed" data-label="受辱"></div>
+                        <div class="structure-step current" data-label="隐忍"></div>
+                        <div class="structure-step" data-label="反击"></div>
+                        <div class="structure-step" data-label="震惊"></div>
+                        <div class="structure-step" data-label="余波"></div>
+                    </div>
+                </div>
+
+                <!-- Emotion Diagnosis -->
+                <div class="diagnosis-card">
+                    <div class="diagnosis-header">
+                        <div class="diagnosis-icon emotion">📈</div>
+                        <div class="diagnosis-title">情绪曲线</div>
+                        <div class="diagnosis-status warning">待提升</div>
+                    </div>
+                    <div class="diagnosis-content">
+                        当前情绪以压抑为主，建议在后续段落加入更强的情绪反差，形成爽点爆发。
+                    </div>
+                    <div class="emotion-chart">
+                        <svg class="emotion-curve" viewBox="0 0 300 60">
+                            <path d="M0,50 Q50,50 75,45 T150,40 T225,35 T300,30"
+                                  stroke="var(--accent-primary)"
+                                  stroke-width="2"
+                                  fill="none"/>
+                            <circle cx="75" cy="45" r="3" fill="var(--accent-primary)"/>
+                            <circle cx="150" cy="40" r="3" fill="var(--accent-primary)"/>
+                            <text x="150" y="15" text-anchor="middle" font-size="10" fill="var(--text-muted)">建议在此处设置爽点爆发</text>
+                        </svg>
+                    </div>
+                    <div class="emotion-labels">
+                        <span>压抑</span>
+                        <span>当前位置</span>
+                        <span>建议爆发点</span>
+                    </div>
+                </div>
+
+                <!-- Pacing Diagnosis -->
+                <div class="diagnosis-card">
+                    <div class="diagnosis-header">
+                        <div class="diagnosis-icon pacing">⚡</div>
+                        <div class="diagnosis-title">字数分布</div>
+                        <div class="diagnosis-status good">良好</div>
+                    </div>
+                    <div class="diagnosis-content">
+                        当前字数分布合理，开头铺垫充分。建议控制反击段落不超过800字，保持节奏紧凑。
+                    </div>
+                    <div class="word-dist">
+                        <div class="dist-bar">
+                            <div class="dist-segment begin" style="width: 35%">35%</div>
+                            <div class="dist-segment middle" style="width: 45%">45%</div>
+                            <div class="dist-segment end" style="width: 20%">20%</div>
+                        </div>
+                        <div class="dist-labels">
+                            <span>开头铺垫</span>
+                            <span>冲突升级</span>
+                            <span>收尾</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Templates Tab -->
+            <div class="ai-panel-section" id="ai-templates">
+                <div class="diagnosis-card">
+                    <div class="diagnosis-header">
+                        <div class="diagnosis-icon structure">📚</div>
+                        <div class="diagnosis-title">推荐结构模板</div>
+                    </div>
+                    <div class="diagnosis-content" style="margin-bottom: 12px;">
+                        基于本章类型，推荐以下结构模板。点击可查看详细框架：
+                    </div>
+                </div>
+
+                <div class="template-card" onclick="showTemplateDetail('face-slapping')">
+                    <div class="template-title">
+                        <span>🔥</span>
+                        经典打脸结构（5步法）
+                    </div>
+                    <div class="template-desc">
+                        适用于身份反转、实力碾压类场景，让读者爽到飞起的经典套路
+                    </div>
+                    <div class="template-structure">
+                        <span class="template-step">受辱</span>
+                        <span class="template-step">隐忍</span>
+                        <span class="template-step">反击</span>
+                        <span class="template-step">震惊</span>
+                        <span class="template-step">余波</span>
+                    </div>
+                </div>
+
+                <div class="template-card" onclick="showTemplateDetail('suspense')">
+                    <div class="template-title">
+                        <span>🎭</span>
+                        悬念揭晓结构
+                    </div>
+                    <div class="template-desc">
+                        适合伏笔回收、真相大白类场景，层层递进制造反转
+                    </div>
+                    <div class="template-structure">
+                        <span class="template-step">铺垫</span>
+                        <span class="template-step">暗示</span>
+                        <span class="template-step">揭晓</span>
+                        <span class="template-step">影响</span>
+                    </div>
+                </div>
+
+                <div class="template-card" onclick="showTemplateDetail('emotional')">
+                    <div class="template-title">
+                        <span>💔</span>
+                        情感爆发结构
+                    </div>
+                    <div class="template-desc">
+                        适合情感线高潮，让读者共情落泪的情感释放节奏
+                    </div>
+                    <div class="template-structure">
+                        <span class="template-step">压抑</span>
+                        <span class="template-step">触动</span>
+                        <span class="template-step">释放</span>
+                        <span class="template-step">余韵</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tools Tab -->
+            <div class="ai-panel-section" id="ai-tools">
+                <div class="quick-actions-compact">
+                    <button class="quick-action-btn" onclick="insertText('【】')">
+                        <span class="icon">「」</span>
+                        <span>对话</span>
+                    </button>
+                    <button class="quick-action-btn" onclick="insertText('（）')">
+                        <span class="icon">()</span>
+                        <span>心理</span>
+                    </button>
+                    <button class="quick-action-btn" onclick="generateName('char')">
+                        <span class="icon">👤</span>
+                        <span>人名</span>
+                    </button>
+                    <button class="quick-action-btn" onclick="generateName('place')">
+                        <span class="icon">📍</span>
+                        <span>地名</span>
+                    </button>
+                </div>
+
+                <div class="diagnosis-card" style="margin-top: 16px;">
+                    <div class="diagnosis-header">
+                        <div class="diagnosis-icon structure">📝</div>
+                        <div class="diagnosis-title">快捷插入</div>
+                    </div>
+                    <div class="diagnosis-content">
+                        常用描写素材库（开发中）
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Writer's Block Modal -->
+    <div class="modal-overlay" id="blockModal">
+        <div class="modal">
+            <div class="modal-title">🤔 检测到卡文</div>
+            <div class="modal-content">
+                你已经5分钟没有输入了，需要一些帮助吗？
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="dismissBlock()">继续思考</button>
+                <button class="modal-btn primary" onclick="openBlockHelp()">查看建议</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Detail Modal -->
+    <div class="modal-overlay" id="templateModal">
+        <div class="modal" style="min-width: 500px;">
+            <div class="modal-title" id="templateModalTitle">结构模板详情</div>
+            <div class="template-detail-content" id="templateModalContent">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeTemplateModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unsaved Changes Modal -->
+    <div class="modal-overlay" id="unsavedModal">
+        <div class="modal">
+            <div class="modal-title">⚠️ 有未保存的修改</div>
+            <div class="modal-content">
+                当前章节有未保存的内容，切换前是否保存？
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="cancelSwitch()">取消</button>
+                <button class="modal-btn secondary" onclick="discardAndSwitch()">放弃修改</button>
+                <button class="modal-btn primary" onclick="saveAndSwitch()">保存并切换</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // State
+        let currentChapter = 15;
+        let isDirty = false;
+        let originalContent = '';
+        let pendingChapter = null;
+        let wordCountAtOpen = 0;
+        let lastInputTime = Date.now();
+        let blockCheckInterval;
+        let isBlockModalShown = false;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const editor = document.getElementById('editor');
+            originalContent = editor.value;
+            wordCountAtOpen = countWords(editor.value);
+
+            // Start block detection
+            startBlockDetection();
+
+            // Auto-save every 30 seconds
+            setInterval(() => {
+                if (isDirty) {
+                    console.log('Auto-saved at', new Date().toLocaleTimeString());
+                    showToast('已自动保存');
+                }
+            }, 30000);
+        });
+
+        // Block Detection
+        function startBlockDetection() {
+            blockCheckInterval = setInterval(() => {
+                if (isBlockModalShown) return;
+
+                const idleTime = Date.now() - lastInputTime;
+                const content = document.getElementById('editor').value;
+
+                // Trigger after 5 minutes of idle and has content
+                if (idleTime > 5 * 60 * 1000 && content.length > 100) {
+                    showBlockModal();
+                }
+            }, 10000); // Check every 10 seconds
+        }
+
+        function showBlockModal() {
+            isBlockModalShown = true;
+            document.getElementById('blockModal').classList.add('active');
+        }
+
+        function dismissBlock() {
+            document.getElementById('blockModal').classList.remove('active');
+            lastInputTime = Date.now(); // Reset timer
+            isBlockModalShown = false;
+        }
+
+        function openBlockHelp() {
+            dismissBlock();
+            toggleAIPanel();
+            switchAITab('templates');
+            showToast('已为你推荐结构模板');
+        }
+
+        // Word Count
+        function countWords(text) {
+            const cnCount = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
+            const enCount = (text.match(/[a-zA-Z]+/g) || []).length;
+            return cnCount + enCount;
+        }
+
+        const editor = document.getElementById('editor');
+        const wordCountTotalEl = document.getElementById('wordCountTotal');
+        const wordCountNewEl = document.getElementById('wordCountNew');
+
+        editor.addEventListener('input', function() {
+            const text = this.value;
+            const total = countWords(text);
+            const newWords = Math.max(0, total - wordCountAtOpen);
+
+            wordCountTotalEl.textContent = total.toLocaleString();
+            wordCountNewEl.textContent = newWords.toLocaleString();
+
+            // Update last input time
+            lastInputTime = Date.now();
+
+            // Mark as dirty
+            if (text !== originalContent) {
+                if (!isDirty) {
+                    isDirty = true;
+                    document.querySelector('.chapter-item.active').classList.add('dirty');
+                }
+            } else {
+                isDirty = false;
+                document.querySelector('.chapter-item.active').classList.remove('dirty');
+            }
+
+            // Simulate AI suggestion availability
+            if (total > 500 && newWords > 200) {
+                document.getElementById('aiBtn').classList.add('has-suggestion');
+                document.getElementById('aiBadge').style.display = 'flex';
+            }
+        });
+
+        // AI Panel
+        function toggleAIPanel() {
+            const panel = document.getElementById('aiPanel');
+            panel.classList.toggle('active');
+        }
+
+        function switchAITab(tab) {
+            document.querySelectorAll('.ai-tab').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.ai-panel-section').forEach(el => el.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(`ai-${tab}`).classList.add('active');
+        }
+
+        // Template Detail
+        const templates = {
+            'face-slapping': {
+                title: '🔥 经典打脸结构（5步法）',
+                steps: [
+                    { title: '受辱', desc: '主角被反派羞辱/贬低，建立冲突。让读者产生共情和愤怒。建议500-800字。' },
+                    { title: '隐忍', desc: '主角表面退让，实则暗中准备。埋下反击的伏笔，增加期待感。建议300-500字。' },
+                    { title: '反击', desc: '主角亮出底牌，一击致命。高潮部分，要写得爽快直接。建议600-1000字。' },
+                    { title: '震惊', desc: '反派和围观者的反应。通过他人视角衬托主角的强大。建议400-600字。' },
+                    { title: '余波', desc: '事件的影响和后续发展。为下一章铺垫，保持连续性。建议300-500字。' }
+                ]
+            },
+            'suspense': {
+                title: '🎭 悬念揭晓结构',
+                steps: [
+                    { title: '铺垫', desc: '回顾之前的伏笔和线索，让读者想起悬念的存在。' },
+                    { title: '暗示', desc: '通过细节暗示真相即将揭晓，增加紧张感。' },
+                    { title: '揭晓', desc: '真相大白的关键时刻，要有冲击力。' },
+                    { title: '影响', desc: '真相揭露后的连锁反应，人物关系的变化。' }
+                ]
+            },
+            'emotional': {
+                title: '💔 情感爆发结构',
+                steps: [
+                    { title: '压抑', desc: '情感的积累阶段，让读者感受到角色的痛苦。' },
+                    { title: '触动', desc: '触发情感爆发的关键事件或话语。' },
+                    { title: '释放', desc: '情感宣泄的高潮，可以是哭泣、怒吼或表白。' },
+                    { title: '余韵', desc: '爆发后的平静，情感的沉淀和关系的转变。' }
+                ]
+            }
+        };
+
+        function showTemplateDetail(templateId) {
+            const template = templates[templateId];
+            if (!template) return;
+
+            document.getElementById('templateModalTitle').textContent = template.title;
+
+            let stepsHtml = '<div class="template-structure-detail">';
+            template.steps.forEach((step, index) => {
+                stepsHtml += `
+                    <div class="template-step-detail">
+                        <div class="template-step-num">${index + 1}</div>
+                        <div class="template-step-content">
+                            <div class="template-step-title">${step.title}</div>
+                            <div class="template-step-desc">${step.desc}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            stepsHtml += '</div>';
+
+            document.getElementById('templateModalContent').innerHTML = stepsHtml;
+            document.getElementById('templateModal').classList.add('active');
+        }
+
+        function closeTemplateModal() {
+            document.getElementById('templateModal').classList.remove('active');
+        }
+
+        // Insert Text
+        function insertText(text) {
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            const value = editor.value;
+
+            editor.value = value.substring(0, start) + text + value.substring(end);
+            editor.focus();
+
+            const newPos = start + (text.includes('【') || text.includes('（') ? 1 : Math.floor(text.length / 2));
+            editor.setSelectionRange(newPos, newPos);
+
+            editor.dispatchEvent(new Event('input'));
+        }
+
+        // Generate Name
+        function generateName(type) {
+            const names = {
+                char: ['林尘', '苏清雪', '萧战', '叶凡', '秦羽', '韩立'],
+                place: ['苍玄大陆', '天元城', '青云宗', '万妖山脉']
+            };
+
+            const list = names[type] || names.char;
+            const name = list[Math.floor(Math.random() * list.length)];
+
+            insertText(name);
+            showToast(`已生成：${name}`);
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+        }
+
+        // Volume Toggle
+        function toggleVolume(header) {
+            const toggle = header.querySelector('.volume-toggle');
+            const list = header.nextElementSibling;
+
+            if (list.style.display === 'none') {
+                list.style.display = 'block';
+                toggle.classList.remove('collapsed');
+            } else {
+                list.style.display = 'none';
+                toggle.classList.add('collapsed');
+            }
+        }
+
+        // Chapter Switch
+        function switchChapter(chapterId) {
+            if (isDirty && chapterId !== currentChapter) {
+                pendingChapter = chapterId;
+                document.getElementById('unsavedModal').classList.add('active');
+                return;
+            }
+
+            doSwitchChapter(chapterId);
+        }
+
+        function doSwitchChapter(chapterId) {
+            document.querySelector('.chapter-item.active').classList.remove('active');
+            const newChapterEl = document.querySelector(`.chapter-item[data-chapter="${chapterId}"]`);
+            newChapterEl.classList.add('active');
+
+            currentChapter = chapterId;
+            isDirty = false;
+
+            const titles = {
+                1: '第1章 龙王归来',
+                2: '第2章 离婚协议',
+                3: '第3章 身份暴露',
+                14: '第14章 宴会邀请',
+                15: '第15章 打脸丈母娘',
+                16: '第16章 宴会风波'
+            };
+
+            document.getElementById('chapterTitle').value = titles[chapterId] || `第${chapterId}章`;
+            document.getElementById('headerChapterName').textContent = titles[chapterId] || `第${chapterId}章`;
+
+            wordCountAtOpen = countWords(editor.value);
+            wordCountNewEl.textContent = '0';
+
+            showToast(`已切换到${titles[chapterId]}`);
+        }
+
+        function cancelSwitch() {
+            document.getElementById('unsavedModal').classList.remove('active');
+            pendingChapter = null;
+        }
+
+        function discardAndSwitch() {
+            document.getElementById('unsavedModal').classList.remove('active');
+            document.querySelector('.chapter-item.active').classList.remove('dirty');
+            isDirty = false;
+            if (pendingChapter) {
+                doSwitchChapter(pendingChapter);
+                pendingChapter = null;
+            }
+        }
+
+        function saveAndSwitch() {
+            saveContent();
+            document.getElementById('unsavedModal').classList.remove('active');
+            if (pendingChapter) {
+                doSwitchChapter(pendingChapter);
+                pendingChapter = null;
+            }
+        }
+
+        // Save & Publish
+        function saveContent() {
+            originalContent = editor.value;
+            isDirty = false;
+            document.querySelector('.chapter-item.active').classList.remove('dirty');
+            showToast('保存成功');
+        }
+
+        function saveDraft() {
+            saveContent();
+        }
+
+        function publishChapter() {
+            saveContent();
+            showToast('章节已发布，进入审核流程');
+        }
+
+        // Focus Mode
+        function toggleFocusMode() {
+            const container = document.getElementById('mainContainer');
+            container.classList.toggle('focus-mode');
+
+            if (container.classList.contains('focus-mode')) {
+                showToast('已进入专注模式，按 Esc 退出');
+                editor.focus();
+            }
+        }
+
+        // Go Back
+        function goBack() {
+            if (isDirty) {
+                pendingChapter = 'back';
+                document.getElementById('unsavedModal').classList.add('active');
+                return;
+            }
+            showToast('返回作品列表');
+        }
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('active');
+
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveContent();
+            }
+
+            if (e.key === 'Escape') {
+                const container = document.getElementById('mainContainer');
+                if (container.classList.contains('focus-mode')) {
+                    container.classList.remove('focus-mode');
+                } else {
+                    document.getElementById('aiPanel').classList.remove('active');
+                    document.getElementById('unsavedModal').classList.remove('active');
+                    document.getElementById('blockModal').classList.remove('active');
+                    document.getElementById('templateModal').classList.remove('active');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
