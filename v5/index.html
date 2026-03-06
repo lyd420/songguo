@@ -386,7 +386,6 @@
                             <span id="saveStatus">已保存</span>
                         </div>
                         <div class="footer-actions">
-                            <button class="footer-btn" onclick="toggleAIPanel()">🤖 AI助手</button>
                             <button class="footer-btn" onclick="openGoalEditor()">📅 日更目标</button>
                         </div>
                     </div>
@@ -400,6 +399,24 @@
                     <div id="marksList" class="marks-list">
                         <!-- 标记列表由JS渲染 -->
                     </div>
+                    <!-- AI 助手面板 -->
+                    <div class="ai-assistant-section">
+                        <div class="ai-assistant-header">
+                            <span class="ai-assistant-title">🤖 AI 助手</span>
+                        </div>
+                        <div class="ai-assistant-tabs">
+                            <button class="ai-assistant-tab active" data-tab="outline" onclick="switchAITab('outline')">大纲</button>
+                            <button class="ai-assistant-tab" data-tab="plot" onclick="switchAITab('plot')">剧情</button>
+                            <button class="ai-assistant-tab" data-tab="polish" onclick="switchAITab('polish')">润色</button>
+                        </div>
+                        <div class="ai-assistant-content">
+                            <div id="aiContent">
+                                <div class="ai-assistant-placeholder">
+                                    <span>选择功能开始使用AI助手</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </aside>
             </div>
 
@@ -411,28 +428,6 @@
                 </div>
                 <div id="characterDetailContent" class="panel-content">
                     <!-- 人物详情由JS渲染 -->
-                </div>
-            </div>
-
-            <!-- AI 助手面板 -->
-            <div id="aiPanel" class="ai-panel">
-                <div class="ai-panel-header">
-                    <span class="ai-panel-title">🤖 AI 助手</span>
-                    <button class="ai-panel-close" onclick="toggleAIPanel()">×</button>
-                </div>
-                <div class="ai-panel-tabs">
-                    <button class="ai-tab active" data-tab="outline" onclick="switchAITab('outline')">大纲</button>
-                    <button class="ai-tab" data-tab="plot" onclick="switchAITab('plot')">剧情</button>
-                    <button class="ai-tab" data-tab="polish" onclick="switchAITab('polish')">润色</button>
-                    <button class="ai-tab" data-tab="expand" onclick="switchAITab('expand')">扩写</button>
-                </div>
-                <div class="ai-panel-content">
-                    <div id="aiContent" class="ai-content">
-                        <div class="ai-placeholder">
-                            <div class="ai-placeholder-icon">🤖</div>
-                            <div class="ai-placeholder-text">选择功能开始使用AI助手</div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
