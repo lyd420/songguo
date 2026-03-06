@@ -2,14 +2,21 @@
    编辑器样式
    ============================================ */
 
+/* 编辑器页面容器 */
+#editor-page {
+    position: relative;
+    height: calc(100vh - var(--header-height) - 48px);
+}
+
 /* 编辑器布局 */
 .editor-layout {
     display: flex;
-    height: calc(100vh - var(--header-height) - 48px);
+    height: 100%;
     background: var(--bg-card);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-card);
     overflow: hidden;
+    position: relative;
 }
 
 /* 编辑器侧边栏 */
@@ -476,6 +483,7 @@
     background: var(--bg-card);
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
 }
 
 .marks-header {

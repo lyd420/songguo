@@ -413,6 +413,28 @@
                     <!-- 人物详情由JS渲染 -->
                 </div>
             </div>
+
+            <!-- AI 助手面板 -->
+            <div id="aiPanel" class="ai-panel">
+                <div class="ai-panel-header">
+                    <span class="ai-panel-title">🤖 AI 助手</span>
+                    <button class="ai-panel-close" onclick="toggleAIPanel()">×</button>
+                </div>
+                <div class="ai-panel-tabs">
+                    <button class="ai-tab active" data-tab="outline" onclick="switchAITab('outline')">大纲</button>
+                    <button class="ai-tab" data-tab="plot" onclick="switchAITab('plot')">剧情</button>
+                    <button class="ai-tab" data-tab="polish" onclick="switchAITab('polish')">润色</button>
+                    <button class="ai-tab" data-tab="expand" onclick="switchAITab('expand')">扩写</button>
+                </div>
+                <div class="ai-panel-content">
+                    <div id="aiContent" class="ai-content">
+                        <div class="ai-placeholder">
+                            <div class="ai-placeholder-icon">🤖</div>
+                            <div class="ai-placeholder-text">选择功能开始使用AI助手</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -627,28 +649,6 @@
         <div class="mark-actions">
             <button class="mark-btn-secondary" onclick="hideMarkPopup()">取消</button>
             <button class="mark-btn-primary" onclick="saveMark()">保存</button>
-        </div>
-    </div>
-
-    <!-- AI 助手面板 -->
-    <div id="aiPanel" class="ai-panel">
-        <div class="ai-panel-header">
-            <span class="ai-panel-title">🤖 AI 助手</span>
-            <button class="ai-panel-close" onclick="toggleAIPanel()">×</button>
-        </div>
-        <div class="ai-panel-tabs">
-            <button class="ai-tab active" data-tab="outline" onclick="switchAITab('outline')">大纲</button>
-            <button class="ai-tab" data-tab="plot" onclick="switchAITab('plot')">剧情</button>
-            <button class="ai-tab" data-tab="polish" onclick="switchAITab('polish')">润色</button>
-            <button class="ai-tab" data-tab="expand" onclick="switchAITab('expand')">扩写</button>
-        </div>
-        <div class="ai-panel-content">
-            <div id="aiContent" class="ai-content">
-                <div class="ai-placeholder">
-                    <div class="ai-placeholder-icon">🤖</div>
-                    <div class="ai-placeholder-text">选择功能开始使用AI助手</div>
-                </div>
-            </div>
         </div>
     </div>
 
