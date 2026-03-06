@@ -1,0 +1,192 @@
+/* ============================================
+   网文写作助手 v4 - 基础样式
+   包含：CSS变量、重置样式、基础工具类
+   ============================================ */
+
+/* CSS 变量定义 */
+:root {
+    /* 主题色 - 莫兰迪色系 */
+    --accent-primary: #9A8B7A;
+    --accent-secondary: #B8A99A;
+    --accent-success: #8B9A7C;
+    --accent-warning: #C9A86C;
+    --accent-danger: #B88A8A;
+
+    /* 背景色 */
+    --bg-primary: #F7F5F3;
+    --bg-secondary: #EFEDE9;
+    --bg-tertiary: #E8E4E0;
+    --bg-card: #FDFCFA;
+
+    /* 文字色 */
+    --text-primary: #3D3A38;
+    --text-secondary: #6B6866;
+    --text-muted: #9A9795;
+
+    /* 边框和阴影 */
+    --border: #D8D4D0;
+    --border-light: #E8E4E0;
+    --shadow: rgba(61, 58, 56, 0.08);
+    --shadow-lg: rgba(61, 58, 56, 0.12);
+
+    /* 编辑器 */
+    --editor-bg: #FDFCFA;
+    --editor-line-height: 1.8;
+    --editor-font-size: 16px;
+
+    /* 尺寸 */
+    --sidebar-width: 280px;
+    --header-height: 48px;
+    --panel-width: 320px;
+
+    /* 过渡 */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.2s ease;
+    --transition-slow: 0.3s ease;
+}
+
+/* 深色主题 */
+[data-theme="dark"] {
+    --bg-primary: #2D2A28;
+    --bg-secondary: #363330;
+    --bg-tertiary: #3F3C38;
+    --bg-card: #3D3A38;
+
+    --text-primary: #E8E4E0;
+    --text-secondary: #B8B4B0;
+    --text-muted: #8A8684;
+
+    --border: #4A4744;
+    --border-light: #3D3A38;
+    --shadow: rgba(0, 0, 0, 0.2);
+    --shadow-lg: rgba(0, 0, 0, 0.3);
+
+    --editor-bg: #363330;
+}
+
+/* 重置样式 */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* 基础工具类 */
+.hidden { display: none !important; }
+.invisible { visibility: hidden; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-4 { gap: 4px; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.gap-16 { gap: 16px; }
+
+.text-sm { font-size: 12px; }
+.text-base { font-size: 14px; }
+.text-lg { font-size: 16px; }
+.text-xl { font-size: 20px; }
+
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 动画 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInUp {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.animate-fadeIn { animation: fadeIn 0.3s ease; }
+.animate-slideInRight { animation: slideInRight 0.3s ease; }
+.animate-slideInUp { animation: slideInUp 0.3s ease; }
+.animate-pulse { animation: pulse 2s infinite; }
+
+/* Toast 通知 */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.toast {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    padding: 10px 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px var(--shadow-lg);
+    font-size: 13px;
+    animation: slideInUp 0.3s ease;
+    border: 1px solid var(--border);
+    pointer-events: auto;
+}
+
+.toast.success { border-left: 3px solid var(--accent-success); }
+.toast.warning { border-left: 3px solid var(--accent-warning); }
+.toast.error { border-left: 3px solid var(--accent-danger); }

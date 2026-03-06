@@ -207,6 +207,7 @@
         }
 
         .main-container.focus-mode .sidebar-left,
+        .main-container.focus-mode .marks-panel,
         .main-container.focus-mode .floating-ai-btn,
         .main-container.focus-mode .ai-panel,
         .main-container.focus-mode .header {
@@ -225,7 +226,8 @@
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: visible;
+            position: relative;
         }
 
         .sidebar-section {
@@ -346,6 +348,54 @@
             display: block;
         }
 
+        /* Volume count text */
+        .volume-count {
+            margin-left: auto;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* Add chapter button */
+        .add-chapter-btn {
+            width: 20px;
+            height: 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            line-height: 1;
+            margin-left: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-chapter-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent-primary);
+        }
+
+        /* Add volume button */
+        .add-volume-btn {
+            padding: 8px 12px;
+            border: 1px dashed var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 12px;
+            width: 100%;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+
+        .add-volume-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
         /* Center Editor */
         .editor-container {
             flex: 1;
@@ -395,9 +445,9 @@
         }
 
         .editor-document {
-            max-width: 720px;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 0 48px 100px;
+            padding: 0 40px 100px;
             position: relative;
             min-height: calc(100vh - 200px);
             background: var(--bg-card);
@@ -416,22 +466,17 @@
             outline: none;
             resize: none;
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-            padding: 0;
+            padding: 24px 0 0 0;
         }
 
         .editor-footer {
-            padding: 12px 96px;
+            padding: 12px 24px;
             background: var(--bg-secondary);
             border-top: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            max-width: 900px;
-            margin: 0 auto;
             width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
 
         .stats {
@@ -464,137 +509,134 @@
         /* Line Marks - Simple & Reliable */
         .editor-wrapper {
             position: relative;
-            max-width: 720px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
-        /* Floating mark button that follows cursor line */
-        .line-mark-btn {
-            position: fixed;
-            width: 28px;
-            height: 28px;
+        /* Line Numbers */
+        .editor-document {
+            display: flex;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 40px 100px;
+            position: relative;
+            min-height: calc(100vh - 200px);
             background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 4px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .line-numbers {
+            width: 36px;
+            padding: 24px 8px 0 0;
+            overflow: hidden;
+            user-select: none;
+            text-align: right;
+            font-family: "SF Mono", Monaco, monospace;
+            font-size: 16px;
+            line-height: 1.8;
+            flex-shrink: 0;
+            color: var(--text-muted);
+        }
+
+        .line-number {
+            height: 28.8px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-end;
             cursor: pointer;
-            font-size: 14px;
-            box-shadow: 0 2px 8px var(--shadow);
-            pointer-events: auto;
-            transition: opacity 0.15s ease, transform 0.15s ease;
-            opacity: 1;
-            z-index: 1000;
-            /* Default position - will be updated by JS */
-            top: 100px;
-            left: 100px;
+            transition: all 0.15s;
+            position: relative;
         }
 
-        .line-mark-btn.show {
-            opacity: 1;
+        .line-number:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
         }
 
-        .line-mark-btn:hover {
-            background: var(--accent-primary);
-            border-color: var(--accent-primary);
-            color: white;
-            transform: scale(1.1);
-        }
-
-        .line-mark-btn.has-mark {
-            opacity: 1;
-            border-width: 2px;
-        }
-
-        .line-mark-btn.mark-todo { border-color: #D4A574; color: #D4A574; }
-        .line-mark-btn.mark-question { border-color: #7A9CC6; color: #7A9CC6; }
-        .line-mark-btn.mark-idea { border-color: #9CAF94; color: #9CAF94; }
-        .line-mark-btn.mark-issue { border-color: #D4A5A5; color: #D4A5A5; }
-
-        /* Line Mark Thread (like Feishu comment) */
-        .mark-thread {
+        .line-number.has-mark::before {
+            content: '';
             position: absolute;
-            right: 60px;
-            width: 280px;
+            left: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .line-number.has-mark.todo::before { background: #D4A574; }
+        .line-number.has-mark.question::before { background: #7A9CC6; }
+        .line-number.has-mark.idea::before { background: #9CAF94; }
+        .line-number.has-mark.issue::before { background: #D4A5A5; }
+
+        /* Mark Popup (simplified) */
+        .mark-popup {
+            position: absolute;
+            width: 240px;
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            box-shadow: 0 4px 20px var(--shadow-lg);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px var(--shadow-lg);
             z-index: 100;
             overflow: hidden;
-            animation: slideIn 0.2s ease;
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .mark-thread-header {
+        .mark-popup-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 16px;
+            padding: 10px 12px;
             background: var(--bg-tertiary);
             border-bottom: 1px solid var(--border);
-        }
-
-        .mark-thread-title {
             font-size: 13px;
-            font-weight: 600;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-weight: 500;
         }
 
-        .mark-thread-close {
+        .mark-popup-close {
             background: none;
             border: none;
             color: var(--text-muted);
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
             padding: 0;
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 4px;
         }
 
-        .mark-thread-close:hover {
+        .mark-popup-close:hover {
             background: var(--bg-secondary);
             color: var(--text-primary);
         }
 
-        .mark-thread-types {
+        .mark-popup-types {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border);
+            padding: 12px;
         }
 
         .mark-type-btn {
-            flex: 1;
+            flex: 1 1 40%;
             padding: 8px;
             border: 1px solid var(--border);
             background: var(--bg-primary);
             border-radius: 6px;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-secondary);
             transition: all 0.2s;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 8px;
         }
 
         .mark-type-btn:hover {
             border-color: var(--accent-primary);
-            color: var(--accent-primary);
         }
 
         .mark-type-btn.selected {
@@ -607,59 +649,154 @@
         .mark-type-btn.selected.idea { border-color: #9CAF94; color: #9CAF94; background: rgba(156, 175, 148, 0.1); }
         .mark-type-btn.selected.issue { border-color: #D4A5A5; color: #D4A5A5; background: rgba(212, 165, 165, 0.1); }
 
-        .mark-thread-content {
-            padding: 12px 16px;
+        .mark-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
         }
 
-        .mark-thread-input {
+        .mark-popup-content {
+            padding: 0 12px 12px;
+        }
+
+        .mark-popup-input {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 13px;
+            border-radius: 6px;
+            font-size: 12px;
             background: var(--bg-primary);
             color: var(--text-primary);
             resize: vertical;
-            min-height: 80px;
+            min-height: 60px;
             font-family: inherit;
         }
 
-        .mark-thread-input:focus {
+        .mark-popup-input:focus {
             outline: none;
             border-color: var(--accent-primary);
         }
 
-        .mark-thread-actions {
+        .mark-popup-actions {
             display: flex;
             gap: 8px;
-            padding: 12px 16px;
+            padding: 12px;
             border-top: 1px solid var(--border);
             justify-content: flex-end;
         }
 
-        .mark-thread-btn {
-            padding: 8px 16px;
+        .mark-popup-btn {
+            padding: 6px 12px;
             border: none;
-            border-radius: 6px;
-            font-size: 13px;
+            border-radius: 4px;
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .mark-thread-btn.cancel {
+        .mark-popup-btn.cancel {
             background: var(--bg-tertiary);
             color: var(--text-secondary);
         }
 
-        .mark-thread-btn.save {
+        .mark-popup-btn.save {
             background: var(--accent-primary);
             color: white;
         }
 
-        .mark-thread-btn.delete {
+        .mark-popup-btn.delete {
             background: var(--accent-danger);
             color: white;
             margin-right: auto;
+        }
+
+        /* Right Side Marks Panel */
+        .marks-panel {
+            width: 220px;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .marks-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .marks-count {
+            background: var(--accent-primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        .marks-panel-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .marks-empty {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 24px 8px;
+        }
+
+        .marks-panel-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-bottom: 4px;
+        }
+
+        .marks-panel-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .marks-panel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+
+        .marks-panel-dot.todo { background: #D4A574; }
+        .marks-panel-dot.question { background: #7A9CC6; }
+        .marks-panel-dot.idea { background: #9CAF94; }
+        .marks-panel-dot.issue { background: #D4A5A5; }
+
+        .marks-panel-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .marks-panel-line {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .marks-panel-text {
+            font-size: 12px;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* Sidebar Marks List */
@@ -1437,10 +1574,80 @@
         }
 
         .modal-content {
-            font-size: 14px;
-            color: var(--text-secondary);
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px var(--shadow-lg);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
             margin-bottom: 20px;
-            line-height: 1.6;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn.primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .modal-btn:hover {
+            opacity: 0.9;
         }
 
         .modal-actions {
@@ -1493,6 +1700,46 @@
         .toast.active {
             opacity: 1;
             transform: translateX(-50%) translateY(-10px);
+        }
+
+        /* Form styles for modals */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .chapter-number-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chapter-number-input .form-input {
+            width: 80px;
+            text-align: center;
         }
 
         /* Template Detail Modal */
@@ -1606,85 +1853,222 @@
         </div>
     </header>
 
-    <!-- Main Container -->
-    <div class="main-container" id="mainContainer">
+    <!-- Workshop Container -->
+    <div class="workshop-container" id="workshopContainer">
+        <!-- 顶部导航 -->
+        <div class="workshop-header">
+            <div class="workshop-header-left">
+                <span class="workshop-logo">✍️</span>
+                <span class="workshop-title">写作工作台</span>
+            </div>
+            <div class="workshop-header-right">
+                <button class="btn-primary" onclick="showCreateBookModal()">
+                    <span>+</span> 新建作品
+                </button>
+            </div>
+        </div>
+        
+        <!-- 主体内容 - 垂直居中布局 -->
+        <div class="workshop-body">
+            <div class="workshop-content">
+                
+                <!-- 1. 数据展示模块 -->
+                <section class="workshop-section stats-section">
+                    <div class="section-header">
+                        <span class="section-icon">📊</span>
+                        <span class="section-title">创作数据</span>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="overviewTotalWords">0</div>
+                            <div class="stat-label">累计写作</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="overviewWeekWords">0</div>
+                            <div class="stat-label">本周写作</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="overviewTodayWords">0</div>
+                            <div class="stat-label">今日写作</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="overviewStreakDays">0天</div>
+                            <div class="stat-label">连续创作</div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 2. 作品模块 -->
+                <section class="workshop-section books-section">
+                    <div class="section-header">
+                        <span class="section-icon">📚</span>
+                        <span class="section-title">我的作品</span>
+                        <div class="workshop-filter">
+                            <button class="workshop-filter-btn active" data-filter="all" onclick="filterBooks('all')">全部</button>
+                            <button class="workshop-filter-btn" data-filter="ongoing" onclick="filterBooks('ongoing')">连载中</button>
+                            <button class="workshop-filter-btn" data-filter="completed" onclick="filterBooks('completed')">已完结</button>
+                            <button class="workshop-filter-btn" data-filter="draft" onclick="filterBooks('draft')">草稿</button>
+                        </div>
+                    </div>
+                    <div class="book-list" id="bookListContainer">
+                        <!-- 作品列表将在这里动态渲染 -->
+                    </div>
+                </section>
+                
+                <!-- 3. AI 服务模块 -->
+                <section class="workshop-section ai-section">
+                    <div class="section-header">
+                        <span class="section-icon">🤖</span>
+                        <span class="section-title">AI 服务</span>
+                    </div>
+                    <div class="ai-services">
+                        <div class="ai-service-card" onclick="showToast('AI 开书助手功能开发中...')">
+                            <div class="ai-service-icon">✨</div>
+                            <div class="ai-service-name">开书助手</div>
+                            <div class="ai-service-desc">智能生成书名、简介、大纲</div>
+                        </div>
+                        <div class="ai-service-card" onclick="showToast('AI 续写功能开发中...')">
+                            <div class="ai-service-icon">📝</div>
+                            <div class="ai-service-name">智能续写</div>
+                            <div class="ai-service-desc">卡文时帮你续写剧情</div>
+                        </div>
+                        <div class="ai-service-card" onclick="showToast('AI 润色功能开发中...')">
+                            <div class="ai-service-icon">💎</div>
+                            <div class="ai-service-name">文笔润色</div>
+                            <div class="ai-service-desc">优化表达，提升文采</div>
+                        </div>
+                        <div class="ai-service-card" onclick="showToast('AI 诊断功能开发中...')">
+                            <div class="ai-service-icon">🔍</div>
+                            <div class="ai-service-name">章节诊断</div>
+                            <div class="ai-service-desc">分析节奏、情绪、结构</div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 4. 活动和公告模块 -->
+                <section class="workshop-section notice-section">
+                    <div class="section-header">
+                        <span class="section-icon">📢</span>
+                        <span class="section-title">活动与公告</span>
+                    </div>
+                    <div class="notice-list">
+                        <div class="notice-item">
+                            <div class="notice-badge hot">HOT</div>
+                            <div class="notice-content">
+                                <div class="notice-title">新春创作大赛开启</div>
+                                <div class="notice-desc">参与即有机会赢取万元奖金，快来投稿吧！</div>
+                                <div class="notice-time">2026-01-15</div>
+                            </div>
+                        </div>
+                        <div class="notice-item">
+                            <div class="notice-badge new">NEW</div>
+                            <div class="notice-content">
+                                <div class="notice-title">AI 续写功能内测招募</div>
+                                <div class="notice-desc">成为首批体验用户，解锁智能创作新方式</div>
+                                <div class="notice-time">2026-03-01</div>
+                            </div>
+                        </div>
+                        <div class="notice-item">
+                            <div class="notice-badge">公告</div>
+                            <div class="notice-content">
+                                <div class="notice-title">系统维护通知</div>
+                                <div class="notice-desc">3月10日凌晨2-4点进行系统升级，请提前保存</div>
+                                <div class="notice-time">2026-03-05</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container (Editor) -->
+    <div class="main-container" id="mainContainer" style="display: none;">
         <!-- Left Sidebar -->
         <aside class="sidebar-left">
-            <div class="sidebar-section">
+            <!-- 章节导航 - 动态渲染 -->
+            <div class="sidebar-section" id="chapterTreeContainer">
                 <div class="sidebar-title">
                     <span>📚 章节导航</span>
-                    <button class="add-btn">+</button>
+                    <button class="add-btn" onclick="showAddVolumeModal()">+</button>
                 </div>
-
-                <div class="volume-item">
-                    <div class="volume-header" onclick="toggleVolume(this)">
-                        <span class="volume-toggle">▼</span>
-                        <span>第一卷：觉醒</span>
-                        <span style="margin-left: auto; font-size: 11px; color: var(--text-muted);">24章</span>
-                    </div>
-                    <div class="chapter-list">
-                        <div class="chapter-item" data-chapter="1" onclick="switchChapter(1)">
-                            第1章 龙王归来
-                            <span class="dirty-dot"></span>
-                        </div>
-                        <div class="chapter-item" data-chapter="2" onclick="switchChapter(2)">
-                            第2章 离婚协议
-                            <span class="dirty-dot"></span>
-                        </div>
-                        <div class="chapter-item" data-chapter="3" onclick="switchChapter(3)">
-                            第3章 身份暴露
-                            <span class="dirty-dot"></span>
-                        </div>
-                        <div class="chapter-item" data-chapter="14" onclick="switchChapter(14)">
-                            第14章 宴会邀请
-                            <span class="dirty-dot"></span>
-                        </div>
-                        <div class="chapter-item active dirty" data-chapter="15" onclick="switchChapter(15)">
-                            第15章 打脸丈母娘
-                            <span class="dirty-dot"></span>
-                        </div>
-                        <div class="chapter-item" data-chapter="16" onclick="switchChapter(16)">
-                            第16章 宴会风波
-                            <span class="dirty-dot"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="volume-item">
-                    <div class="volume-header" onclick="toggleVolume(this)">
-                        <span class="volume-toggle collapsed">▼</span>
-                        <span>第二卷：崛起</span>
-                        <span style="margin-left: auto; font-size: 11px; color: var(--text-muted);">规划中</span>
-                    </div>
-                    <div class="chapter-list" style="display: none;">
-                        <div class="chapter-item" style="opacity: 0.5;">
-                            第25章 待添加
-                            <span class="dirty-dot"></span>
-                        </div>
-                    </div>
-                </div>
+                <!-- 卷和章节将在这里动态渲染 -->
+                <button class="add-volume-btn" onclick="showAddVolumeModal()">+ 新增卷</button>
             </div>
 
-            <div class="sidebar-section">
-                <div class="sidebar-title">
-                    <span>📝 行标记</span>
-                    <span style="font-size: 11px; color: var(--text-muted);" id="marksCount">0</span>
-                </div>
-                <div class="marks-list" id="marksList">
-                    <div style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 16px 0;">
-                        鼠标悬停行尾，点击 + 添加标记
-                    </div>
-                </div>
-            </div>
-
-            <div class="sidebar-section">
-                <div class="sidebar-title">
+            <!-- 人物卡区域 -->
+            <div class="sidebar-section character-section">
+                <div class="sidebar-title character-title">
                     <span>🏷️ 人物卡</span>
+                    <span class="character-badge" id="newCharacterBadge" style="display: none;">0</span>
+                    <button class="add-character-btn" onclick="showAddCharacterModal()" title="添加人物">+</button>
                 </div>
-                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-                    <span style="background: var(--highlight); color: var(--accent-primary); padding: 4px 10px; border-radius: 12px; font-size: 11px; cursor: pointer;">林尘</span>
-                    <span style="background: var(--bg-tertiary); color: var(--text-secondary); padding: 4px 10px; border-radius: 12px; font-size: 11px; cursor: pointer;">苏清雪</span>
-                    <span style="background: var(--bg-tertiary); color: var(--text-secondary); padding: 4px 10px; border-radius: 12px; font-size: 11px; cursor: pointer;">王美凤</span>
+                <div class="character-list" id="characterList">
+                    <!-- 人物列表将在这里动态渲染 -->
+                </div>
+                
+                <!-- 新人物提示 -->
+                <div class="new-characters-hint" id="newCharactersHint" style="display: none;">
+                    <div class="hint-title">🤖 检测到新人物</div>
+                    <div class="hint-list" id="newCharactersList">
+                        <!-- 新人物提示将在这里渲染 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 人物详情滑出面板 -->
+            <div class="character-detail-panel" id="characterDetailPanel">
+                <div class="panel-header">
+                    <button class="panel-edit-btn" onclick="editCurrentCharacter()" title="编辑人物">✏️</button>
+                    <button class="panel-close" onclick="closeCharacterPanel()">×</button>
+                </div>
+                <div class="panel-content">
+                    <div class="char-basic-info">
+                        <h3 class="char-name" id="charPanelName">人物名</h3>
+                        <span class="char-role" id="charPanelRole">角色</span>
+                        <button class="insert-name-btn" onclick="insertCharacterName(document.getElementById('charPanelName').textContent)">
+                            插入到正文
+                        </button>
+                    </div>
+                    
+                    <div class="char-details">
+                        <div class="char-field">
+                            <span class="field-label">性别</span>
+                            <span class="field-value" id="charGender"></span>
+                        </div>
+                        <div class="char-field">
+                            <span class="field-label">年龄</span>
+                            <span class="field-value" id="charAge"></span>
+                        </div>
+                        <div class="char-field">
+                            <span class="field-label">外貌</span>
+                            <span class="field-value" id="charAppearance"></span>
+                        </div>
+                        <div class="char-field">
+                            <span class="field-label">性格</span>
+                            <span class="field-value" id="charPersonality"></span>
+                        </div>
+                        <div class="char-field">
+                            <span class="field-label">背景</span>
+                            <span class="field-value" id="charBackground"></span>
+                        </div>
+                        <div class="char-field">
+                            <span class="field-label">经典台词</span>
+                            <span class="field-value" id="charQuotes"></span>
+                        </div>
+                        <div class="char-field">
+                            <span class="field-label">备注</span>
+                            <span class="field-value" id="charNotes"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="char-relationships">
+                        <div class="relationship-title">关系图谱</div>
+                        <div class="relationship-graph" id="charRelationshipGraph">
+                            <!-- 关系图谱将在这里渲染 -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -1699,60 +2083,52 @@
             </div>
             <div class="editor-content" id="editorContent">
                 <div class="editor-wrapper">
-                    <!-- Floating line mark button -->
-                    <button class="line-mark-btn" id="lineMarkBtn" onclick="handleMarkClick()">+</button>
-
                     <div class="editor-document">
+                        <!-- Line Numbers -->
+                        <div class="line-numbers" id="lineNumbers"></div>
                         <textarea class="editor-textarea" id="editor" placeholder="开始你的创作...
 
 写作小贴士：
 • 本章建议字数：3000-4000字
 • 打脸章节推荐结构：受辱→隐忍→反击→震惊→余波
-• 保持情绪递进，让读者爽到飞起
-
-💡 小技巧：
-• 鼠标悬停到任意行，左侧会出现 + 按钮，点击添加标记
-• 快捷键 Ctrl+Shift+1/2/3/4 快速标记当前行"></textarea>
+• 保持情绪递进，让读者爽到飞起"></textarea>
                     </div>
 
-                    <!-- Mark Thread Panel (like Feishu comment) -->
-                    <div class="mark-thread" id="markThread" style="display: none;">
-                        <div class="mark-thread-header">
-                            <div class="mark-thread-title">
-                                <span id="threadIcon">📝</span>
-                                <span>第 <span id="threadLineNumber">0</span> 行</span>
-                            </div>
-                            <button class="mark-thread-close" onclick="hideMarkThread()">×</button>
-                        </div>
-                        <div class="mark-thread-types">
-                            <button class="mark-type-btn todo" data-type="todo" onclick="selectMarkType('todo')">
-                                <span>📝</span>
-                                <span>待修改</span>
-                            </button>
-                            <button class="mark-type-btn question" data-type="question" onclick="selectMarkType('question')">
-                                <span>❓</span>
-                                <span>疑问</span>
-                            </button>
-                            <button class="mark-type-btn idea" data-type="idea" onclick="selectMarkType('idea')">
-                                <span>💡</span>
-                                <span>灵感</span>
-                            </button>
-                            <button class="mark-type-btn issue" data-type="issue" onclick="selectMarkType('issue')">
-                                <span>⚠️</span>
-                                <span>问题</span>
-                            </button>
-                        </div>
-                        <div class="mark-thread-content">
-                            <textarea class="mark-thread-input" id="threadComment" placeholder="添加详细说明..."></textarea>
-                        </div>
-                        <div class="mark-thread-actions">
-                            <button class="mark-thread-btn delete" id="threadDeleteBtn" onclick="deleteMark()" style="display: none;">删除</button>
-                            <button class="mark-thread-btn cancel" onclick="hideMarkThread()">取消</button>
-                            <button class="mark-thread-btn save" onclick="saveMark()">保存</button>
-                        </div>
+                    <!-- Mark Popup (simplified) -->
+                    <div class="mark-popup" id="markPopup" style="display: none;">
+                    <div class="mark-popup-header">
+                        <span>标记第 <span id="popupLineNumber">0</span> 行</span>
+                        <button class="mark-popup-close" onclick="hideMarkPopup()">×</button>
+                    </div>
+                    <div class="mark-popup-types">
+                        <button class="mark-type-btn todo" data-type="todo" onclick="selectMarkType('todo')">
+                            <span class="mark-color" style="background: #D4A574;"></span>
+                            <span>待修改</span>
+                        </button>
+                        <button class="mark-type-btn question" data-type="question" onclick="selectMarkType('question')">
+                            <span class="mark-color" style="background: #7A9CC6;"></span>
+                            <span>疑问</span>
+                        </button>
+                        <button class="mark-type-btn idea" data-type="idea" onclick="selectMarkType('idea')">
+                            <span class="mark-color" style="background: #9CAF94;"></span>
+                            <span>灵感</span>
+                        </button>
+                        <button class="mark-type-btn issue" data-type="issue" onclick="selectMarkType('issue')">
+                            <span class="mark-color" style="background: #D4A5A5;"></span>
+                            <span>问题</span>
+                        </button>
+                    </div>
+                    <div class="mark-popup-content">
+                        <textarea class="mark-popup-input" id="popupComment" placeholder="添加备注..."></textarea>
+                    </div>
+                    <div class="mark-popup-actions">
+                        <button class="mark-popup-btn delete" id="popupDeleteBtn" onclick="deleteMark()" style="display: none;">删除</button>
+                        <button class="mark-popup-btn cancel" onclick="hideMarkPopup()">取消</button>
+                        <button class="mark-popup-btn save" onclick="saveMark()">保存</button>
                     </div>
                 </div>
             </div>
+        </div>
             <div class="editor-footer">
                 <div class="stats">
                     <div class="stat-item">
@@ -1776,6 +2152,17 @@
                 </div>
             </div>
         </main>
+
+        <!-- Right Side Marks Panel -->
+        <aside class="marks-panel" id="marksPanel">
+            <div class="marks-panel-header">
+                <span>📝 行标记</span>
+                <span class="marks-count" id="marksPanelCount">0</span>
+            </div>
+            <div class="marks-panel-list" id="marksPanelList">
+                <div class="marks-empty">点击行号添加标记</div>
+            </div>
+        </aside>
     </div>
 
     <!-- Floating AI Button -->
@@ -2038,6 +2425,193 @@
 
     <!-- Toast -->
     <div class="toast" id="toast"></div>
+
+    <!-- Add Chapter Modal -->
+    <div class="modal-overlay" id="chapterModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">添加新章节</h3>
+                <button class="modal-close" onclick="closeChapterModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">章节序号</label>
+                    <div class="chapter-number-input">
+                        <span>第</span>
+                        <input type="number" id="chapterNumberInput" class="form-input" min="1" value="1">
+                        <span>章</span>
+                    </div>
+                    <div class="form-hint" id="chapterHint" style="display: none; color: var(--accent-danger); font-size: 12px; margin-top: 4px;"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">章节标题</label>
+                    <input type="text" id="chapterTitleInput" class="form-input" placeholder="输入章节标题">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary" onclick="closeChapterModal()">取消</button>
+                <button class="modal-btn primary" onclick="confirmAddChapter()">确认添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Volume Modal -->
+    <div class="modal-overlay" id="volumeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">添加新卷</h3>
+                <button class="modal-close" onclick="closeVolumeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">卷序号</label>
+                    <div class="chapter-number-input">
+                        <span>第</span>
+                        <input type="number" id="volumeNumberInput" class="form-input" min="1" value="3">
+                        <span>卷</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">卷名称</label>
+                    <input type="text" id="volumeTitleInput" class="form-input" placeholder="如：第三卷：巅峰">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary" onclick="closeVolumeModal()">取消</button>
+                <button class="modal-btn primary" onclick="confirmAddVolume()">确认添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Book Modal -->
+    <div class="modal-overlay" id="createBookModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">✏️ 新建作品</h3>
+                <button class="modal-close" onclick="closeCreateBookModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">书名 <span style="color: var(--accent-danger)">*</span></label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="newBookTitle" class="form-input" placeholder="输入书名..." style="flex: 1;">
+                        <button class="modal-btn secondary" onclick="generateBookTitleSuggestions()">✨ AI生成</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">题材类型</label>
+                    <select id="newBookGenre" class="form-input">
+                        <option value="urban">🏙️ 都市女婿</option>
+                        <option value="fantasy">⚔️ 玄幻修仙</option>
+                        <option value="romance">💕 言情甜宠</option>
+                        <option value="mystery">🔮 悬疑灵异</option>
+                        <option value="history">🏛️ 历史穿越</option>
+                        <option value="scifi">🚀 科幻末世</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">作品简介</label>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <textarea id="newBookSummary" class="form-input" placeholder="输入作品简介..." style="min-height: 80px; resize: vertical;"></textarea>
+                        <button class="modal-btn secondary" onclick="polishBookSummary()" style="align-self: flex-start;">✨ AI润色简介</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">预计总字数</label>
+                    <select id="newBookTarget" class="form-input">
+                        <option value="300000">30万字（中篇）</option>
+                        <option value="500000">50万字（长篇）</option>
+                        <option value="1000000" selected>100万字（大长篇）</option>
+                        <option value="2000000">200万字（超长篇）</option>
+                    </select>
+                </div>
+                
+                <!-- AI 建议区域 -->
+                <div id="aiSuggestions"></div>
+                
+                <!-- AI 开书助手 -->
+                <div class="ai-assistant-box" style="margin-top: 16px; padding: 16px; background: var(--bg-secondary); border-radius: 8px; border: 1px dashed var(--border);">
+                    <div style="font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span>🤖</span> AI 开书助手
+                    </div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="modal-btn secondary" onclick="generateBookInspiration()">💡 获取开篇灵感</button>
+                        <button class="modal-btn secondary" onclick="showToast('人物设定建议功能开发中...')">👤 人物设定建议</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary" onclick="closeCreateBookModal()">取消</button>
+                <button class="modal-btn primary" onclick="confirmCreateBook()">创建并写作 →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Character Edit Modal -->
+    <div class="modal-overlay" id="characterEditModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="charEditModalTitle">编辑人物</h3>
+                <button class="modal-close" onclick="closeCharacterEditModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="charEditId">
+                <div class="form-group">
+                    <label class="form-label">姓名 <span style="color: var(--accent-danger)">*</span></label>
+                    <input type="text" id="charEditName" class="form-input" placeholder="输入人物姓名">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">角色类型</label>
+                    <select id="charEditRole" class="form-input">
+                        <option value="protagonist">👑 主角</option>
+                        <option value="supporting">🎭 配角</option>
+                        <option value="antagonist">👹 反派</option>
+                        <option value="minor">👤 龙套</option>
+                    </select>
+                </div>
+                <div class="form-row" style="display: flex; gap: 12px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">性别</label>
+                        <select id="charEditGender" class="form-input">
+                            <option value="">请选择</option>
+                            <option value="男">男</option>
+                            <option value="女">女</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">年龄</label>
+                        <input type="text" id="charEditAge" class="form-input" placeholder="如：28">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">外貌特征</label>
+                    <textarea id="charEditAppearance" class="form-input" placeholder="描写人物外貌..." style="min-height: 60px; resize: vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">性格特点</label>
+                    <textarea id="charEditPersonality" class="form-input" placeholder="描述人物性格..." style="min-height: 60px; resize: vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">背景故事</label>
+                    <textarea id="charEditBackground" class="form-input" placeholder="人物背景设定..." style="min-height: 80px; resize: vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">经典台词</label>
+                    <input type="text" id="charEditQuotes" class="form-input" placeholder="人物标志性台词">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">备注</label>
+                    <textarea id="charEditNotes" class="form-input" placeholder="其他需要记录的信息..." style="min-height: 60px; resize: vertical;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary" id="charDeleteBtn" onclick="deleteCharacter()" style="margin-right: auto;">删除</button>
+                <button class="modal-btn secondary" onclick="closeCharacterEditModal()">取消</button>
+                <button class="modal-btn primary" onclick="saveCharacter()">保存</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Onboarding Modal -->
     <div class="modal-overlay onboarding-overlay" id="onboardingModal">
@@ -2385,1148 +2959,929 @@
                 gap: 16px;
             }
         }
+        /* ============================================
+           工作台样式 - 新版垂直居中布局
+           ============================================ */
+        
+        .workshop-container {
+            display: block;
+            min-height: 100vh;
+            background: var(--bg-primary);
+            overflow-y: auto;
+        }
+        
+        /* 顶部导航 */
+        .workshop-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 56px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+        
+        .workshop-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .workshop-logo {
+            font-size: 24px;
+        }
+        
+        .workshop-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        /* 主体内容区域 */
+        .workshop-body {
+            padding: 32px 24px;
+        }
+        
+        .workshop-content {
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+        
+        /* 通用模块样式 */
+        .workshop-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .section-icon {
+            font-size: 20px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            flex: 1;
+        }
+        
+        /* 1. 数据展示模块 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .stat-card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--accent-primary);
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        /* 2. 作品模块 */
+        .workshop-filter {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .workshop-filter-btn {
+            padding: 6px 14px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .workshop-filter-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+        
+        .workshop-filter-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+        
+        .book-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .workshop-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 24px;
+            text-align: center;
+        }
+        
+        .workshop-empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .workshop-empty-text {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        
+        .book-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .book-item:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 2px 8px var(--shadow);
+            transform: translateY(-1px);
+        }
+        
+        .book-cover {
+            width: 64px;
+            height: 80px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .book-cover-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .book-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .book-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        
+        .book-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .book-status {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .book-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        
+        .book-stats {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        
+        .book-today {
+            color: var(--text-muted);
+        }
+        
+        .book-today.active {
+            color: var(--accent-success);
+            font-weight: 500;
+        }
+        
+        .book-time {
+            color: var(--text-muted);
+        }
+        
+        .book-actions {
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .book-item:hover .book-actions {
+            opacity: 1;
+        }
+        
+        .book-action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .book-action-btn.primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        .book-action-btn.primary:hover {
+            opacity: 0.9;
+        }
+        
+        /* 3. AI 服务模块 */
+        .ai-services {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        
+        @media (max-width: 768px) {
+            .ai-services {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .ai-service-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .ai-service-card:hover {
+            border-color: var(--accent-primary);
+            background: var(--highlight);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        .ai-service-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        
+        .ai-service-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .ai-service-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        /* 4. 活动和公告模块 */
+        .notice-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .notice-item {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .notice-item:hover {
+            border-color: var(--accent-primary);
+        }
+        
+        .notice-badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            background: var(--text-muted);
+            color: white;
+            border-radius: 10px;
+            white-space: nowrap;
+            height: fit-content;
+        }
+        
+        .notice-badge.hot {
+            background: var(--accent-danger);
+        }
+        
+        .notice-badge.new {
+            background: var(--accent-success);
+        }
+        
+        .notice-content {
+            flex: 1;
+        }
+        
+        .notice-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .notice-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        
+        .notice-time {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        
+        /* AI 建议样式 */
+        .ai-suggestion-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+        
+        .ai-suggestion-title {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .ai-suggestion-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .ai-suggestion-item {
+            padding: 6px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            font-size: 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .ai-suggestion-item:hover {
+            border-color: var(--accent-primary);
+            background: var(--highlight);
+        }
+        
+        .ai-inspiration-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .ai-inspiration-item {
+            padding: 10px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .ai-inspiration-item:hover {
+            border-color: var(--accent-primary);
+        }
+        
+        .ai-inspiration-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .ai-inspiration-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        
+        /* ============================================
+           人物卡样式
+           ============================================ */
+        
+        .character-section {
+            position: relative;
+        }
+        
+        .character-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .character-badge {
+            background: var(--accent-danger);
+            color: white;
+            font-size: 10px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        .add-character-btn {
+            width: 20px;
+            height: 20px;
+            border: none;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+        }
+        
+        .add-character-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .character-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .character-empty {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 16px 0;
+            width: 100%;
+        }
+        
+        .character-tag {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+        
+        .character-tag:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px var(--shadow);
+        }
+        
+        .character-tag.active {
+            border-color: var(--accent-primary);
+            background: var(--highlight);
+        }
+        
+        .character-tag.protagonist {
+            border-color: #D4A574;
+        }
+        
+        .character-tag.antagonist {
+            border-color: #D4A5A5;
+        }
+        
+        .character-tag.supporting {
+            border-color: #7A9CC6;
+        }
+        
+        .character-tag.minor {
+            border-color: #9CAF94;
+        }
+        
+        .character-tag.new {
+            animation: pulse-border 2s infinite;
+        }
+        
+        @keyframes pulse-border {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(212, 165, 116, 0.4); }
+            50% { box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.2); }
+        }
+        
+        .character-role-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+        
+        .character-name {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .character-new-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-danger);
+            border-radius: 50%;
+        }
+        
+        /* 新人物提示 */
+        .new-characters-hint {
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--highlight);
+            border: 1px dashed var(--accent-primary);
+            border-radius: 8px;
+        }
+        
+        .hint-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+        }
+        
+        .hint-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .hint-item:last-child {
+            border-bottom: none;
+        }
+        
+        .hint-name {
+            font-size: 12px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .hint-actions {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .hint-btn {
+            padding: 2px 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .hint-btn.add {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        .hint-btn.ignore {
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+        }
+        
+        /* 人物详情面板 */
+        .character-detail-panel {
+            position: fixed;
+            top: 56px;
+            left: 240px;
+            width: 320px;
+            height: calc(100vh - 56px);
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            box-shadow: 4px 0 16px var(--shadow-lg);
+            z-index: 1000;
+            transform: translateX(-100%);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .character-detail-panel.active {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .panel-edit-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .panel-edit-btn:hover {
+            background: var(--accent-primary);
+        }
+        
+        .panel-close {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .panel-close:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+        
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 16px 16px;
+        }
+        
+        .char-basic-info {
+            text-align: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+        
+        .char-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .char-role {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-bottom: 12px;
+        }
+        
+        .insert-name-btn {
+            padding: 6px 16px;
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .insert-name-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .char-details {
+            margin-bottom: 20px;
+        }
+        
+        .char-field {
+            margin-bottom: 12px;
+        }
+        
+        .field-label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+        
+        .field-value {
+            font-size: 13px;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        
+        .char-relationships {
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .relationship-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        
+        .relationship-graph {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .relationship-empty {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .relationship-center {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        
+        .relationship-connections {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .relationship-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .relationship-item:hover {
+            background: var(--highlight);
+        }
+        
+        .relationship-line {
+            width: 20px;
+            height: 2px;
+            background: var(--border);
+            flex-shrink: 0;
+        }
+        
+        .relationship-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 12px;
+            border: 2px solid;
+            border-radius: 8px;
+            background: var(--bg-card);
+            min-width: 60px;
+        }
+        
+        .relationship-node.center {
+            padding: 12px 20px;
+        }
+        
+        .node-icon {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        
+        .relationship-node.center .node-icon {
+            font-size: 20px;
+        }
+        
+        .node-name {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .node-role {
+            font-size: 9px;
+            color: white;
+            padding: 1px 4px;
+            border-radius: 4px;
+            margin-top: 2px;
+        }
+        
+        .relationship-type {
+            font-size: 11px;
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+        
+        .relationship-desc {
+            font-size: 10px;
+            color: var(--text-muted);
+            flex: 1;
+            text-align: right;
+        }
     </style>
 
+
+    <script type="module" src="js/core/app.js"></script>
     <script>
-        // ==================== Storage Keys ====================
-        const STORAGE_KEYS = {
-            CHAPTER_CONTENT: 'novel_chapter_',
-            DAILY_GOAL: 'novel_daily_goal',
-            DAILY_PROGRESS: 'novel_daily_progress',
-            LAST_SAVE_DATE: 'novel_last_save_date',
-            CURRENT_CHAPTER: 'novel_current_chapter',
-            LINE_MARKS: 'novel_line_marks_'
-        };
-
-        // ==================== Line Marks State ====================
-        let lineMarks = {}; // { lineNumber: { type, comment, timestamp } }
-        let currentMarkLine = null;
-        let selectedMarkType = 'todo';
-
-        // ==================== State ====================
-        let currentChapter = 15;
-        let isDirty = false;
-        let originalContent = '';
-        let pendingChapter = null;
-        let wordCountAtOpen = 0;
-        let lastInputTime = Date.now();
-        let blockCheckInterval;
-        let isBlockModalShown = false;
-        let dailyGoal = 4000;
-        let todayWordCount = 0;
-        let lastSaveDate = '';
-
-        // DOM Elements
-        let editor = null;
-        let editorContent = null;
-
-        // ==================== Initialize ====================
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize DOM element references
-            editor = document.getElementById('editor');
-            editorContent = document.getElementById('editorContent');
-
-            // Check onboarding first
-            const hasCompleted = loadFromStorage('onboarding_completed', false);
-            if (!hasCompleted) {
-                document.getElementById('onboardingModal').classList.add('active');
-                // Don't load chapter yet, onboarding will handle it
-                editor.value = '';
-                originalContent = '';
-                wordCountAtOpen = 0;
-                updateWordCountDisplay();
-                return;
-            }
-
-            // Load settings
-            loadDailyGoal();
-            checkAndResetDailyProgress();
-
-            // Load current chapter content
-            loadChapterContent(currentChapter);
-
-            // Load line marks for this chapter
-            loadLineMarks(currentChapter);
-
-            originalContent = editor.value;
-            wordCountAtOpen = countWords(editor.value);
-
-            // Update UI
-            updateWordCountDisplay();
-            updateDailyGoalDisplay();
-
-            // Start block detection
-            startBlockDetection();
-
-            // Initialize line mark events
-            initLineMarkEvents();
-
-            // Update indicators on scroll
-            editor.addEventListener('scroll', function() {
-                renderMarkIndicators();
-            });
-
-            // Editor input event
-            editor.addEventListener('input', function() {
-                const text = this.value;
-
-                // Update word counts
-                updateWordCountDisplay();
-
-                // Update last input time
-                lastInputTime = Date.now();
-
-                // Mark as dirty
-                if (text !== originalContent) {
-                    if (!isDirty) {
-                        isDirty = true;
-                        const activeItem = document.querySelector('.chapter-item.active');
-                        if (activeItem) activeItem.classList.add('dirty');
-                    }
+        // 调试：检查全局函数是否挂载
+        setTimeout(() => {
+            console.log('[Debug] Checking global functions...');
+            const functions = ['saveContent', 'toggleFocusMode', 'toggleTheme', 'goBack', 'showToast'];
+            functions.forEach(fn => {
+                if (typeof window[fn] === 'function') {
+                    console.log('  ✓', fn);
                 } else {
-                    isDirty = false;
-                    const activeItem = document.querySelector('.chapter-item.active');
-                    if (activeItem) activeItem.classList.remove('dirty');
-                }
-
-                // Simulate AI suggestion availability
-                const total = countWords(text);
-                const newWords = Math.max(0, total - wordCountAtOpen);
-                if (total > 500 && newWords > 200) {
-                    document.getElementById('aiBtn').classList.add('has-suggestion');
-                    document.getElementById('aiBadge').style.display = 'flex';
-                }
-
-                // Debounce mark update
-                clearTimeout(window.markUpdateTimeout);
-                window.markUpdateTimeout = setTimeout(() => {
-                    const lines = this.value.split('\n');
-                    const maxLine = lines.length;
-                    Object.keys(lineMarks).forEach(line => {
-                        if (parseInt(line) > maxLine) {
-                            delete lineMarks[line];
-                        }
-                    });
-                    saveLineMarks(currentChapter);
-                    renderMarkIndicators();
-                    updateMarksList();
-                }, 500);
-            });
-
-            // Auto-save every 30 seconds
-            setInterval(() => {
-                if (isDirty) {
-                    autoSaveContent();
-                }
-            }, 30000);
-        });
-
-        // ==================== LocalStorage Functions ====================
-        function saveToStorage(key, value) {
-            try {
-                localStorage.setItem(key, JSON.stringify(value));
-                return true;
-            } catch (e) {
-                console.warn('Storage failed:', e);
-                return false;
-            }
-        }
-
-        function loadFromStorage(key, defaultValue = null) {
-            try {
-                const item = localStorage.getItem(key);
-                return item ? JSON.parse(item) : defaultValue;
-            } catch (e) {
-                console.warn('Load failed:', e);
-                return defaultValue;
-            }
-        }
-
-        // ==================== Daily Goal Management ====================
-        function loadDailyGoal() {
-            dailyGoal = loadFromStorage(STORAGE_KEYS.DAILY_GOAL, 4000);
-            todayWordCount = loadFromStorage(STORAGE_KEYS.DAILY_PROGRESS, 0);
-            lastSaveDate = loadFromStorage(STORAGE_KEYS.LAST_SAVE_DATE, '');
-        }
-
-        function checkAndResetDailyProgress() {
-            const today = new Date().toDateString();
-            if (lastSaveDate !== today) {
-                // New day, reset progress
-                todayWordCount = 0;
-                lastSaveDate = today;
-                saveToStorage(STORAGE_KEYS.DAILY_PROGRESS, 0);
-                saveToStorage(STORAGE_KEYS.LAST_SAVE_DATE, today);
-            }
-        }
-
-        function updateDailyProgress(newWords) {
-            if (newWords > 0) {
-                todayWordCount += newWords;
-                saveToStorage(STORAGE_KEYS.DAILY_PROGRESS, todayWordCount);
-                updateDailyGoalDisplay();
-
-                // Check if goal completed
-                if (todayWordCount >= dailyGoal && (todayWordCount - newWords) < dailyGoal) {
-                    showToast('🎉 恭喜！今日写作目标已达成！');
-                }
-            }
-        }
-
-        function updateDailyGoalDisplay() {
-            const todayEl = document.getElementById('todayWordCount');
-            const goalEl = document.getElementById('dailyGoalTarget');
-            const fillEl = document.getElementById('dailyGoalFill');
-
-            todayEl.textContent = todayWordCount.toLocaleString();
-            goalEl.textContent = dailyGoal.toLocaleString();
-
-            const percentage = Math.min(100, (todayWordCount / dailyGoal) * 100);
-            fillEl.style.width = percentage + '%';
-
-            if (todayWordCount >= dailyGoal) {
-                fillEl.classList.add('completed');
-                todayEl.classList.add('goal-completed');
-            } else {
-                fillEl.classList.remove('completed');
-                todayEl.classList.remove('goal-completed');
-            }
-        }
-
-        function openGoalEditor() {
-            document.getElementById('goalInput').value = dailyGoal;
-            document.getElementById('goalModal').classList.add('active');
-        }
-
-        function closeGoalModal() {
-            document.getElementById('goalModal').classList.remove('active');
-        }
-
-        function setGoalPreset(value) {
-            document.getElementById('goalInput').value = value;
-        }
-
-        function saveGoal() {
-            const newGoal = parseInt(document.getElementById('goalInput').value, 10);
-            if (newGoal >= 1000 && newGoal <= 50000) {
-                dailyGoal = newGoal;
-                saveToStorage(STORAGE_KEYS.DAILY_GOAL, dailyGoal);
-                updateDailyGoalDisplay();
-                showToast(`日更目标已设置为 ${dailyGoal.toLocaleString()} 字`);
-                closeGoalModal();
-            } else {
-                showToast('请输入 1000-50000 之间的数值');
-            }
-        }
-
-        // ==================== Chapter Content Management ====================
-        function loadChapterContent(chapterId) {
-            const saved = loadFromStorage(STORAGE_KEYS.CHAPTER_CONTENT + chapterId, '');
-            if (saved) {
-                editor.value = saved;
-            } else {
-                // Default content for demo
-                editor.value = '';
-            }
-        }
-
-        function saveChapterContent(chapterId, content) {
-            saveToStorage(STORAGE_KEYS.CHAPTER_CONTENT + chapterId, content);
-            saveToStorage(STORAGE_KEYS.LAST_SAVE_DATE, new Date().toDateString());
-        }
-
-        function autoSaveContent() {
-            const content = document.getElementById('editor').value;
-            saveChapterContent(currentChapter, content);
-
-            // Calculate new words for daily progress
-            const currentTotal = countWords(content);
-            const previousTotal = countWords(originalContent);
-            const newWords = Math.max(0, currentTotal - previousTotal);
-
-            if (newWords > 0) {
-                updateDailyProgress(newWords);
-            }
-
-            // Update state
-            originalContent = content;
-            wordCountAtOpen = currentTotal;
-            isDirty = false;
-
-            // Update UI
-            document.querySelector('.chapter-item.active')?.classList.remove('dirty');
-            showToast('已自动保存');
-        }
-
-        // Block Detection
-        function startBlockDetection() {
-            blockCheckInterval = setInterval(() => {
-                if (isBlockModalShown) return;
-
-                const idleTime = Date.now() - lastInputTime;
-                const content = document.getElementById('editor').value;
-
-                // Trigger after 5 minutes of idle and has content
-                if (idleTime > 5 * 60 * 1000 && content.length > 100) {
-                    showBlockModal();
-                }
-            }, 10000); // Check every 10 seconds
-        }
-
-        function showBlockModal() {
-            isBlockModalShown = true;
-            document.getElementById('blockModal').classList.add('active');
-        }
-
-        function dismissBlock() {
-            document.getElementById('blockModal').classList.remove('active');
-            lastInputTime = Date.now(); // Reset timer
-            isBlockModalShown = false;
-        }
-
-        function openBlockHelp() {
-            dismissBlock();
-            toggleAIPanel();
-            switchAITab('templates');
-            showToast('已为你推荐结构模板');
-        }
-
-        // ==================== Line Marks Functions ====================
-        let currentHoverLine = null;
-
-        function loadLineMarks(chapterId) {
-            lineMarks = loadFromStorage(STORAGE_KEYS.LINE_MARKS + chapterId, {});
-            renderMarkIndicators();
-            updateMarksList();
-        }
-
-        function saveLineMarks(chapterId) {
-            saveToStorage(STORAGE_KEYS.LINE_MARKS + chapterId, lineMarks);
-        }
-
-        // Calculate which line the cursor is on based on mouse position
-        function getLineFromMouseEvent(e) {
-            const textarea = document.getElementById('editor');
-            const rect = textarea.getBoundingClientRect();
-            const scrollTop = textarea.scrollTop;
-
-            // Calculate relative Y position considering scroll
-            // Add padding offset (textarea has no top padding, but content starts at top)
-            const relativeY = e.clientY - rect.top + scrollTop;
-
-            // Approximate line height (16px font * 1.8 line-height = 28.8px)
-            const lineHeight = 28.8;
-            const lineNumber = Math.floor(relativeY / lineHeight) + 1;
-
-            const totalLines = editor.value.split('\n').length;
-            return Math.max(1, Math.min(lineNumber, totalLines));
-        }
-
-        // Show/hide mark trigger button on hover - initialized after DOM ready
-        function initLineMarkEvents() {
-            const markBtn = document.getElementById('lineMarkBtn');
-            const editorWrapper = document.querySelector('.editor-wrapper');
-            const lineHeight = 28.8;
-            let hideTimeout = null;
-
-            // Show button when hovering over editor area
-            editor.addEventListener('mousemove', function(e) {
-                if (e.target.closest('.mark-thread')) return;
-
-                const line = getLineFromMouseEvent(e);
-                if (line !== currentHoverLine) {
-                    currentHoverLine = line;
-                    updateMarkBtn(line);
+                    console.error('  ✗', fn, 'not found');
                 }
             });
-
-            // Hide button when leaving editor (with delay)
-            editor.addEventListener('mouseleave', function() {
-                hideTimeout = setTimeout(() => {
-                    if (!markBtn.matches(':hover')) {
-                        markBtn.classList.remove('show');
-                        currentHoverLine = null;
-                    }
-                }, 150);
-            });
-
-            // Keep button visible when hovering over it
-            markBtn.addEventListener('mouseenter', function() {
-                clearTimeout(hideTimeout);
-            });
-
-            markBtn.addEventListener('mouseleave', function() {
-                hideTimeout = setTimeout(() => {
-                    markBtn.classList.remove('show');
-                }, 150);
-            });
-
-            function updateMarkBtn(line) {
-                const existingMark = lineMarks[line];
-                const editorRect = editor.getBoundingClientRect();
-                const scrollTop = editor.scrollTop;
-
-                // Calculate button position (fixed position relative to viewport)
-                // Place button on the left side of the current line
-                const lineTop = editorRect.top + ((line - 1) * lineHeight - scrollTop);
-                const btnTop = lineTop + (lineHeight - 28) / 2; // Center vertically on line
-
-                markBtn.style.top = btnTop + 'px';
-                markBtn.style.left = (editorRect.left - 40) + 'px'; // 40px left of editor
-
-                if (existingMark) {
-                    markBtn.textContent = getMarkTypeIcon(existingMark.type);
-                    markBtn.className = `line-mark-btn has-mark mark-${existingMark.type} show`;
-                    markBtn.title = `${getMarkTypeLabel(existingMark.type)}: ${existingMark.comment || '点击编辑'}`;
-                } else {
-                    markBtn.textContent = '+';
-                    markBtn.className = 'line-mark-btn show';
-                    markBtn.title = `点击标记第 ${line} 行`;
-                }
-            }
-        }
-
-        // Handle mark button click
-        function handleMarkClick() {
-            if (currentHoverLine) {
-                showMarkThread(currentHoverLine);
-            }
-        }
-
-        function showMarkThread(line) {
-            // Support both direct line number and using currentHoverLine
-            const targetLine = line || currentHoverLine;
-            if (!targetLine) return;
-
-            currentMarkLine = targetLine;
-            const thread = document.getElementById('markThread');
-            const existingMark = lineMarks[currentMarkLine];
-
-            // Position thread panel
-            const lineHeight = 28.8;
-            const scrollTop = editor.scrollTop;
-            const topPos = ((currentMarkLine - 1) * lineHeight - scrollTop + 20);
-
-            // Ensure panel stays within viewport
-            const maxTop = editorContent.clientHeight - 300;
-            thread.style.top = Math.min(topPos, maxTop) + 'px';
-            thread.style.display = 'block';
-
-            // Update content
-            document.getElementById('threadLineNumber').textContent = currentMarkLine;
-            document.getElementById('threadComment').value = existingMark ? existingMark.comment : '';
-            document.getElementById('threadDeleteBtn').style.display = existingMark ? 'block' : 'none';
-
-            // Update icon
-            const type = existingMark ? existingMark.type : 'todo';
-            document.getElementById('threadIcon').textContent = getMarkTypeIcon(type);
-
-            // Reset and select type
-            document.querySelectorAll('.mark-type-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            selectMarkType(existingMark ? existingMark.type : 'todo');
-
-            // Focus input
-            setTimeout(() => document.getElementById('threadComment').focus(), 100);
-        }
-
-        function hideMarkThread() {
-            document.getElementById('markThread').style.display = 'none';
-            currentMarkLine = null;
-        }
-
-        function selectMarkType(type) {
-            selectedMarkType = type;
-            document.querySelectorAll('.mark-type-btn').forEach(btn => {
-                btn.classList.remove('selected');
-                if (btn.dataset.type === type) {
-                    btn.classList.add('selected');
-                }
-            });
-            document.getElementById('threadIcon').textContent = getMarkTypeIcon(type);
-        }
-
-        function saveMark() {
-            if (!currentMarkLine) return;
-
-            const comment = document.getElementById('threadComment').value.trim();
-
-            lineMarks[currentMarkLine] = {
-                type: selectedMarkType,
-                comment: comment,
-                timestamp: new Date().toISOString()
-            };
-
-            saveLineMarks(currentChapter);
-            updateMarksList();
-            hideMarkThread();
-            showToast(`已添加${getMarkTypeLabel(selectedMarkType)}标记`);
-        }
-
-        function deleteMark() {
-            if (!currentMarkLine) return;
-
-            delete lineMarks[currentMarkLine];
-            saveLineMarks(currentChapter);
-            updateMarksList();
-            hideMarkThread();
-            showToast('标记已删除');
-        }
-
-        function updateMarksList() {
-            const container = document.getElementById('marksList');
-            const marks = Object.entries(lineMarks).sort((a, b) => a[0] - b[0]);
-
-            // Update count
-            document.getElementById('marksCount').textContent = marks.length;
-
-            if (marks.length === 0) {
-                container.innerHTML = `
-                    <div style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 16px 0;">
-                        鼠标悬停到任意行，点击左侧出现的 + 按钮添加标记
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = marks.map(([line, mark]) => {
-                const lines = editor.value.split('\n');
-                const linePreview = lines[line - 1]?.substring(0, 20) + '...' || '';
-
-                return `
-                    <div class="mark-item" onclick="jumpToLine(${line})" data-line="${line}">
-                        <div class="mark-icon ${mark.type}">${getMarkTypeIcon(mark.type)}</div>
-                        <div class="mark-content">
-                            <div class="mark-line">第 ${line} 行</div>
-                            <div class="mark-text">${mark.comment || getMarkTypeLabel(mark.type)}</div>
-                            <div class="mark-preview">${linePreview}</div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function jumpToLine(line) {
-            const lines = editor.value.split('\n');
-            let charPos = 0;
-            for (let i = 0; i < line - 1 && i < lines.length; i++) {
-                charPos += lines[i].length + 1;
-            }
-
-            editor.focus();
-            editor.setSelectionRange(charPos, charPos);
-
-            // Scroll to line
-            const lineHeight = 28.8;
-            editor.scrollTop = (line - 1) * lineHeight - editor.clientHeight / 2;
-
-            // Highlight in sidebar
-            document.querySelectorAll('.mark-item').forEach(item => item.classList.remove('active'));
-            const activeItem = document.querySelector(`.mark-item[data-line="${line}"]`);
-            if (activeItem) activeItem.classList.add('active');
-
-            // Show thread for this line if it has a mark
-            if (lineMarks[line]) {
-                currentHoverLine = line;
-                setTimeout(showMarkThread, 100);
-            }
-        }
-
-        function getMarkTypeIcon(type) {
-            const icons = { todo: '📝', question: '❓', idea: '💡', issue: '⚠️' };
-            return icons[type] || '📝';
-        }
-
-        function getMarkTypeLabel(type) {
-            const labels = { todo: '待修改', question: '疑问', idea: '灵感', issue: '问题' };
-            return labels[type] || '标记';
-        }
-
-        // Keyboard shortcuts for line marks
-        document.addEventListener('keydown', function(e) {
-            // Line mark shortcuts - only when editor is focused
-            if (e.ctrlKey && e.shiftKey && document.activeElement === editor) {
-                const key = e.key;
-                if (['1', '2', '3', '4'].includes(key)) {
-                    e.preventDefault();
-                    const types = ['todo', 'question', 'idea', 'issue'];
-                    selectedMarkType = types[parseInt(key) - 1];
-
-                    // Find current line based on cursor position
-                    const cursorPos = editor.selectionStart;
-                    const textBefore = editor.value.substring(0, cursorPos);
-                    const currentLine = textBefore.split('\n').length;
-
-                    currentHoverLine = currentLine;
-                    showMarkThread(currentLine);
-                }
-            }
-
-            if (e.key === 'Escape') {
-                hideMarkThread();
-            }
-        });
-
-        // Hide thread when clicking outside
-        document.addEventListener('click', function(e) {
-            const thread = document.getElementById('markThread');
-            const trigger = document.getElementById('lineMarkTrigger');
-
-            if (!thread.contains(e.target) && !trigger.contains(e.target) && !e.target.closest('.mark-item')) {
-                hideMarkThread();
-            }
-        });
-
-        // ==================== Optimized Word Count ====================
-        function countWords(text) {
-            if (!text || text.trim().length === 0) return 0;
-
-            // Chinese characters (CJK Unified Ideographs)
-            const cnChars = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
-
-            // English words (sequences of letters)
-            const enWords = (text.match(/[a-zA-Z]+/g) || []).length;
-
-            // Numbers (sequences of digits, count as 1 word per number)
-            const numbers = (text.match(/\d+/g) || []).length;
-
-            // CJK punctuation that indicates content (、。「」 etc.)
-            const cjkPunct = (text.match(/[\u3000-\u303f\uff00-\uffef]/g) || []).length;
-
-            return cnChars + enWords + numbers;
-        }
-
-        function updateWordCountDisplay() {
-            const text = document.getElementById('editor').value;
-            const total = countWords(text);
-            const newWords = Math.max(0, total - wordCountAtOpen);
-
-            document.getElementById('wordCountTotal').textContent = total.toLocaleString();
-            document.getElementById('wordCountNew').textContent = newWords.toLocaleString();
-        }
-
-        // AI Panel
-        function toggleAIPanel() {
-            const panel = document.getElementById('aiPanel');
-            panel.classList.toggle('active');
-        }
-
-        function switchAITab(tab, element) {
-            document.querySelectorAll('.ai-tab').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.ai-panel-section').forEach(el => el.classList.remove('active'));
-
-            if (element) {
-                element.classList.add('active');
-            }
-            document.getElementById(`ai-${tab}`).classList.add('active');
-        }
-
-        // Template Detail
-        const templates = {
-            'face-slapping': {
-                title: '🔥 经典打脸结构（5步法）',
-                steps: [
-                    { title: '受辱', desc: '主角被反派羞辱/贬低，建立冲突。让读者产生共情和愤怒。建议500-800字。' },
-                    { title: '隐忍', desc: '主角表面退让，实则暗中准备。埋下反击的伏笔，增加期待感。建议300-500字。' },
-                    { title: '反击', desc: '主角亮出底牌，一击致命。高潮部分，要写得爽快直接。建议600-1000字。' },
-                    { title: '震惊', desc: '反派和围观者的反应。通过他人视角衬托主角的强大。建议400-600字。' },
-                    { title: '余波', desc: '事件的影响和后续发展。为下一章铺垫，保持连续性。建议300-500字。' }
-                ]
-            },
-            'suspense': {
-                title: '🎭 悬念揭晓结构',
-                steps: [
-                    { title: '铺垫', desc: '回顾之前的伏笔和线索，让读者想起悬念的存在。' },
-                    { title: '暗示', desc: '通过细节暗示真相即将揭晓，增加紧张感。' },
-                    { title: '揭晓', desc: '真相大白的关键时刻，要有冲击力。' },
-                    { title: '影响', desc: '真相揭露后的连锁反应，人物关系的变化。' }
-                ]
-            },
-            'emotional': {
-                title: '💔 情感爆发结构',
-                steps: [
-                    { title: '压抑', desc: '情感的积累阶段，让读者感受到角色的痛苦。' },
-                    { title: '触动', desc: '触发情感爆发的关键事件或话语。' },
-                    { title: '释放', desc: '情感宣泄的高潮，可以是哭泣、怒吼或表白。' },
-                    { title: '余韵', desc: '爆发后的平静，情感的沉淀和关系的转变。' }
-                ]
-            }
-        };
-
-        function showTemplateDetail(templateId) {
-            const template = templates[templateId];
-            if (!template) return;
-
-            document.getElementById('templateModalTitle').textContent = template.title;
-
-            let stepsHtml = '<div class="template-structure-detail">';
-            template.steps.forEach((step, index) => {
-                stepsHtml += `
-                    <div class="template-step-detail">
-                        <div class="template-step-num">${index + 1}</div>
-                        <div class="template-step-content">
-                            <div class="template-step-title">${step.title}</div>
-                            <div class="template-step-desc">${step.desc}</div>
-                        </div>
-                    </div>
-                `;
-            });
-            stepsHtml += '</div>';
-
-            document.getElementById('templateModalContent').innerHTML = stepsHtml;
-            document.getElementById('templateModal').classList.add('active');
-        }
-
-        function closeTemplateModal() {
-            document.getElementById('templateModal').classList.remove('active');
-        }
-
-        // Insert Text
-        function insertText(text) {
-            const start = editor.selectionStart;
-            const end = editor.selectionEnd;
-            const value = editor.value;
-
-            editor.value = value.substring(0, start) + text + value.substring(end);
-            editor.focus();
-
-            const newPos = start + (text.includes('【') || text.includes('（') ? 1 : Math.floor(text.length / 2));
-            editor.setSelectionRange(newPos, newPos);
-
-            editor.dispatchEvent(new Event('input'));
-        }
-
-        // Generate Name
-        function generateName(type) {
-            const names = {
-                char: ['林尘', '苏清雪', '萧战', '叶凡', '秦羽', '韩立'],
-                place: ['苍玄大陆', '天元城', '青云宗', '万妖山脉']
-            };
-
-            const list = names[type] || names.char;
-            const name = list[Math.floor(Math.random() * list.length)];
-
-            insertText(name);
-            showToast(`已生成：${name}`);
-        }
-
-        // Theme Toggle
-        function toggleTheme() {
-            const body = document.body;
-            const currentTheme = body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            body.setAttribute('data-theme', newTheme);
-        }
-
-        // Volume Toggle
-        function toggleVolume(header) {
-            const toggle = header.querySelector('.volume-toggle');
-            const list = header.nextElementSibling;
-
-            if (list.style.display === 'none') {
-                list.style.display = 'block';
-                toggle.classList.remove('collapsed');
-            } else {
-                list.style.display = 'none';
-                toggle.classList.add('collapsed');
-            }
-        }
-
-        // Chapter Switch
-        function switchChapter(chapterId) {
-            if (isDirty && chapterId !== currentChapter) {
-                pendingChapter = chapterId;
-                document.getElementById('unsavedModal').classList.add('active');
-                return;
-            }
-
-            doSwitchChapter(chapterId);
-        }
-
-        function doSwitchChapter(chapterId) {
-            const activeEl = document.querySelector('.chapter-item.active');
-            if (activeEl) activeEl.classList.remove('active');
-
-            const newChapterEl = document.querySelector(`.chapter-item[data-chapter="${chapterId}"]`);
-            if (newChapterEl) newChapterEl.classList.add('active');
-
-            currentChapter = chapterId;
-            isDirty = false;
-
-            const titles = {
-                1: '第1章 龙王归来',
-                2: '第2章 离婚协议',
-                3: '第3章 身份暴露',
-                14: '第14章 宴会邀请',
-                15: '第15章 打脸丈母娘',
-                16: '第16章 宴会风波'
-            };
-
-            document.getElementById('chapterTitle').value = titles[chapterId] || `第${chapterId}章`;
-            document.getElementById('headerChapterName').textContent = titles[chapterId] || `第${chapterId}章`;
-
-            // Load new chapter content
-            loadChapterContent(chapterId);
-
-            // Load line marks for new chapter
-            loadLineMarks(chapterId);
-
-            // Update word counts
-            originalContent = editor.value;
-            wordCountAtOpen = countWords(editor.value);
-            updateWordCountDisplay();
-
-            showToast(`已切换到${titles[chapterId]}`);
-        }
-
-        function cancelSwitch() {
-            document.getElementById('unsavedModal').classList.remove('active');
-            pendingChapter = null;
-        }
-
-        function discardAndSwitch() {
-            document.getElementById('unsavedModal').classList.remove('active');
-            const activeItem = document.querySelector('.chapter-item.active');
-            if (activeItem) activeItem.classList.remove('dirty');
-            isDirty = false;
-            if (pendingChapter) {
-                doSwitchChapter(pendingChapter);
-                pendingChapter = null;
-            }
-        }
-
-        function saveAndSwitch() {
-            saveContent();
-            document.getElementById('unsavedModal').classList.remove('active');
-            if (pendingChapter) {
-                doSwitchChapter(pendingChapter);
-                pendingChapter = null;
-            }
-        }
-
-        // Save & Publish
-        function saveContent() {
-            const content = editor.value;
-
-            // Save to localStorage
-            saveChapterContent(currentChapter, content);
-
-            // Update daily progress
-            const currentTotal = countWords(content);
-            const previousTotal = countWords(originalContent);
-            const newWords = Math.max(0, currentTotal - previousTotal);
-            if (newWords > 0) {
-                updateDailyProgress(newWords);
-            }
-
-            // Update state
-            originalContent = content;
-            wordCountAtOpen = currentTotal;
-            isDirty = false;
-
-            // Update UI
-            const activeItem = document.querySelector('.chapter-item.active');
-            if (activeItem) activeItem.classList.remove('dirty');
-
-            showToast('保存成功');
-        }
-
-        function saveDraft() {
-            saveContent();
-        }
-
-        function publishChapter() {
-            saveContent();
-            showToast('章节已发布，进入审核流程');
-        }
-
-        // Focus Mode
-        function toggleFocusMode() {
-            const container = document.getElementById('mainContainer');
-            container.classList.toggle('focus-mode');
-
-            if (container.classList.contains('focus-mode')) {
-                showToast('已进入专注模式，按 Esc 退出');
-                editor.focus();
-            }
-        }
-
-        // Go Back
-        function goBack() {
-            if (isDirty) {
-                pendingChapter = 'back';
-                document.getElementById('unsavedModal').classList.add('active');
-                return;
-            }
-            showToast('返回作品列表');
-        }
-
-        // Toast
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('active');
-
-            setTimeout(() => {
-                toast.classList.remove('active');
-            }, 3000);
-        }
-
-        // Keyboard Shortcuts
-        document.addEventListener('keydown', function(e) {
-            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-                e.preventDefault();
-                saveContent();
-            }
-
-            if (e.key === 'Escape') {
-                const container = document.getElementById('mainContainer');
-                if (container.classList.contains('focus-mode')) {
-                    container.classList.remove('focus-mode');
-                } else {
-                    document.getElementById('aiPanel').classList.remove('active');
-                    document.getElementById('unsavedModal').classList.remove('active');
-                    document.getElementById('blockModal').classList.remove('active');
-                    document.getElementById('templateModal').classList.remove('active');
-                    document.getElementById('goalModal').classList.remove('active');
-                }
-            }
-        });
-
-        // Close modals when clicking overlay
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', function(e) {
-                if (e.target === this && !this.classList.contains('onboarding-overlay')) {
-                    this.classList.remove('active');
-                }
-            });
-        });
-
-        // ==================== Onboarding ====================
-        let onboardingData = {
-            authorType: '',
-            genre: '',
-            selectedTemplate: ''
-        };
-
-        let currentOnboardingStep = 1;
-
-        function nextOnboardingStep() {
-            document.getElementById(`onboarding-step-${currentOnboardingStep}`).classList.remove('active');
-            currentOnboardingStep++;
-            document.getElementById(`onboarding-step-${currentOnboardingStep}`).classList.add('active');
-        }
-
-        function selectAuthorType(type, element) {
-            onboardingData.authorType = type;
-            document.querySelectorAll('#onboarding-step-2 .option-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            setTimeout(nextOnboardingStep, 300);
-        }
-
-        function selectGenre(genre, element) {
-            onboardingData.genre = genre;
-            document.querySelectorAll('#onboarding-step-3 .option-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            setTimeout(() => {
-                generateTemplateRecommendations();
-                nextOnboardingStep();
-            }, 300);
-        }
-
-        function generateTemplateRecommendations() {
-            const recommendations = {
-                fantasy: [
-                    { id: 'face-slapping', icon: '🔥', title: '废材逆袭结构', desc: '废物少年获得奇遇，一鸣惊人震惊全场' },
-                    { id: 'reincarnation', icon: '🌀', title: '重生复仇结构', desc: '重回少年时代，弥补遗憾手刃仇敌' }
-                ],
-                urban: [
-                    { id: 'face-slapping', icon: '🔥', title: '龙王归来结构', desc: '隐藏身份的女婿，身份揭露震惊众人' },
-                    { id: 'medical', icon: '⚕️', title: '神医下山结构', desc: '身怀绝技的神医，都市救人扬名立万' }
-                ],
-                romance: [
-                    { id: 'emotional', icon: '💔', title: '虐恋重生结构', desc: '前世受尽委屈，今生活出自我' },
-                    { id: 'sweet', icon: '💕', title: '先婚后爱结构', desc: '契约婚姻开始，真心相爱结局' }
-                ],
-                mystery: [
-                    { id: 'suspense', icon: '🎭', title: '悬疑揭晓结构', desc: '诡异事件频发，真相层层剥开' },
-                    { id: 'horror', icon: '👻', title: '恐怖复苏结构', desc: '鬼怪降临人间，人类艰难求生' }
-                ],
-                history: [
-                    { id: 'reincarnation', icon: '🏛️', title: '穿越大明结构', desc: '穿越历史节点，改变历史走向' },
-                    { id: 'power', icon: '👑', title: '权谋争霸结构', desc: '朝堂之上博弈，尔虞我诈争锋' }
-                ],
-                scifi: [
-                    { id: 'apocalypse', icon: '🧟', title: '末日生存结构', desc: '丧尸病毒爆发，末世艰难求生' },
-                    { id: 'system', icon: '⚙️', title: '系统流结构', desc: '获得神秘系统，升级变强无敌' }
-                ]
-            };
-
-            const templates = recommendations[onboardingData.genre] || recommendations.fantasy;
-            const container = document.getElementById('templateRecommendations');
-
-            container.innerHTML = templates.map((tpl, index) => `
-                <div class="rec-template-card ${index === 0 ? 'selected' : ''}" onclick="selectTemplate('${tpl.id}')" data-template="${tpl.id}">
-                    <div class="rec-template-icon">${tpl.icon}</div>
-                    <div class="rec-template-content">
-                        <div class="rec-template-title">${tpl.title}</div>
-                        <div class="rec-template-desc">${tpl.desc}</div>
-                    </div>
-                    <div class="rec-template-check">✓</div>
-                </div>
-            `).join('');
-
-            onboardingData.selectedTemplate = templates[0].id;
-        }
-
-        function selectTemplate(templateId) {
-            onboardingData.selectedTemplate = templateId;
-            document.querySelectorAll('.rec-template-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            event.currentTarget.classList.add('selected');
-        }
-
-        function finishOnboarding() {
-            saveToStorage('onboarding_completed', true);
-            saveToStorage('onboarding_data', onboardingData);
-            document.getElementById('onboardingModal').classList.remove('active');
-
-            // Pre-fill editor with template example
-            const examples = {
-                'face-slapping': `【受辱】
-
-林尘站在苏家别墅门口，看着眼前趾高气昂的丈母娘王美凤，心中涌起一股屈辱。
-
-"你一个送外卖的，也配娶我女儿？"王美凤冷笑一声，"赶紧把离婚协议签了，滚出苏家！"
-
-周围的亲戚纷纷附和：
-"就是，清雪现在可是公司总裁，你这废物配得上她吗？"
-"听说他还在外面欠了一屁股债，真是丢人！"
-
-林尘攥紧拳头，指甲嵌入掌心。
-
-三年前，他为救苏家老爷子，耗尽毕生修为，沦为废人。没想到如今，竟被如此羞辱。
-
-【隐忍】
-
-"妈，再给我一次机会……"林尘低声道。
-
-"机会？"王美凤嗤笑，"除非你能拿出一千万，否则免谈！"
-
-一千万，对于现在的林尘来说，确实是个天文数字。
-
-但没有人知道，昨晚深夜，他体内沉寂三年的龙脉，终于苏醒了。
-
-龙王殿亿万资产，此刻尽在他的掌控之中。
-
-"好，"林尘抬起头，眼中闪过一丝锋芒，"三天后，我会带着一千万，亲自登门。"
-
-说完，他转身离去，背影挺拔如松。
-
-【反击】
-
-（请继续创作反击、震惊、余波等段落……）`,
-                'reincarnation': `【重生】
-
-叶凡猛地睁开眼睛，发现自己竟然回到了十八岁那年。
-
-看着镜中青涩的面容，他心中掀起滔天巨浪。
-
-前世，他被最信任的兄弟背叛，家族被灭，挚爱惨死，自己更是被废去修为， thrown into the abyss.
-
-这一世，他要让所有仇人付出代价！
-
-"少爷，老爷让您去前厅，说是有贵客到访。"管家恭敬道。
-
-叶凡眼中寒光一闪。
-
-他记得这一天——正是林家前来退婚的日子！
-
-前世他忍辱接受，却没想到这只是阴谋的开始。
-
-这一世，他要让林家后悔莫及！
-
-（请继续创作……）`,
-                'emotional': `【压抑】
-
-苏晚晴站在落地窗前，看着窗外的万家灯火，泪水无声滑落。
-
-结婚三年，她倾尽所有去爱那个男人，换来的却是一次次的背叛。
-
-"离婚吧。"顾景琛冷冷地说，"她怀孕了，我要给她一个名分。"
-
-简简单单一句话，将苏晚晴打入万劫不复的深渊。
-
-"那我呢？"她颤抖着问，"我肚子里的孩子呢？"
-
-顾景琛愣了一下，随即冷漠道："打掉。"
-
-两个字，如同利刃，将她的心切割得支离破碎。
-
-【触动】
-
-就在苏晚晴绝望之际，手机突然响起。
-
-"苏小姐，您母亲留给您的遗产已经查清，共计五十亿，请您尽快来办理继承手续。"
-
-苏晚晴怔住了。
-
-母亲生前只是个普通教师，怎么会有这么多遗产？
-
-（请继续创作释放、余韵等段落……）`
-            };
-
-            const example = examples[onboardingData.selectedTemplate] || examples['face-slapping'];
-            document.getElementById('editor').value = example;
-
-            // Update word counts
-            originalContent = example;
-            wordCountAtOpen = countWords(example);
-            updateWordCountDisplay();
-
-            showToast(`已为你加载「${getTemplateName(onboardingData.selectedTemplate)}」示例`);
-
-            // Initialize line mark events after onboarding
-            initLineMarkEvents();
-        }
-
-        function getTemplateName(id) {
-            const names = {
-                'face-slapping': '经典打脸结构',
-                'reincarnation': '重生逆袭结构',
-                'medical': '神医下山结构',
-                'emotional': '情感爆发结构',
-                'sweet': '甜宠恋爱结构',
-                'suspense': '悬疑揭晓结构',
-                'horror': '恐怖复苏结构',
-                'apocalypse': '末日生存结构',
-                'system': '系统流结构',
-                'power': '权谋争霸结构'
-            };
-            return names[id] || '结构模板';
-        }
-
-        function skipOnboarding() {
-            saveToStorage('onboarding_completed', true);
-            document.getElementById('onboardingModal').classList.remove('active');
-
-            // Load default content and initialize
-            loadChapterContent(currentChapter);
-            loadLineMarks(currentChapter);
-            originalContent = editor.value;
-            wordCountAtOpen = countWords(editor.value);
-            updateWordCountDisplay();
-            updateDailyGoalDisplay();
-            startBlockDetection();
-            initLineMarkEvents();
-        }
-
+        }, 1000);
     </script>
 </body>
 </html>

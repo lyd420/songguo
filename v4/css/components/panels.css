@@ -1,0 +1,287 @@
+/* ============================================
+   网文写作助手 v4 - 面板组件样式
+   包含：AI面板、模板面板、设置面板
+   ============================================ */
+
+/* AI 面板 */
+.ai-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+}
+
+.ai-tab {
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-bottom: -1px;
+}
+
+.ai-tab:hover {
+    color: var(--text-primary);
+}
+
+.ai-tab.active {
+    color: var(--accent-primary);
+    border-bottom-color: var(--accent-primary);
+    font-weight: 500;
+}
+
+.ai-section {
+    display: none;
+}
+
+.ai-section.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.ai-card {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+
+.ai-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ai-card-content {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.ai-progress {
+    margin-top: 12px;
+}
+
+.ai-progress-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.ai-progress-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    width: 40px;
+}
+
+.ai-progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--bg-tertiary);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.ai-progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.ai-progress-fill.good { background: var(--accent-success); }
+.ai-progress-fill.warning { background: var(--accent-warning); }
+.ai-progress-fill.danger { background: var(--accent-danger); }
+
+.ai-progress-value {
+    font-size: 11px;
+    color: var(--text-muted);
+    width: 30px;
+    text-align: right;
+}
+
+.ai-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all var(--transition-fast);
+}
+
+.ai-btn:hover {
+    background: var(--accent-secondary);
+}
+
+.ai-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.ai-tip {
+    background: var(--bg-tertiary);
+    border-left: 3px solid var(--accent-warning);
+    padding: 10px 12px;
+    border-radius: 0 6px 6px 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+/* 情绪曲线图 */
+.emotion-chart {
+    height: 120px;
+    background: var(--bg-primary);
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 8px;
+    position: relative;
+}
+
+.emotion-chart-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+/* 模板列表 */
+.template-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.template-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.template-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.template-card-icon {
+    font-size: 24px;
+    margin-bottom: 6px;
+}
+
+.template-card-title {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.template-card-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* 设置面板 */
+.settings-group {
+    margin-bottom: 20px;
+}
+
+.settings-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    display: block;
+}
+
+.settings-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 13px;
+}
+
+.settings-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+.settings-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* 开关 */
+.toggle-switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.toggle-switch:last-child {
+    border-bottom: none;
+}
+
+.toggle-label {
+    font-size: 13px;
+}
+
+.toggle-btn {
+    width: 40px;
+    height: 22px;
+    background: var(--border);
+    border-radius: 11px;
+    position: relative;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.toggle-btn.active {
+    background: var(--accent-primary);
+}
+
+.toggle-btn::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: transform var(--transition-fast);
+}
+
+.toggle-btn.active::after {
+    transform: translateX(18px);
+}

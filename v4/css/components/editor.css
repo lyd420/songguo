@@ -1,0 +1,260 @@
+/* ============================================
+   网文写作助手 v4 - 编辑器组件样式
+   ============================================ */
+
+/* 编辑器文本域 */
+.editor-textarea {
+    width: 100%;
+    min-height: 70vh;
+    background: var(--editor-bg);
+    border: none;
+    outline: none;
+    font-size: var(--editor-font-size);
+    line-height: var(--editor-line-height);
+    color: var(--text-primary);
+    resize: none;
+    padding: 20px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    tab-size: 4;
+}
+
+.editor-textarea::placeholder {
+    color: var(--text-muted);
+}
+
+/* 编辑器工具栏 */
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.toolbar-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all var(--transition-fast);
+}
+
+.toolbar-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.toolbar-btn.active {
+    background: var(--accent-primary);
+    color: white;
+}
+
+.toolbar-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+    margin: 0 4px;
+}
+
+.toolbar-btn-group {
+    display: flex;
+    gap: 2px;
+}
+
+/* 行标记按钮 */
+.line-mark-btn {
+    position: fixed;
+    width: 28px;
+    height: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 2px 8px var(--shadow);
+    pointer-events: auto;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    opacity: 0;
+    z-index: 1000;
+    top: -100px;
+    left: -100px;
+}
+
+.line-mark-btn.show {
+    opacity: 1;
+}
+
+.line-mark-btn:hover {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: white;
+    transform: scale(1.1);
+}
+
+.line-mark-btn.has-mark {
+    opacity: 1;
+    border-width: 2px;
+}
+
+.line-mark-btn.mark-todo { border-color: #D4A574; color: #D4A574; }
+.line-mark-btn.mark-question { border-color: #7A9CC6; color: #7A9CC6; }
+.line-mark-btn.mark-idea { border-color: #9CAF94; color: #9CAF94; }
+.line-mark-btn.mark-issue { border-color: #D4A5A5; color: #D4A5A5; }
+
+/* 标记线程面板 */
+.mark-thread {
+    position: absolute;
+    right: 60px;
+    width: 280px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px var(--shadow-lg);
+    z-index: 500;
+    display: none;
+    overflow: hidden;
+}
+
+.mark-thread.active {
+    display: block;
+    animation: slideInRight 0.2s ease;
+}
+
+.mark-thread-header {
+    padding: 12px 16px;
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mark-thread-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.mark-thread-body {
+    padding: 16px;
+}
+
+.mark-thread-line {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.mark-type-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.mark-type-btn {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all var(--transition-fast);
+}
+
+.mark-type-btn:hover {
+    border-color: var(--accent-primary);
+}
+
+.mark-type-btn.selected {
+    border-color: var(--accent-primary);
+    background: var(--accent-primary);
+    color: white;
+}
+
+.mark-type-icon {
+    font-size: 16px;
+}
+
+.mark-thread-input {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 13px;
+    resize: vertical;
+    margin-bottom: 12px;
+}
+
+.mark-thread-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+.mark-thread-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.mark-thread-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.mark-thread-btn.save {
+    background: var(--accent-primary);
+    color: white;
+}
+
+.mark-thread-btn.delete {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+/* 章节标题输入 */
+.chapter-title-input {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+.chapter-title-input:focus {
+    border-bottom-color: var(--accent-primary);
+}
+
+.chapter-title-input::placeholder {
+    color: var(--text-muted);
+}

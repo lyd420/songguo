@@ -1,0 +1,284 @@
+/* ============================================
+   网文写作助手 v4 - 侧边栏组件样式
+   ============================================ */
+
+/* 新建按钮 */
+.btn-new {
+    width: 100%;
+    padding: 10px 16px;
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all var(--transition-fast);
+}
+
+.btn-new:hover {
+    background: var(--accent-secondary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* 卷/章树形结构 */
+.volume-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.volume-item {
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.volume-header {
+    padding: 10px 12px;
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.volume-header:hover {
+    background: var(--border);
+}
+
+.volume-toggle {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    transition: transform var(--transition-fast);
+}
+
+.volume-item.collapsed .volume-toggle {
+    transform: rotate(-90deg);
+}
+
+.chapter-list {
+    padding: 4px 0;
+}
+
+.volume-item.collapsed .chapter-list {
+    display: none;
+}
+
+.chapter-item {
+    padding: 8px 12px 8px 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-radius: 4px;
+    margin: 2px 8px;
+    transition: all var(--transition-fast);
+}
+
+.chapter-item:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.chapter-item.active {
+    background: var(--accent-primary);
+    color: white;
+}
+
+.chapter-number {
+    font-size: 11px;
+    color: var(--text-muted);
+    min-width: 24px;
+}
+
+.chapter-item.active .chapter-number {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.chapter-title {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chapter-wordcount {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.chapter-item.active .chapter-wordcount {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* 标记列表 */
+.marks-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.marks-empty {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 16px 0;
+}
+
+.mark-item {
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-bottom: 4px;
+}
+
+.mark-item:hover {
+    background: var(--bg-tertiary);
+}
+
+.mark-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.mark-icon.todo { background: #FFF3E0; color: #D4A574; }
+.mark-icon.question { background: #E3F2FD; color: #7A9CC6; }
+.mark-icon.idea { background: #E8F5E9; color: #9CAF94; }
+.mark-icon.issue { background: #FFEBEE; color: #D4A5A5; }
+
+.mark-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.mark-line {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+}
+
+.mark-text {
+    font-size: 12px;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mark-preview {
+    font-size: 11px;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 2px;
+}
+
+/* 快捷工具栏 */
+.quick-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.quick-btn {
+    padding: 6px 10px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.quick-btn:hover {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: white;
+}
+
+/* 统计卡片 */
+.stats-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.stats-row:last-child {
+    margin-bottom: 0;
+}
+
+.stats-label {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.stats-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.stats-value.success { color: var(--accent-success); }
+.stats-value.warning { color: var(--accent-warning); }
+
+/* 日更进度条 */
+.goal-progress {
+    margin-top: 8px;
+}
+
+.goal-progress-bar {
+    height: 6px;
+    background: var(--bg-tertiary);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.goal-progress-fill {
+    height: 100%;
+    background: var(--accent-primary);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.goal-progress-fill.completed {
+    background: var(--accent-success);
+}
+
+.goal-progress-text {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: right;
+}

@@ -1,0 +1,240 @@
+{
+  "version": 1,
+  "skills": {
+    "acquisition-channel-advisor": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "ec35b85a01e6b22a78b987386fd5529be74d3266b148b51f5adc462b9d39ccf2"
+    },
+    "ai-shaped-readiness-advisor": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "5e336149f5783f3d7af13ea6204ad2bd9019256d4a88c5ae79c6e18e9294e9fc"
+    },
+    "altitude-horizon-framework": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "69e8e84d5ac3059a893e8f2291ebf73de4ebb3f9d5776aa9086c87c1cbb1f17d"
+    },
+    "brainstorming": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "computedHash": "5cafa1558b0b6bd4d4c71f23d5567b7fcbbcdb4b0a50b0c5f69a80a3cebaf9b8"
+    },
+    "business-health-diagnostic": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "62639de588687f356498bea67b80906d945ef7a05c48f2ceb8c5a758b0fa8f75"
+    },
+    "company-research": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "59c92748b44af0d8a03d1eb4fb19abf75048ef6c25170c1b91ed103c03366777"
+    },
+    "context-engineering-advisor": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "10d7fb100c19264e28e53187c6789ef09a94965b2c37ce9cf38f77aacfa33579"
+    },
+    "customer-journey-map": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "1b68b58034eca0cbc97aad30dd9825d5568c4f4ee676d20ffe615fbf1c2f53e5"
+    },
+    "customer-journey-mapping-workshop": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "b78661d2a9b74d41c3f806cfb38ddc9720c482a364fb93f040a575135ff51a39"
+    },
+    "director-readiness-advisor": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "0fef5b9b564aaca3ca67a39d732458a19ff63b5a460d7727425495602cd480b3"
+    },
+    "discovery-interview-prep": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "147cbff40e3b545ae30c86a0ff234fa086c61e0f1020f70c4042cbd9c5ab2e1c"
+    },
+    "discovery-process": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "539ee1e9671a9fff47d88da0bbc004a1ee4eec52e436a154475763762edeb781"
+    },
+    "eol-message": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "36c4568b2c403089ebd3c46a1a0c92f86cb830b3ea0695d286d83750cd243a37"
+    },
+    "epic-breakdown-advisor": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "a2ca0dee05aad999b09b802dfe97027528a74cdfc17cd4a3280bf89a59427509"
+    },
+    "epic-hypothesis": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "ebffec046d19870d83307cc54da127481fdaddd9e535bee0fde3a6e9a67a020d"
+    },
+    "executive-onboarding-playbook": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "bac9e15e65776bffca73b6c56633b2261ab24347f8491c3f4cc47077f7767bf6"
+    },
+    "feature-investment-advisor": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "874439b889de72c223e5f9c7dd1868600f0e0c58c7bb4ade5144e9462fcb4b34"
+    },
+    "finance-based-pricing-advisor": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "e417d874ef0f84d19d8e0ea6b31b4f50bdc230addbd0a362e00d9d688de8c682"
+    },
+    "finance-metrics-quickref": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "01ce3ad4c1c6240aaac65dd6413520f9b2264bb0a34c24783f64fe74874ec711"
+    },
+    "jobs-to-be-done": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "8bd831f31dbd6753f2c9ad890088d4ebe5b6d9e172b7e9d980eba4c5cf523781"
+    },
+    "lean-ux-canvas": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "e697d6578418a0ab48001d38f8c4f66e98204ea6549c4e90999be804363212b7"
+    },
+    "opportunity-solution-tree": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "f2c18db4a79dd800aeaa24fd87585536bab5a41887ba40759b2e88cd5e57af10"
+    },
+    "pestel-analysis": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "4939525674e86c4bab371dad4e33df51600ed136258711b5ebab3d811d26f8cb"
+    },
+    "pol-probe": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "569e40611bdbdc2f5e8d99a170d69a93c6290854dd3e07729874d2050263950c"
+    },
+    "pol-probe-advisor": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "f1efa9560aca32d1045b553d2f2fb6ccfbd8e10f6f4932dcd723926290301874"
+    },
+    "positioning-statement": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "eea4cb8971c25392d43756b046e6dbfaac4e8a13611fc21cef9c5f776866342e"
+    },
+    "positioning-workshop": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "e7ccd09bbaaabddc1920f5220f3e26457ba5f6e4575c3370fad6b5fea7055cb9"
+    },
+    "prd-development": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "303b6037aba96deeb65206cdb2469dd0518ad9fca6a5d2a54463b2cc9d226e1b"
+    },
+    "press-release": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "5fe4edf507fd315c0e6a54b51f37aa762e31e357629b72de3ca597b215e81aa4"
+    },
+    "prioritization-advisor": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "2088c2cd029433ea59a26bc50c6569b5d8f152c4729695e6e2beb122ce032018"
+    },
+    "problem-framing-canvas": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "f1aaa65e217a5d046fc5a7cb90e44bd0592595321acc395318bb0f249e4f357f"
+    },
+    "problem-statement": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "b9d379c5b35b32877b355cf095667834b32b293ed9130192d094c1fc7fce03af"
+    },
+    "product-strategy-session": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "f3223bf3ea3378b0c33f46b55d487af511426c133b2d31aeedab00017669ae8f"
+    },
+    "proto-persona": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "f4d87777d4a3a1618cf9d8d75815d2a5146a4d64e377ac177e41a8dea9ecf739"
+    },
+    "recommendation-canvas": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "2f357d6a5ac53492130af7e8bd0bcc56e44d2fb608b0e52c3754952358f61687"
+    },
+    "roadmap-planning": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "2b08ae8f2f3901130338ca56356fd9128154ca8eacc975e12ad679dd48dab405"
+    },
+    "saas-economics-efficiency-metrics": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "7ac3696024da3bbd70785dbb24661bb5391ebd71f28304570db671c889292ef5"
+    },
+    "saas-revenue-growth-metrics": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "5f365e04ef5a299e042ce8f353de87923897c30281f3d3fc15692666f2fb1c31"
+    },
+    "skill-authoring-workflow": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "cfeab35712ea4783ab3fc8259c5ed12b79b593210ab138899138c9e9d398988a"
+    },
+    "storyboard": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "21a2ff78120656642b56dc536d0a3ba19fe71e3e98fdf198e02aadb80ce1256d"
+    },
+    "tam-sam-som-calculator": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "cce5696792db703de75dc1a6befe131b37e18dbe2f3aa539cbb36c9955716b43"
+    },
+    "user-story": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "29fe74002e6ff809502847d435a91a9346e77be6e93fe17e9f02f07779792616"
+    },
+    "user-story-mapping": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "6ee98f0e0d929a05d6fe34e244b7b18df2df83e417846d364c56ce8cd08e1f11"
+    },
+    "user-story-mapping-workshop": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "ace3bb02b765538625ea255b13f1b13f605af39f53ecca73b0941fcabf88f15f"
+    },
+    "user-story-splitting": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "b8d899d9c15cc3f14e999738ffc060c6983a5693a6ada970ab5dd54e6b8e15a5"
+    },
+    "vp-cpo-readiness-advisor": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "5eac970a8f4c18a51b322539183acb64c211b23d90dea81a6d182dc143ea4d04"
+    },
+    "workshop-facilitation": {
+      "source": "deanpeters/Product-Manager-Skills",
+      "sourceType": "github",
+      "computedHash": "2c4c6c6fccb9be7c924ee5361154365fcb5433e21f4973518c4f6279700e96db"
+    }
+  }
+}
