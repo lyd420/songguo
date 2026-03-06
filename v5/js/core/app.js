@@ -11,7 +11,9 @@ import {
     initWorkshop, enterBook, switchToWorkshop, 
     showCreateBookModal, closeCreateBookModal, confirmCreateBook,
     generateBookTitleSuggestions, useBookTitle, polishBookSummary,
-    switchPage, toggleNavSection, switchSidebarTab, setEditorCallbacks
+    switchPage, toggleNavSection, switchSidebarTab, setEditorCallbacks,
+    filterBooks, renderWorksList, changeMonth,
+    filterEarningsByBook, filterEarningsByMonth
 } from '../modules/workshop.js';
 
 import {
