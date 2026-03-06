@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/components/modals.css">
     <link rel="stylesheet" href="css/components/calendar.css">
     <link rel="stylesheet" href="css/components/panels.css">
+    <link rel="stylesheet" href="css/components/earnings.css">
 </head>
 <body>
     <!-- 顶部导航栏 -->
@@ -47,61 +48,22 @@
             </a>
 
             <!-- 作品管理 -->
-            <div class="nav-section">
-                <div class="nav-section-header" onclick="toggleNavSection(this)">
-                    <span class="nav-icon">📚</span>
-                    <span class="nav-text">作品管理</span>
-                    <span class="nav-arrow">▼</span>
-                </div>
-                <div class="nav-section-content">
-                    <a href="#" class="nav-subitem" data-page="short-story" onclick="switchPage('short-story')">
-                        <span class="nav-dot"></span>
-                        <span>短篇</span>
-                    </a>
-                    <a href="#" class="nav-subitem" data-page="long-story" onclick="switchPage('long-story')">
-                        <span class="nav-dot"></span>
-                        <span>长篇</span>
-                    </a>
-                </div>
-            </div>
+            <a href="#" class="nav-item" data-page="works" onclick="switchPage('works')">
+                <span class="nav-icon">📚</span>
+                <span class="nav-text">作品管理</span>
+            </a>
 
             <!-- 收益分析 -->
-            <div class="nav-section">
-                <div class="nav-section-header" onclick="toggleNavSection(this)">
-                    <span class="nav-icon">💰</span>
-                    <span class="nav-text">收益分析</span>
-                    <span class="nav-arrow">▼</span>
-                </div>
-                <div class="nav-section-content">
-                    <a href="#" class="nav-subitem">
-                        <span class="nav-dot"></span>
-                        <span>短篇收益</span>
-                    </a>
-                    <a href="#" class="nav-subitem">
-                        <span class="nav-dot"></span>
-                        <span>长篇收益</span>
-                    </a>
-                </div>
-            </div>
+            <a href="#" class="nav-item" data-page="earnings" onclick="switchPage('earnings')">
+                <span class="nav-icon">💰</span>
+                <span class="nav-text">收益分析</span>
+            </a>
 
-            <!-- 个人中心 -->
-            <div class="nav-section">
-                <div class="nav-section-header" onclick="toggleNavSection(this)">
-                    <span class="nav-icon">👤</span>
-                    <span class="nav-text">个人中心</span>
-                    <span class="nav-arrow">▼</span>
-                </div>
-                <div class="nav-section-content">
-                    <a href="#" class="nav-subitem">
-                        <span class="nav-dot"></span>
-                        <span>账号信息</span>
-                    </a>
-                    <a href="#" class="nav-subitem">
-                        <span class="nav-dot"></span>
-                        <span>签约信息</span>
-                    </a>
-                </div>
-            </div>
+            <!-- 数据统计 -->
+            <a href="#" class="nav-item" data-page="stats" onclick="switchPage('stats')">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">数据统计</span>
+            </a>
         </nav>
     </aside>
 
@@ -119,9 +81,15 @@
                     </div>
                 </div>
                 <div class="user-card-right">
-                    <div class="user-card-stat">
-                        <div class="user-card-stat-label">累计创作字数</div>
-                        <div class="user-card-stat-value" id="totalWords">0</div>
+                    <div class="user-card-stats">
+                        <div class="user-card-stat">
+                            <div class="user-card-stat-label">累计创作字数</div>
+                            <div class="user-card-stat-value" id="totalWords">0</div>
+                        </div>
+                        <div class="user-card-stat">
+                            <div class="user-card-stat-label">累计收益(元)</div>
+                            <div class="user-card-stat-value" id="totalEarnings">0.00</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -130,21 +98,18 @@
             <div class="card works-card">
                 <div class="works-card-header">
                     <div class="works-tabs">
-                        <button class="works-tab active" data-tab="short">短篇</button>
-                        <button class="works-tab" data-tab="long">长篇</button>
+                        <button class="works-tab active" data-filter="all" onclick="filterBooks('all')">全部作品</button>
+                        <button class="works-tab" data-filter="ongoing" onclick="filterBooks('ongoing')">连载中</button>
+                        <button class="works-tab" data-filter="completed" onclick="filterBooks('completed')">已完结</button>
                     </div>
                     <button class="btn-primary" onclick="showCreateBookModal()">
                         <span class="btn-icon">+</span>
-                        <span>创建短篇</span>
+                        <span>创建作品</span>
                     </button>
                 </div>
                 <div class="works-card-body">
                     <div id="bookListContainer" class="book-list">
-                        <!-- 空白状态 -->
-                        <div class="empty-state">
-                            <div class="empty-state-illustration">📖</div>
-                            <button class="btn-primary btn-large" onclick="showCreateBookModal()">去创作</button>
-                        </div>
+                        <!-- 动态渲染 -->
                     </div>
                 </div>
             </div>
@@ -161,12 +126,10 @@
                         </div>
                     </div>
                     <div class="calendar-header">
-                        <div class="calendar-month">
+                        <div class="calendar-month" onclick="changeMonth(-1)">
+                            <span class="calendar-nav">‹</span>
                             <span id="calendarMonth">2026年3月</span>
-                            <span class="calendar-arrow">▼</span>
-                        </div>
-                        <div class="calendar-book-select">
-                            <span>暂无书籍</span>
+                            <span class="calendar-nav" onclick="changeMonth(1)">›</span>
                         </div>
                     </div>
                     <div class="calendar-body">
@@ -207,6 +170,150 @@
                             <div class="empty-illustration">🎉</div>
                             <div class="empty-text">暂无活动，请持续关注活动动态</div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 作品管理页面 ========== -->
+        <div id="works-page" class="page">
+            <div class="page-header">
+                <h2 class="page-title">作品管理</h2>
+                <button class="btn-primary" onclick="showCreateBookModal()">+ 创建作品</button>
+            </div>
+            <div class="card">
+                <div class="works-card-header">
+                    <div class="works-tabs">
+                        <button class="works-tab active" data-filter="all" onclick="filterBooks('all')">全部</button>
+                        <button class="works-tab" data-filter="ongoing" onclick="filterBooks('ongoing')">连载中</button>
+                        <button class="works-tab" data-filter="completed" onclick="filterBooks('completed')">已完结</button>
+                        <button class="works-tab" data-filter="draft" onclick="filterBooks('draft')">草稿</button>
+                    </div>
+                </div>
+                <div class="works-card-body">
+                    <div id="worksListContainer" class="book-list">
+                        <!-- 动态渲染 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 收益分析页面 ========== -->
+        <div id="earnings-page" class="page">
+            <div class="page-header">
+                <h2 class="page-title">收益分析</h2>
+                <div class="earnings-filter">
+                    <select id="earningsBookFilter" class="form-select" onchange="filterEarningsByBook()">
+                        <option value="all">全部作品</option>
+                    </select>
+                    <select id="earningsMonthFilter" class="form-select" onchange="filterEarningsByMonth()">
+                        <option value="all">全部月份</option>
+                        <option value="2026-03">2026年3月</option>
+                        <option value="2026-02">2026年2月</option>
+                        <option value="2026-01">2026年1月</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 收益概览卡片 -->
+            <div class="earnings-overview">
+                <div class="card earnings-card">
+                    <div class="earnings-card-icon">💰</div>
+                    <div class="earnings-card-info">
+                        <div class="earnings-card-label">累计总收入</div>
+                        <div class="earnings-card-value" id="earningsTotal">¥0.00</div>
+                    </div>
+                </div>
+                <div class="card earnings-card">
+                    <div class="earnings-card-icon">📅</div>
+                    <div class="earnings-card-info">
+                        <div class="earnings-card-label">本月收入</div>
+                        <div class="earnings-card-value" id="earningsMonth">¥0.00</div>
+                    </div>
+                </div>
+                <div class="card earnings-card">
+                    <div class="earnings-card-icon">📚</div>
+                    <div class="earnings-card-info">
+                        <div class="earnings-card-label">收益作品数</div>
+                        <div class="earnings-card-value" id="earningsBooks">0</div>
+                    </div>
+                </div>
+                <div class="card earnings-card">
+                    <div class="earnings-card-icon">👁</div>
+                    <div class="earnings-card-info">
+                        <div class="earnings-card-label">累计阅读</div>
+                        <div class="earnings-card-value" id="earningsReads">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 收益明细 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">收入明细</div>
+                </div>
+                <div class="earnings-table-wrapper">
+                    <table class="earnings-table" id="earningsTable">
+                        <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>作品名称</th>
+                                <th>收入来源</th>
+                                <th>阅读量</th>
+                                <th>收入金额</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody id="earningsTableBody">
+                            <!-- 动态渲染 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 作品收益排行 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">作品收益排行</div>
+                </div>
+                <div class="earnings-rank-list" id="earningsRankList">
+                    <!-- 动态渲染 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 数据统计页面 ========== -->
+        <div id="stats-page" class="page">
+            <div class="page-header">
+                <h2 class="page-title">数据统计</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="card stats-card">
+                    <div class="stats-card-icon">📝</div>
+                    <div class="stats-card-info">
+                        <div class="stats-card-label">累计创作字数</div>
+                        <div class="stats-card-value" id="statsTotalWords">0</div>
+                    </div>
+                </div>
+                <div class="card stats-card">
+                    <div class="stats-card-icon">📖</div>
+                    <div class="stats-card-info">
+                        <div class="stats-card-label">作品总数</div>
+                        <div class="stats-card-value" id="statsTotalBooks">0</div>
+                    </div>
+                </div>
+                <div class="card stats-card">
+                    <div class="stats-card-icon">📅</div>
+                    <div class="stats-card-info">
+                        <div class="stats-card-label">创作天数</div>
+                        <div class="stats-card-value" id="statsWritingDays">0</div>
+                    </div>
+                </div>
+                <div class="card stats-card">
+                    <div class="stats-card-icon">🔥</div>
+                    <div class="stats-card-info">
+                        <div class="stats-card-label">连续创作</div>
+                        <div class="stats-card-value" id="statsStreak">0天</div>
                     </div>
                 </div>
             </div>

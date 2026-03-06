@@ -1,0 +1,251 @@
+/* ============================================
+   收益分析页面样式
+   ============================================ */
+
+/* 页面标题 */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.page-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.earnings-filter {
+    display: flex;
+    gap: 12px;
+}
+
+.earnings-filter .form-select {
+    width: 160px;
+}
+
+/* 收益概览 */
+.earnings-overview {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.earnings-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+}
+
+.earnings-card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.earnings-card-info {
+    flex: 1;
+}
+
+.earnings-card-label {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin-bottom: 4px;
+}
+
+.earnings-card-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* 收益表格 */
+.earnings-table-wrapper {
+    padding: 0 20px 20px;
+    overflow-x: auto;
+}
+
+.earnings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.earnings-table th,
+.earnings-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.earnings-table th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--bg-body);
+}
+
+.earnings-table td {
+    color: var(--text-primary);
+}
+
+.earnings-table tr:hover td {
+    background: var(--bg-hover);
+}
+
+.earnings-table .amount {
+    color: #f5222d;
+    font-weight: 500;
+}
+
+.earnings-table .status {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.earnings-table .status.paid {
+    background: #f6ffed;
+    color: #52c41a;
+}
+
+.earnings-table .status.pending {
+    background: #fff7e6;
+    color: #fa8c16;
+}
+
+/* 收益排行 */
+.earnings-rank-list {
+    padding: 0 20px 20px;
+}
+
+.earnings-rank-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.earnings-rank-item:last-child {
+    border-bottom: none;
+}
+
+.earnings-rank-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--bg-body);
+    color: var(--text-secondary);
+}
+
+.earnings-rank-item:nth-child(1) .earnings-rank-number {
+    background: #fff2e8;
+    color: #fa8c16;
+}
+
+.earnings-rank-item:nth-child(2) .earnings-rank-number {
+    background: #f6ffed;
+    color: #52c41a;
+}
+
+.earnings-rank-item:nth-child(3) .earnings-rank-number {
+    background: #e6f7ff;
+    color: #1890ff;
+}
+
+.earnings-rank-info {
+    flex: 1;
+}
+
+.earnings-rank-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.earnings-rank-detail {
+    font-size: 12px;
+    color: var(--text-tertiary);
+}
+
+.earnings-rank-amount {
+    font-size: 16px;
+    font-weight: 600;
+    color: #f5222d;
+}
+
+/* 数据统计页面 */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.stats-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px;
+}
+
+.stats-card-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+.stats-card-info {
+    flex: 1;
+}
+
+.stats-card-label {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+}
+
+.stats-card-value {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* 响应式 */
+@media (max-width: 1200px) {
+    .earnings-overview,
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .earnings-overview,
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .earnings-filter {
+        flex-direction: column;
+    }
+}

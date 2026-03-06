@@ -7,139 +7,162 @@ import { saveBooks, loadBooks, saveCurrentBook, saveChapterContent, loadChapterC
 import { showToast, updateWordCountDisplay } from '../utils/ui.js';
 import { GENRES, BOOK_STATUS } from '../utils/constants.js';
 
-// 初始化工作台
+// ==================== 初始化 ====================
+
 export function initWorkshop() {
     state.books = loadBooks();
     renderBookList();
     renderCalendar();
-    updateTotalWords();
+    updateTotalStats();
+    initEarningsData();
 }
 
-// 更新总字数
-function updateTotalWords() {
+// 更新总统计数据
+function updateTotalStats() {
     const totalWords = state.books.reduce((sum, book) => sum + book.totalWords, 0);
-    const display = document.getElementById('totalWords');
-    if (display) {
-        display.textContent = formatWordCount(totalWords);
+    const totalEarnings = state.books.reduce((sum, book) => sum + (book.totalEarnings || 0), 0);
+    
+    const wordsDisplay = document.getElementById('totalWords');
+    const earningsDisplay = document.getElementById('totalEarnings');
+    
+    if (wordsDisplay) wordsDisplay.textContent = formatWordCount(totalWords);
+    if (earningsDisplay) earningsDisplay.textContent = totalEarnings.toFixed(2);
+}
+
+// ==================== 页面切换 ====================
+
+export function switchPage(pageName) {
+    // 隐藏所有页面
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    
+    // 显示目标页面
+    const targetPage = document.getElementById(`${pageName}-page`);
+    if (targetPage) targetPage.classList.add('active');
+    
+    // 更新导航状态
+    document.querySelector(`[data-page="${pageName}"]`)?.classList.add('active');
+    
+    // 页面特定初始化
+    if (pageName === 'works') {
+        renderWorksList();
+    } else if (pageName === 'earnings') {
+        initEarningsPage();
+    } else if (pageName === 'stats') {
+        initStatsPage();
     }
 }
 
-// 渲染书籍列表
+// ==================== 书籍列表渲染 ====================
+
 export function renderBookList() {
     const container = document.getElementById('bookListContainer');
     if (!container) return;
 
-    let filteredBooks = state.books;
-    if (state.bookFilter !== 'all') {
-        filteredBooks = state.books.filter(book => book.status === state.bookFilter);
-    }
-
-    filteredBooks.sort((a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated));
+    const filteredBooks = getFilteredBooks();
 
     if (filteredBooks.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
                 <div class="empty-state-illustration">📖</div>
-                <button class="btn-primary btn-large" onclick="showCreateBookModal()">去创作</button>
+                <div class="empty-text">还没有作品，开始创作吧</div>
+                <button class="btn-primary btn-large" onclick="showCreateBookModal()" style="margin-top: 16px;">去创作</button>
             </div>
         `;
         return;
     }
 
-    container.innerHTML = filteredBooks.map(book => {
-        const genreInfo = GENRES[book.genre] || { name: '其他', icon: '📝' };
-        const statusInfo = BOOK_STATUS[book.status] || { name: '未知', color: '#999' };
-        const timeText = formatTimeAgo(book.lastUpdated);
-        
-        return `
-            <div class="book-item" data-book-id="${book.id}" onclick="enterBook(${book.id})">
-                <div class="book-cover">
-                    <span>${book.title.charAt(0)}</span>
-                </div>
-                <div class="book-info">
-                    <div class="book-header">
-                        <span class="book-title">${book.title}</span>
-                        <span class="book-status" style="background: ${statusInfo.color}15; color: ${statusInfo.color}">
-                            ${statusInfo.name}
-                        </span>
-                    </div>
-                    <div class="book-meta">
-                        <span>${genreInfo.icon} ${genreInfo.name}</span>
-                        <span>•</span>
-                        <span>${book.totalChapters}章</span>
-                        <span>•</span>
-                        <span>${formatWordCount(book.totalWords)}</span>
-                    </div>
-                    <div class="book-stats">
-                        <span class="book-today ${book.todayWords > 0 ? 'active' : ''}">
-                            今日 +${formatWordCount(book.todayWords)}
-                        </span>
-                        <span class="book-time">${timeText}</span>
-                    </div>
-                </div>
-                <div class="book-actions">
-                    <button class="book-action-btn primary" onclick="event.stopPropagation(); enterBook(${book.id})">
-                        继续写作
-                    </button>
-                </div>
-            </div>
-        `;
-    }).join('');
+    container.innerHTML = filteredBooks.map(book => renderBookItem(book)).join('');
 }
 
-// 渲染码字日历
-export function renderCalendar() {
-    const monthDisplay = document.getElementById('calendarMonth');
-    const daysContainer = document.getElementById('calendarDays');
-    if (!monthDisplay || !daysContainer) return;
+// 渲染作品管理页面列表
+export function renderWorksList() {
+    const container = document.getElementById('worksListContainer');
+    if (!container) return;
 
-    const year = state.currentCalendarMonth.getFullYear();
-    const month = state.currentCalendarMonth.getMonth();
-    
-    monthDisplay.textContent = `${year}年${month + 1}月`;
+    const filteredBooks = getFilteredBooks();
 
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const prevLastDay = new Date(year, month, 0);
-    
-    const firstDayWeek = firstDay.getDay() || 7;
-    const daysInMonth = lastDay.getDate();
-    const daysInPrevMonth = prevLastDay.getDate();
-
-    let html = '';
-
-    // 上月日期
-    for (let i = firstDayWeek - 1; i > 0; i--) {
-        const day = daysInPrevMonth - i + 1;
-        html += `<div class="calendar-day other-month"><span class="calendar-day-number">${day}</span></div>`;
-    }
-
-    // 当月日期
-    const today = new Date();
-    for (let day = 1; day <= daysInMonth; day++) {
-        const isToday = today.getDate() === day && today.getMonth() === month && today.getFullYear() === year;
-        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        const wordCount = state.writingCalendar[dateKey] || 0;
-        const hasWords = wordCount > 0;
-        
-        html += `
-            <div class="calendar-day ${isToday ? 'today' : ''} ${hasWords ? 'has-words' : ''}">
-                <span class="calendar-day-number">${day}</span>
-                <span class="calendar-day-count">${hasWords ? formatWordCount(wordCount) : '0'}</span>
+    if (filteredBooks.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-illustration">📚</div>
+                <div class="empty-text">暂无符合条件的作品</div>
             </div>
         `;
+        return;
     }
 
-    // 下月日期
-    const remainingCells = (7 - ((firstDayWeek - 1 + daysInMonth) % 7)) % 7;
-    for (let day = 1; day <= remainingCells; day++) {
-        html += `<div class="calendar-day other-month"><span class="calendar-day-number">${day}</span></div>`;
-    }
-
-    daysContainer.innerHTML = html;
+    container.innerHTML = filteredBooks.map(book => renderBookItem(book)).join('');
 }
 
-// 进入书籍
+// 获取过滤后的书籍
+function getFilteredBooks() {
+    let books = state.books;
+    if (state.bookFilter && state.bookFilter !== 'all') {
+        books = books.filter(book => book.status === state.bookFilter);
+    }
+    return books.sort((a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated));
+}
+
+// 渲染单个书籍项
+function renderBookItem(book) {
+    const genreInfo = GENRES[book.genre] || { name: '其他', icon: '📝' };
+    const statusInfo = BOOK_STATUS[book.status] || { name: '未知', color: '#999' };
+    const timeText = formatTimeAgo(book.lastUpdated);
+    
+    return `
+        <div class="book-item" data-book-id="${book.id}" onclick="enterBook(${book.id})">
+            <div class="book-cover">
+                <span>${book.title.charAt(0)}</span>
+            </div>
+            <div class="book-info">
+                <div class="book-header">
+                    <span class="book-title">${book.title}</span>
+                    <span class="book-status" style="background: ${statusInfo.color}15; color: ${statusInfo.color}">
+                        ${statusInfo.name}
+                    </span>
+                </div>
+                <div class="book-meta">
+                    <span>${genreInfo.icon} ${genreInfo.name}</span>
+                    <span>•</span>
+                    <span>${book.totalChapters}章</span>
+                    <span>•</span>
+                    <span>${formatWordCount(book.totalWords)}</span>
+                </div>
+                <div class="book-stats">
+                    <span class="book-today ${book.todayWords > 0 ? 'active' : ''}">
+                        今日 +${formatWordCount(book.todayWords)}
+                    </span>
+                    <span class="book-time">${timeText}</span>
+                </div>
+            </div>
+            <div class="book-actions">
+                <button class="book-action-btn primary" onclick="event.stopPropagation(); enterBook(${book.id})">
+                    继续写作
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// 筛选书籍
+export function filterBooks(filter) {
+    state.bookFilter = filter;
+    
+    // 更新按钮状态
+    document.querySelectorAll('.works-tab').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.filter === filter) {
+            btn.classList.add('active');
+        }
+    });
+    
+    renderBookList();
+    renderWorksList();
+}
+
+// ==================== 进入书籍/编辑器 ====================
+
 export function enterBook(bookId) {
     const book = state.books.find(b => b.id === bookId);
     if (!book) return;
@@ -171,35 +194,6 @@ export function switchToWorkshop() {
     initWorkshop();
 }
 
-// 页面切换
-export function switchPage(pageName) {
-    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    document.querySelectorAll('.nav-item, .nav-subitem').forEach(item => item.classList.remove('active'));
-    
-    const targetPage = document.getElementById(`${pageName}-page`);
-    if (targetPage) targetPage.classList.add('active');
-    
-    // 更新导航状态
-    if (pageName === 'workshop') {
-        document.querySelector('[data-page="workshop"]')?.classList.add('active');
-    }
-}
-
-// 导航分组展开/收起
-export function toggleNavSection(header) {
-    const section = header.closest('.nav-section');
-    section.classList.toggle('expanded');
-}
-
-// 侧边栏标签切换
-export function switchSidebarTab(tabName) {
-    document.querySelectorAll('.sidebar-tab').forEach(tab => tab.classList.remove('active'));
-    document.querySelectorAll('.sidebar-panel').forEach(panel => panel.classList.remove('active'));
-    
-    document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
-    document.getElementById(`${tabName}Panel`)?.classList.add('active');
-}
-
 // 初始化编辑器
 function initEditor() {
     const editor = document.getElementById('editor');
@@ -224,7 +218,223 @@ function initEditor() {
     initCharacterCards();
 }
 
-// 显示创建作品弹窗
+// ==================== 日历功能 ====================
+
+export function renderCalendar() {
+    const monthDisplay = document.getElementById('calendarMonth');
+    const daysContainer = document.getElementById('calendarDays');
+    if (!monthDisplay || !daysContainer) return;
+
+    const year = state.currentCalendarMonth.getFullYear();
+    const month = state.currentCalendarMonth.getMonth();
+    
+    monthDisplay.textContent = `${year}年${month + 1}月`;
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const prevLastDay = new Date(year, month, 0);
+    
+    // 获取星期几 (1-7, 周一为1)
+    let firstDayWeek = firstDay.getDay();
+    if (firstDayWeek === 0) firstDayWeek = 7;
+    
+    const daysInMonth = lastDay.getDate();
+    const daysInPrevMonth = prevLastDay.getDate();
+
+    let html = '';
+
+    // 上月日期
+    for (let i = firstDayWeek - 1; i > 0; i--) {
+        const day = daysInPrevMonth - i + 1;
+        html += `<div class="calendar-day other-month"><span class="calendar-day-number">${day}</span></div>`;
+    }
+
+    // 当月日期
+    const today = new Date();
+    for (let day = 1; day <= daysInMonth; day++) {
+        const isToday = today.getDate() === day && today.getMonth() === month && today.getFullYear() === year;
+        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const wordCount = state.writingCalendar[dateKey] || 0;
+        const hasWords = wordCount > 0;
+        
+        html += `
+            <div class="calendar-day ${isToday ? 'today' : ''} ${hasWords ? 'has-words' : ''}">
+                <span class="calendar-day-number">${day}</span>
+                ${hasWords ? `<span class="calendar-day-count">${formatWordCount(wordCount)}</span>` : ''}
+            </div>
+        `;
+    }
+
+    // 下月日期
+    const totalCells = firstDayWeek - 1 + daysInMonth;
+    const remainingCells = (7 - (totalCells % 7)) % 7;
+    for (let day = 1; day <= remainingCells; day++) {
+        html += `<div class="calendar-day other-month"><span class="calendar-day-number">${day}</span></div>`;
+    }
+
+    daysContainer.innerHTML = html;
+}
+
+// 切换月份
+export function changeMonth(delta) {
+    state.currentCalendarMonth.setMonth(state.currentCalendarMonth.getMonth() + delta);
+    renderCalendar();
+}
+
+// ==================== 收益功能 ====================
+
+// 初始化收益数据
+function initEarningsData() {
+    // 为每本书生成模拟收益数据
+    state.books.forEach(book => {
+        if (!book.totalEarnings) {
+            book.totalEarnings = Math.floor(Math.random() * 5000) + 1000;
+        }
+        if (!book.monthEarnings) {
+            book.monthEarnings = Math.floor(book.totalEarnings * 0.3);
+        }
+        if (!book.readCount) {
+            book.readCount = Math.floor(Math.random() * 100000) + 10000;
+        }
+    });
+}
+
+// 初始化收益页面
+function initEarningsPage() {
+    initEarningsData();
+    updateEarningsFilter();
+    renderEarningsOverview();
+    renderEarningsTable();
+    renderEarningsRank();
+}
+
+// 更新收益筛选器
+function updateEarningsFilter() {
+    const select = document.getElementById('earningsBookFilter');
+    if (!select) return;
+    
+    select.innerHTML = `
+        <option value="all">全部作品</option>
+        ${state.books.map(book => `<option value="${book.id}">${book.title}</option>`).join('')}
+    `;
+}
+
+// 渲染收益概览
+function renderEarningsOverview() {
+    const bookFilter = document.getElementById('earningsBookFilter')?.value || 'all';
+    const monthFilter = document.getElementById('earningsMonthFilter')?.value || 'all';
+    
+    let books = state.books;
+    if (bookFilter !== 'all') {
+        books = books.filter(b => b.id == bookFilter);
+    }
+    
+    const totalEarnings = books.reduce((sum, b) => sum + (b.totalEarnings || 0), 0);
+    const monthEarnings = books.reduce((sum, b) => sum + (b.monthEarnings || 0), 0);
+    const totalReads = books.reduce((sum, b) => sum + (b.readCount || 0), 0);
+    
+    const totalEl = document.getElementById('earningsTotal');
+    const monthEl = document.getElementById('earningsMonth');
+    const booksEl = document.getElementById('earningsBooks');
+    const readsEl = document.getElementById('earningsReads');
+    
+    if (totalEl) totalEl.textContent = `¥${totalEarnings.toFixed(2)}`;
+    if (monthEl) monthEl.textContent = `¥${monthEarnings.toFixed(2)}`;
+    if (booksEl) booksEl.textContent = books.length;
+    if (readsEl) readsEl.textContent = formatWordCount(totalReads);
+}
+
+// 渲染收益明细表
+function renderEarningsTable() {
+    const tbody = document.getElementById('earningsTableBody');
+    if (!tbody) return;
+
+    const sources = ['订阅分成', '打赏分成', '全勤奖', '完本奖', '渠道分成'];
+    const statuses = ['paid', 'pending'];
+    const statusLabels = { paid: '已结算', pending: '待结算' };
+    
+    let html = '';
+    
+    // 生成模拟数据
+    state.books.forEach(book => {
+        const days = 10;
+        for (let i = 0; i < days; i++) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            const dateStr = `${date.getMonth() + 1}月${date.getDate()}日`;
+            const source = sources[Math.floor(Math.random() * sources.length)];
+            const amount = (Math.random() * 100 + 10).toFixed(2);
+            const reads = Math.floor(Math.random() * 1000 + 100);
+            const status = Math.random() > 0.3 ? 'paid' : 'pending';
+            
+            html += `
+                <tr>
+                    <td>${dateStr}</td>
+                    <td>${book.title}</td>
+                    <td>${source}</td>
+                    <td>${reads}</td>
+                    <td class="amount">¥${amount}</td>
+                    <td><span class="status ${status}">${statusLabels[status]}</span></td>
+                </tr>
+            `;
+        }
+    });
+    
+    tbody.innerHTML = html || '<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--text-tertiary);">暂无收益数据</td></tr>';
+}
+
+// 渲染收益排行
+function renderEarningsRank() {
+    const container = document.getElementById('earningsRankList');
+    if (!container) return;
+
+    const sortedBooks = [...state.books].sort((a, b) => (b.totalEarnings || 0) - (a.totalEarnings || 0));
+    
+    container.innerHTML = sortedBooks.map((book, index) => `
+        <div class="earnings-rank-item">
+            <div class="earnings-rank-number">${index + 1}</div>
+            <div class="book-cover" style="width: 40px; height: 54px; font-size: 16px;">
+                <span>${book.title.charAt(0)}</span>
+            </div>
+            <div class="earnings-rank-info">
+                <div class="earnings-rank-name">${book.title}</div>
+                <div class="earnings-rank-detail">${book.totalChapters}章 · ${formatWordCount(book.totalWords)}</div>
+            </div>
+            <div class="earnings-rank-amount">¥${(book.totalEarnings || 0).toFixed(2)}</div>
+        </div>
+    `).join('');
+}
+
+// 筛选收益
+export function filterEarningsByBook() {
+    renderEarningsOverview();
+}
+
+export function filterEarningsByMonth() {
+    renderEarningsOverview();
+}
+
+// ==================== 数据统计页面 ====================
+
+function initStatsPage() {
+    const totalWords = state.books.reduce((sum, b) => sum + b.totalWords, 0);
+    const totalBooks = state.books.length;
+    const writingDays = Object.keys(state.writingCalendar).length || 30;
+    const streakDays = 5; // 模拟连续创作天数
+    
+    const wordsEl = document.getElementById('statsTotalWords');
+    const booksEl = document.getElementById('statsTotalBooks');
+    const daysEl = document.getElementById('statsWritingDays');
+    const streakEl = document.getElementById('statsStreak');
+    
+    if (wordsEl) wordsEl.textContent = formatWordCount(totalWords);
+    if (booksEl) booksEl.textContent = totalBooks;
+    if (daysEl) daysEl.textContent = writingDays;
+    if (streakEl) streakEl.textContent = streakDays + '天';
+}
+
+// ==================== 创建作品 ====================
+
 export function showCreateBookModal() {
     const modal = document.getElementById('createBookModal');
     if (!modal) return;
@@ -239,12 +449,10 @@ export function showCreateBookModal() {
     setTimeout(() => document.getElementById('newBookTitle')?.focus(), 100);
 }
 
-// 关闭创建作品弹窗
 export function closeCreateBookModal() {
     document.getElementById('createBookModal')?.classList.remove('active');
 }
 
-// 确认创建作品
 export function confirmCreateBook() {
     const title = document.getElementById('newBookTitle')?.value?.trim();
     const genre = document.getElementById('newBookGenre')?.value || 'urban';
@@ -273,6 +481,9 @@ export function confirmCreateBook() {
         totalChapters: 1,
         totalWords: 0,
         todayWords: 0,
+        totalEarnings: 0,
+        monthEarnings: 0,
+        readCount: 0,
         lastUpdated: new Date().toISOString(),
         createdAt: new Date().toISOString(),
         targetWords: targetWords,
@@ -316,12 +527,10 @@ export function generateBookTitleSuggestions() {
     `;
 }
 
-// 使用推荐书名
 export function useBookTitle(title) {
     document.getElementById('newBookTitle').value = title;
 }
 
-// AI润色简介
 export function polishBookSummary() {
     const summary = document.getElementById('newBookSummary')?.value?.trim();
     if (!summary) {
@@ -335,7 +544,22 @@ export function polishBookSummary() {
     showToast('简介已润色');
 }
 
-// 导入其他模块（避免循环依赖）
+// 导航分组展开/收起
+export function toggleNavSection(header) {
+    const section = header.closest('.nav-section');
+    section.classList.toggle('expanded');
+}
+
+// 侧边栏标签切换
+export function switchSidebarTab(tabName) {
+    document.querySelectorAll('.sidebar-tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.sidebar-panel').forEach(panel => panel.classList.remove('active'));
+    
+    document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
+    document.getElementById(`${tabName}Panel`)?.classList.add('active');
+}
+
+// 导入
 let initEditorEvents, initLineMarkEvents, loadChapterMarks, initCharacterCards;
 
 export function setEditorCallbacks(callbacks) {

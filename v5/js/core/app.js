@@ -98,6 +98,13 @@ window.confirmCreateBook = confirmCreateBook;
 window.generateBookTitleSuggestions = generateBookTitleSuggestions;
 window.useBookTitle = useBookTitle;
 window.polishBookSummary = polishBookSummary;
+window.filterBooks = filterBooks;
+window.renderWorksList = renderWorksList;
+window.changeMonth = changeMonth;
+
+// 收益分析
+window.filterEarningsByBook = filterEarningsByBook;
+window.filterEarningsByMonth = filterEarningsByMonth;
 
 // 章节目录
 window.saveContent = saveContent;
