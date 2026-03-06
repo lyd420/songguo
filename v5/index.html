@@ -400,21 +400,74 @@
                         <!-- 标记列表由JS渲染 -->
                     </div>
                     <!-- AI 助手面板 -->
-                    <div class="ai-assistant-section">
-                        <div class="ai-assistant-header">
-                            <span class="ai-assistant-title">🤖 AI 助手</span>
+                    <div class="ai-assistant-card">
+                        <!-- 顶部状态栏 -->
+                        <div class="ai-assistant-status-bar">
+                            <div class="ai-assistant-title-row">
+                                <span class="ai-assistant-icon">🤖</span>
+                                <span class="ai-assistant-title-text">AI 助手</span>
+                            </div>
+                            <div class="ai-assistant-edit-status">
+                                <span class="edit-status-icon">✏️</span>
+                                <span class="edit-status-text">状态：已完成第3章，正在构思第4章转折点</span>
+                            </div>
                         </div>
-                        <div class="ai-assistant-tabs">
-                            <button class="ai-assistant-tab active" data-tab="outline" onclick="switchAITab('outline')">大纲</button>
-                            <button class="ai-assistant-tab" data-tab="plot" onclick="switchAITab('plot')">剧情</button>
-                            <button class="ai-assistant-tab" data-tab="polish" onclick="switchAITab('polish')">润色</button>
-                        </div>
-                        <div class="ai-assistant-content">
-                            <div id="aiContent">
-                                <div class="ai-assistant-placeholder">
-                                    <span>选择功能开始使用AI助手</span>
+                        
+                        <!-- 对话区域 -->
+                        <div class="ai-chat-area" id="aiChatArea">
+                            <!-- AI气泡示例 -->
+                            <div class="ai-bubble">
+                                <div class="ai-bubble-content">
+                                    <p>我为你构思了以下3个剧情转折方向：</p>
+                                    <div class="ai-suggestion-list">
+                                        <div class="suggestion-item">
+                                            <span class="suggestion-number">1</span>
+                                            <span class="suggestion-text">主角身份被反派揭露，引发家族危机</span>
+                                            <a href="#" class="quick-insert">快速插入</a>
+                                        </div>
+                                        <div class="suggestion-item">
+                                            <span class="suggestion-number">2</span>
+                                            <span class="suggestion-text">神秘人物出现，带来关键线索</span>
+                                            <a href="#" class="quick-insert">快速插入</a>
+                                        </div>
+                                        <div class="suggestion-item">
+                                            <span class="suggestion-number">3</span>
+                                            <span class="suggestion-text">主角能力觉醒，但代价惨重</span>
+                                            <a href="#" class="quick-insert">快速插入</a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            
+                            <!-- 用户气泡示例 -->
+                            <div class="user-bubble">
+                                <div class="user-bubble-content">
+                                    <p>帮我设计一个更出人意料的转折</p>
+                                </div>
+                            </div>
+                            
+                            <!-- 交互按钮组 -->
+                            <div class="ai-suggestion-buttons">
+                                <button class="suggestion-chip">
+                                    <span class="chip-icon">✨</span>
+                                    <span class="chip-text">为我找一个新灵感</span>
+                                </button>
+                                <button class="suggestion-chip">
+                                    <span class="chip-icon">🎭</span>
+                                    <span class="chip-text">设计突发情节冲突</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 底部输入框 -->
+                        <div class="ai-input-area">
+                            <input type="text" class="ai-input" placeholder="输入您的问题或想法...">
+                            <button class="ai-send-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </aside>
