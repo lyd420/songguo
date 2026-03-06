@@ -168,14 +168,14 @@ export function publishChapter() {
 }
 
 // 返回工作台
-export function goBack() {
+export async function goBack() {
     if (state.isDirty) {
         if (confirm('当前章节有未保存的更改，是否保存？')) {
             saveContent();
         }
     }
     
-    const { switchToWorkshop } = require('./workshop.js');
+    const { switchToWorkshop } = await import('./workshop.js');
     switchToWorkshop();
 }
 

@@ -151,8 +151,8 @@ export function closeCharacterPanel() {
 }
 
 // 插入人物姓名到编辑器
-export function insertCharacterName(name) {
-    const { insertText } = require('../utils/ui.js');
+export async function insertCharacterName(name) {
+    const { insertText } = await import('../utils/ui.js');
     insertText(name);
     showToast(`已插入：${name}`);
 }

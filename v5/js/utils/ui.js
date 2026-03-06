@@ -3,6 +3,7 @@
    ============================================ */
 
 import { state, countWords } from '../core/state.js';
+import { NAMES } from './constants.js';
 
 // 显示提示
 export function showToast(message) {
@@ -78,7 +79,6 @@ export function updateMarksList() {
 
 // 生成随机名字
 export function generateName(gender = 'male') {
-    const { NAMES } = require('./constants.js');
     const surname = NAMES.surnames[Math.floor(Math.random() * NAMES.surnames.length)];
     const names = gender === 'female' ? NAMES.female : NAMES.male;
     const name = names[Math.floor(Math.random() * names.length)];

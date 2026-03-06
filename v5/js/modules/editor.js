@@ -35,11 +35,11 @@ export function initEditorEvents() {
     });
 
     // 键盘快捷键
-    state.editor.addEventListener('keydown', (e) => {
+    state.editor.addEventListener('keydown', async (e) => {
         // Ctrl/Cmd + S 保存
         if ((e.ctrlKey || e.metaKey) && e.key === 's') {
             e.preventDefault();
-            const { saveContent } = require('./chapterManager.js');
+            const { saveContent } = await import('./chapterManager.js');
             saveContent();
         }
     });
