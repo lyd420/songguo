@@ -196,26 +196,39 @@ export function switchToWorkshop() {
 
 // 初始化编辑器
 function initEditor() {
-    const editor = document.getElementById('editor');
-    if (!editor) return;
+    // 延迟一点执行，确保DOM已经更新
+    setTimeout(() => {
+        const editor = document.getElementById('editor');
+        if (!editor) {
+            console.error('[initEditor] Editor element not found');
+            return;
+        }
 
-    state.editor = editor;
-    
-    // 加载章节内容
-    const content = loadChapterContent(state.currentBook.id + '_' + state.currentChapter);
-    editor.value = content;
-    state.originalContent = content;
-    state.wordCountAtOpen = updateWordCountDisplay();
+        state.editor = editor;
+        
+        // 加载章节内容
+        const content = loadChapterContent(state.currentBook.id + '_' + state.currentChapter);
+        editor.value = content;
+        state.originalContent = content;
+        state.wordCountAtOpen = updateWordCountDisplay();
 
-    // 初始化事件
-    initEditorEvents();
-    initLineMarkEvents();
-    
-    // 加载标记
-    loadChapterMarks(state.currentChapter);
-    
-    // 初始化人物卡
-    initCharacterCards();
+        // 初始化事件
+        if (initEditorEvents) initEditorEvents();
+        else console.error('[initEditor] initEditorEvents not set');
+        
+        if (initLineMarkEvents) initLineMarkEvents();
+        else console.error('[initEditor] initLineMarkEvents not set');
+        
+        // 加载标记
+        if (loadChapterMarks) loadChapterMarks(state.currentChapter);
+        else console.error('[initEditor] loadChapterMarks not set');
+        
+        // 初始化人物卡
+        if (initCharacterCards) initCharacterCards();
+        else console.error('[initEditor] initCharacterCards not set');
+        
+        console.log('[initEditor] Editor initialized successfully');
+    }, 50);
 }
 
 // ==================== 日历功能 ====================
