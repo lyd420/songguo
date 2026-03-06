@@ -19,6 +19,11 @@
     position: relative;
 }
 
+/* 确保编辑器页面是相对定位，让面板可以绝对定位在里面 */
+#editor-page .editor-layout {
+    position: relative;
+}
+
 /* 编辑器侧边栏 */
 .editor-sidebar {
     width: 260px;
