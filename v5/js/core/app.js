@@ -3,7 +3,7 @@
    ============================================ */
 
 import { state } from './state.js';
-import { loadChapterContent, loadVolumes, loadNextChapterId } from './storage.js';
+import { loadChapterContent, loadNextChapterId } from './storage.js';
 import { countWords } from './state.js';
 
 // 导入各模块
@@ -70,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
         state.editor = document.getElementById('editor');
 
         // 初始化数据
-        state.volumes = loadVolumes();
         state.nextChapterId = loadNextChapterId();
 
         // 初始化工作台

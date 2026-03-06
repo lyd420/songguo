@@ -170,34 +170,27 @@ export function loadCharacters(bookId) {
     return loadFromStorage(STORAGE_KEYS.CHARACTERS + bookId, defaultCharacters);
 }
 
-// 卷和章节结构存储
-export function saveVolumes(volumes) {
-    saveToStorage(STORAGE_KEYS.VOLUMES, volumes);
+// 卷和章节结构存储 - 按书籍ID分开存储
+export function saveVolumes(bookId, volumes) {
+    saveToStorage(STORAGE_KEYS.VOLUMES + bookId, volumes);
 }
 
-export function loadVolumes() {
-    const defaultVolumes = [
+export function loadVolumes(bookId) {
+    // 如果没有数据，返回null，让调用方创建默认结构
+    return loadFromStorage(STORAGE_KEYS.VOLUMES + bookId, null);
+}
+
+// 创建默认的卷和章节结构
+export function createDefaultVolumes() {
+    return [
         {
             id: 1,
-            name: '第一卷：觉醒',
+            name: '第一卷',
             chapters: [
-                { id: 1, title: '龙王归来', wordCount: 3500 },
-                { id: 2, title: '离婚协议', wordCount: 4200 },
-                { id: 3, title: '身份暴露', wordCount: 3800 },
-                { id: 14, title: '宴会邀请', wordCount: 4100 },
-                { id: 15, title: '打脸丈母娘', wordCount: 0 },
-                { id: 16, title: '宴会风波', wordCount: 0 }
-            ]
-        },
-        {
-            id: 2,
-            name: '第二卷：崛起',
-            chapters: [
-                { id: 25, title: '待添加', wordCount: 0 }
+                { id: 1, title: '第一章', wordCount: 0 }
             ]
         }
     ];
-    return loadFromStorage(STORAGE_KEYS.VOLUMES, defaultVolumes);
 }
 
 // 码字日历数据

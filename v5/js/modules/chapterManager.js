@@ -3,12 +3,25 @@
    ============================================ */
 
 import { state, countWords, formatWordCount } from '../core/state.js';
-import { loadVolumes, saveVolumes, saveChapterContent, loadChapterContent, saveNextChapterId } from '../core/storage.js';
+import { loadVolumes, saveVolumes, saveChapterContent, loadChapterContent, saveNextChapterId, createDefaultVolumes } from '../core/storage.js';
 import { showToast, updateWordCountDisplay, updateSaveStatus } from '../utils/ui.js';
 
-// 初始化章节树
+// 初始化章节树 - 根据当前书籍加载
 export function initChapterTree() {
-    state.volumes = loadVolumes();
+    if (!state.currentBook) return;
+    
+    let volumes = loadVolumes(state.currentBook.id);
+    
+    // 如果没有数据，创建默认结构
+    if (!volumes) {
+        volumes = createDefaultVolumes();
+        saveVolumes(state.currentBook.id, volumes);
+    }
+    
+    state.volumes = volumes;
+    state.nextVolumeId = Math.max(...volumes.map(v => v.id), 0) + 1;
+    state.nextChapterId = Math.max(...volumes.flatMap(v => v.chapters.map(c => c.id)), 0) + 1;
+    
     renderChapterTree();
 }
 
@@ -220,7 +233,7 @@ export function confirmAddChapter() {
     const volume = state.volumes.find(v => v.id === volumeId);
     if (volume) {
         volume.chapters.push(newChapter);
-        saveVolumes(state.volumes);
+        saveVolumes(state.currentBook.id, state.volumes);
         saveNextChapterId(state.nextChapterId);
         renderChapterTree();
         closeChapterModal();
@@ -255,7 +268,7 @@ export function confirmAddVolume() {
     };
 
     state.volumes.push(newVolume);
-    saveVolumes(state.volumes);
+    saveVolumes(state.currentBook.id, state.volumes);
     renderChapterTree();
     closeVolumeModal();
     showToast('卷添加成功');
@@ -269,7 +282,7 @@ export function deleteChapter(chapterId) {
         volume.chapters = volume.chapters.filter(c => c.id !== chapterId);
     });
     
-    saveVolumes(state.volumes);
+    saveVolumes(state.currentBook.id, state.volumes);
     renderChapterTree();
     showToast('章节已删除');
 }
@@ -279,7 +292,7 @@ export function deleteVolume(volumeId) {
     if (!confirm('确定要删除这个卷吗？其中的章节也会被删除。')) return;
 
     state.volumes = state.volumes.filter(v => v.id !== volumeId);
-    saveVolumes(state.volumes);
+    saveVolumes(state.currentBook.id, state.volumes);
     renderChapterTree();
     showToast('卷已删除');
 }

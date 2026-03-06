@@ -3,7 +3,7 @@
    ============================================ */
 
 import { state, formatWordCount, formatTimeAgo } from '../core/state.js';
-import { saveBooks, loadBooks, saveCurrentBook, saveChapterContent, loadChapterContent } from '../core/storage.js';
+import { saveBooks, loadBooks, saveCurrentBook, saveChapterContent, loadChapterContent, saveVolumes, createDefaultVolumes } from '../core/storage.js';
 import { showToast, updateWordCountDisplay } from '../utils/ui.js';
 import { GENRES, BOOK_STATUS } from '../utils/constants.js';
 
@@ -505,6 +505,10 @@ export function confirmCreateBook() {
 
     state.books.push(newBook);
     saveBooks(state.books);
+    
+    // 创建默认的卷和章节结构
+    const defaultVolumes = createDefaultVolumes();
+    saveVolumes(newId, defaultVolumes);
     saveChapterContent(`${newId}_1`, '');
 
     closeCreateBookModal();
