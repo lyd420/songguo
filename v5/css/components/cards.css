@@ -1,0 +1,271 @@
+/* ============================================
+   卡片组件样式
+   ============================================ */
+
+/* 用户信息卡片 */
+.user-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px;
+    margin-bottom: 16px;
+}
+
+.user-card-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-card-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+.user-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.user-card-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.user-card-desc {
+    font-size: 14px;
+    color: var(--text-tertiary);
+}
+
+.user-card-right {
+    text-align: right;
+}
+
+.user-card-stat-label {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin-bottom: 4px;
+}
+
+.user-card-stat-value {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+/* 作品管理卡片 */
+.works-card {
+    margin-bottom: 16px;
+}
+
+.works-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.works-tabs {
+    display: flex;
+    gap: 24px;
+}
+
+.works-tab {
+    padding: 8px 0;
+    background: transparent;
+    border: none;
+    font-size: 15px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.works-tab:hover {
+    color: var(--primary);
+}
+
+.works-tab.active {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.works-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -16px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--primary);
+}
+
+.works-card-body {
+    padding: 20px;
+    min-height: 300px;
+}
+
+/* 书籍列表 */
+.book-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.book-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--bg-body);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.book-item:hover {
+    background: var(--bg-hover);
+    box-shadow: var(--shadow-card);
+}
+
+.book-cover {
+    width: 60px;
+    height: 80px;
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    color: #fff;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.book-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.book-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.book-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.book-status {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.book-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.book-stats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+}
+
+.book-today {
+    color: var(--text-tertiary);
+}
+
+.book-today.active {
+    color: var(--primary);
+}
+
+.book-time {
+    color: var(--text-tertiary);
+}
+
+.book-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.book-action-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.book-action-btn.primary {
+    background: var(--primary);
+    color: #fff;
+}
+
+.book-action-btn.primary:hover {
+    background: var(--primary-hover);
+}
+
+/* 公告卡片 */
+.notice-card .card-header {
+    border-bottom: none;
+    padding-bottom: 8px;
+}
+
+.notice-list {
+    padding: 0 20px 16px;
+}
+
+.notice-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.notice-item:last-child {
+    border-bottom: none;
+}
+
+.notice-text {
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.notice-date {
+    font-size: 13px;
+    color: var(--text-tertiary);
+}
+
+/* 活动卡片 */
+.activity-card {
+    flex: 1;
+}
+
+.activity-card .card-header {
+    border-bottom: none;
+    padding-bottom: 0;
+}

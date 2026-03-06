@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网文写作助手 - 创作者平台</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components/sidebar.css">
+    <link rel="stylesheet" href="css/components/cards.css">
+    <link rel="stylesheet" href="css/components/editor.css">
+    <link rel="stylesheet" href="css/components/modals.css">
+    <link rel="stylesheet" href="css/components/calendar.css">
+    <link rel="stylesheet" href="css/components/panels.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="top-header">
+        <div class="header-left">
+            <div class="logo">
+                <span class="logo-icon">📝</span>
+                <span class="logo-text">网文写作助手</span>
+            </div>
+            <span class="header-divider">|</span>
+            <span class="header-subtitle">创作者平台</span>
+        </div>
+        <div class="header-right">
+            <button class="header-btn">
+                <span class="header-btn-icon">🔔</span>
+                <span>消息通知</span>
+            </button>
+            <div class="user-info">
+                <div class="user-avatar">作</div>
+                <span class="user-name">作者</span>
+                <span class="user-arrow">▼</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 左侧导航栏 -->
+    <aside class="sidebar">
+        <nav class="sidebar-nav">
+            <!-- 工作台 -->
+            <a href="#" class="nav-item active" data-page="workshop" onclick="switchPage('workshop')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">工作台</span>
+            </a>
+
+            <!-- 作品管理 -->
+            <div class="nav-section">
+                <div class="nav-section-header" onclick="toggleNavSection(this)">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">作品管理</span>
+                    <span class="nav-arrow">▼</span>
+                </div>
+                <div class="nav-section-content">
+                    <a href="#" class="nav-subitem" data-page="short-story" onclick="switchPage('short-story')">
+                        <span class="nav-dot"></span>
+                        <span>短篇</span>
+                    </a>
+                    <a href="#" class="nav-subitem" data-page="long-story" onclick="switchPage('long-story')">
+                        <span class="nav-dot"></span>
+                        <span>长篇</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 收益分析 -->
+            <div class="nav-section">
+                <div class="nav-section-header" onclick="toggleNavSection(this)">
+                    <span class="nav-icon">💰</span>
+                    <span class="nav-text">收益分析</span>
+                    <span class="nav-arrow">▼</span>
+                </div>
+                <div class="nav-section-content">
+                    <a href="#" class="nav-subitem">
+                        <span class="nav-dot"></span>
+                        <span>短篇收益</span>
+                    </a>
+                    <a href="#" class="nav-subitem">
+                        <span class="nav-dot"></span>
+                        <span>长篇收益</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 个人中心 -->
+            <div class="nav-section">
+                <div class="nav-section-header" onclick="toggleNavSection(this)">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-text">个人中心</span>
+                    <span class="nav-arrow">▼</span>
+                </div>
+                <div class="nav-section-content">
+                    <a href="#" class="nav-subitem">
+                        <span class="nav-dot"></span>
+                        <span>账号信息</span>
+                    </a>
+                    <a href="#" class="nav-subitem">
+                        <span class="nav-dot"></span>
+                        <span>签约信息</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- ========== 工作台页面 ========== -->
+        <div id="workshop-page" class="page active">
+            <!-- 用户信息卡片 -->
+            <div class="card user-card">
+                <div class="user-card-left">
+                    <div class="user-card-avatar">👤</div>
+                    <div class="user-card-info">
+                        <div class="user-card-name">笔名</div>
+                        <div class="user-card-desc">暂无描述</div>
+                    </div>
+                </div>
+                <div class="user-card-right">
+                    <div class="user-card-stat">
+                        <div class="user-card-stat-label">累计创作字数</div>
+                        <div class="user-card-stat-value" id="totalWords">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 作品管理区域 -->
+            <div class="card works-card">
+                <div class="works-card-header">
+                    <div class="works-tabs">
+                        <button class="works-tab active" data-tab="short">短篇</button>
+                        <button class="works-tab" data-tab="long">长篇</button>
+                    </div>
+                    <button class="btn-primary" onclick="showCreateBookModal()">
+                        <span class="btn-icon">+</span>
+                        <span>创建短篇</span>
+                    </button>
+                </div>
+                <div class="works-card-body">
+                    <div id="bookListContainer" class="book-list">
+                        <!-- 空白状态 -->
+                        <div class="empty-state">
+                            <div class="empty-state-illustration">📖</div>
+                            <button class="btn-primary btn-large" onclick="showCreateBookModal()">去创作</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部两栏 -->
+            <div class="bottom-grid">
+                <!-- 码字日历 -->
+                <div class="card calendar-card">
+                    <div class="card-header">
+                        <div class="card-title">码字日历</div>
+                        <div class="card-subtitle">
+                            统计规则
+                            <span class="info-icon">ⓘ</span>
+                        </div>
+                    </div>
+                    <div class="calendar-header">
+                        <div class="calendar-month">
+                            <span id="calendarMonth">2026年3月</span>
+                            <span class="calendar-arrow">▼</span>
+                        </div>
+                        <div class="calendar-book-select">
+                            <span>暂无书籍</span>
+                        </div>
+                    </div>
+                    <div class="calendar-body">
+                        <div class="calendar-weekdays">
+                            <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+                        </div>
+                        <div class="calendar-days" id="calendarDays">
+                            <!-- 日历格子由JS生成 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧信息栏 -->
+                <div class="right-info">
+                    <!-- 公告 -->
+                    <div class="card notice-card">
+                        <div class="card-header">
+                            <div class="card-title">公告</div>
+                        </div>
+                        <div class="notice-list">
+                            <div class="notice-item">
+                                <span class="notice-text">短篇责编联系方式</span>
+                                <span class="notice-date">2025-08-08</span>
+                            </div>
+                            <div class="notice-item">
+                                <span class="notice-text">长篇责编联系方式</span>
+                                <span class="notice-date">2025-08-08</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 活动 -->
+                    <div class="card activity-card">
+                        <div class="card-header">
+                            <div class="card-title">活动</div>
+                        </div>
+                        <div class="empty-state-small">
+                            <div class="empty-illustration">🎉</div>
+                            <div class="empty-text">暂无活动，请持续关注活动动态</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 编辑器页面 ========== -->
+        <div id="editor-page" class="page">
+            <div class="editor-layout">
+                <!-- 左侧边栏 -->
+                <aside class="editor-sidebar">
+                    <div class="editor-sidebar-header">
+                        <button class="back-btn" onclick="switchToWorkshop()">
+                            <span>←</span>
+                            <span>返回工作台</span>
+                        </button>
+                    </div>
+                    <div class="editor-sidebar-tabs">
+                        <button class="sidebar-tab active" data-tab="chapters" onclick="switchSidebarTab('chapters')">目录</button>
+                        <button class="sidebar-tab" data-tab="characters" onclick="switchSidebarTab('characters')">人物</button>
+                    </div>
+                    
+                    <!-- 章节目录 -->
+                    <div id="chaptersPanel" class="sidebar-panel active">
+                        <div class="panel-actions">
+                            <button class="panel-action-btn" onclick="showAddVolumeModal()">+ 新建卷</button>
+                            <button class="panel-action-btn" onclick="addChapter()">+ 新建章</button>
+                        </div>
+                        <div id="chapterTree" class="chapter-tree">
+                            <!-- 章节树由JS渲染 -->
+                        </div>
+                    </div>
+
+                    <!-- 人物卡 -->
+                    <div id="charactersPanel" class="sidebar-panel">
+                        <div class="panel-actions">
+                            <button class="panel-action-btn" onclick="showAddCharacterModal()">+ 添加人物</button>
+                        </div>
+                        <div id="characterList" class="character-list">
+                            <!-- 人物列表由JS渲染 -->
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- 编辑器主体 -->
+                <div class="editor-main">
+                    <div class="editor-toolbar">
+                        <div class="toolbar-info">
+                            <span class="toolbar-book" id="editorBookTitle">《作品名称》</span>
+                            <span class="toolbar-divider">|</span>
+                            <span class="toolbar-chapter" id="editorChapterTitle">第1章</span>
+                        </div>
+                        <div class="toolbar-actions">
+                            <button class="toolbar-btn" onclick="toggleFocusMode()" title="专注模式">👁</button>
+                            <button class="toolbar-btn" onclick="toggleTheme()" title="切换主题">🌙</button>
+                            <button class="toolbar-btn" onclick="saveDraft()">保存草稿</button>
+                            <button class="toolbar-btn primary" onclick="saveContent()">发布章节</button>
+                        </div>
+                    </div>
+                    <div class="editor-content-wrapper">
+                        <input type="text" id="chapterTitle" class="chapter-title-input" placeholder="章节标题">
+                        <div class="editor-textarea-wrapper">
+                            <div id="lineNumbers" class="line-numbers"></div>
+                            <textarea id="editor" class="editor-textarea" placeholder="开始创作..."></textarea>
+                        </div>
+                    </div>
+                    <div class="editor-footer">
+                        <div class="footer-stats">
+                            <span id="wordCount">0 字</span>
+                            <span class="footer-divider">|</span>
+                            <span id="saveStatus">已保存</span>
+                        </div>
+                        <div class="footer-actions">
+                            <button class="footer-btn" onclick="toggleAIPanel()">🤖 AI助手</button>
+                            <button class="footer-btn" onclick="openGoalEditor()">📅 日更目标</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧标记面板 -->
+                <aside class="marks-panel">
+                    <div class="marks-header">
+                        <span class="marks-title">行标记</span>
+                    </div>
+                    <div id="marksList" class="marks-list">
+                        <!-- 标记列表由JS渲染 -->
+                    </div>
+                </aside>
+            </div>
+
+            <!-- 人物详情面板 -->
+            <div id="characterDetailPanel" class="character-detail-panel">
+                <div class="panel-header">
+                    <span class="panel-title">人物详情</span>
+                    <button class="panel-close" onclick="closeCharacterPanel()">×</button>
+                </div>
+                <div id="characterDetailContent" class="panel-content">
+                    <!-- 人物详情由JS渲染 -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========== 弹窗 ========== -->
+
+    <!-- 创建作品弹窗 -->
+    <div id="createBookModal" class="modal">
+        <div class="modal-overlay" onclick="closeCreateBookModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">创建新作品</h3>
+                <button class="modal-close" onclick="closeCreateBookModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">作品名称</label>
+                    <input type="text" id="newBookTitle" class="form-input" placeholder="请输入作品名称">
+                    <button type="button" class="form-helper-btn" onclick="generateBookTitleSuggestions()">AI推荐书名</button>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">作品类型</label>
+                    <select id="newBookGenre" class="form-select">
+                        <option value="urban">都市女婿</option>
+                        <option value="fantasy">玄幻修仙</option>
+                        <option value="romance">言情甜宠</option>
+                        <option value="mystery">悬疑灵异</option>
+                        <option value="history">历史穿越</option>
+                        <option value="scifi">科幻末世</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">作品简介</label>
+                    <textarea id="newBookSummary" class="form-textarea" rows="4" placeholder="请输入作品简介"></textarea>
+                    <button type="button" class="form-helper-btn" onclick="polishBookSummary()">AI润色简介</button>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">目标字数</label>
+                    <input type="number" id="newBookTarget" class="form-input" value="1000000">
+                </div>
+                <div id="aiSuggestions"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeCreateBookModal()">取消</button>
+                <button class="btn-primary" onclick="confirmCreateBook()">创建</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加卷弹窗 -->
+    <div id="volumeModal" class="modal">
+        <div class="modal-overlay" onclick="closeVolumeModal()"></div>
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3 class="modal-title">新建卷</h3>
+                <button class="modal-close" onclick="closeVolumeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">卷名称</label>
+                    <input type="text" id="newVolumeName" class="form-input" placeholder="如：第一卷：觉醒">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeVolumeModal()">取消</button>
+                <button class="btn-primary" onclick="confirmAddVolume()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加章节弹窗 -->
+    <div id="chapterModal" class="modal">
+        <div class="modal-overlay" onclick="closeChapterModal()"></div>
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3 class="modal-title">新建章节</h3>
+                <button class="modal-close" onclick="closeChapterModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">章节标题</label>
+                    <input type="text" id="newChapterTitle" class="form-input" placeholder="请输入章节标题">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">所属卷</label>
+                    <select id="newChapterVolume" class="form-select">
+                        <!-- 选项由JS填充 -->
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeChapterModal()">取消</button>
+                <button class="btn-primary" onclick="confirmAddChapter()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 日更目标弹窗 -->
+    <div id="goalModal" class="modal">
+        <div class="modal-overlay" onclick="closeGoalModal()"></div>
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3 class="modal-title">设置日更目标</h3>
+                <button class="modal-close" onclick="closeGoalModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">每日目标字数</label>
+                    <input type="number" id="dailyGoalInput" class="form-input" value="4000">
+                </div>
+                <div class="goal-presets">
+                    <button class="goal-preset" onclick="setGoalPreset(2000)">2000</button>
+                    <button class="goal-preset" onclick="setGoalPreset(4000)">4000</button>
+                    <button class="goal-preset" onclick="setGoalPreset(6000)">6000</button>
+                    <button class="goal-preset" onclick="setGoalPreset(10000)">10000</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeGoalModal()">取消</button>
+                <button class="btn-primary" onclick="saveGoal()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加人物弹窗 -->
+    <div id="characterModal" class="modal">
+        <div class="modal-overlay" onclick="closeCharacterEditModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="characterModalTitle">添加人物</h3>
+                <button class="modal-close" onclick="closeCharacterEditModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">姓名</label>
+                        <input type="text" id="charName" class="form-input" placeholder="人物姓名">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">角色类型</label>
+                        <select id="charRole" class="form-select">
+                            <option value="protagonist">主角</option>
+                            <option value="antagonist">反派</option>
+                            <option value="supporting">配角</option>
+                            <option value="minor">龙套</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">性别</label>
+                        <select id="charGender" class="form-select">
+                            <option value="男">男</option>
+                            <option value="女">女</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">年龄</label>
+                        <input type="text" id="charAge" class="form-input" placeholder="年龄">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">外貌特征</label>
+                    <textarea id="charAppearance" class="form-textarea" rows="2" placeholder="外貌描述"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">性格特点</label>
+                    <textarea id="charPersonality" class="form-textarea" rows="2" placeholder="性格描述"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">人物背景</label>
+                    <textarea id="charBackground" class="form-textarea" rows="3" placeholder="背景故事"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">经典语录</label>
+                    <input type="text" id="charQuotes" class="form-input" placeholder="经典台词">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">备注</label>
+                    <textarea id="charNotes" class="form-textarea" rows="2" placeholder="其他备注"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeCharacterEditModal()">取消</button>
+                <button class="btn-primary" onclick="saveCharacter()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 行标记弹窗 -->
+    <div id="markPopup" class="mark-popup">
+        <div class="mark-popup-title">添加标记</div>
+        <div class="mark-types">
+            <button class="mark-type-btn todo" onclick="selectMarkType('todo')">
+                <span class="mark-type-icon">📝</span>
+                <span>待修改</span>
+            </button>
+            <button class="mark-type-btn question" onclick="selectMarkType('question')">
+                <span class="mark-type-icon">❓</span>
+                <span>疑问</span>
+            </button>
+            <button class="mark-type-btn idea" onclick="selectMarkType('idea')">
+                <span class="mark-type-icon">💡</span>
+                <span>灵感</span>
+            </button>
+            <button class="mark-type-btn issue" onclick="selectMarkType('issue')">
+                <span class="mark-type-icon">⚠️</span>
+                <span>问题</span>
+            </button>
+        </div>
+        <textarea id="markNote" class="mark-note-input" placeholder="添加备注..."></textarea>
+        <div class="mark-actions">
+            <button class="mark-btn-secondary" onclick="hideMarkPopup()">取消</button>
+            <button class="mark-btn-primary" onclick="saveMark()">保存</button>
+        </div>
+    </div>
+
+    <!-- AI 助手面板 -->
+    <div id="aiPanel" class="ai-panel">
+        <div class="ai-panel-header">
+            <span class="ai-panel-title">🤖 AI 助手</span>
+            <button class="ai-panel-close" onclick="toggleAIPanel()">×</button>
+        </div>
+        <div class="ai-panel-tabs">
+            <button class="ai-tab active" data-tab="outline" onclick="switchAITab('outline')">大纲</button>
+            <button class="ai-tab" data-tab="plot" onclick="switchAITab('plot')">剧情</button>
+            <button class="ai-tab" data-tab="polish" onclick="switchAITab('polish')">润色</button>
+            <button class="ai-tab" data-tab="expand" onclick="switchAITab('expand')">扩写</button>
+        </div>
+        <div class="ai-panel-content">
+            <div id="aiContent" class="ai-content">
+                <div class="ai-placeholder">
+                    <div class="ai-placeholder-icon">🤖</div>
+                    <div class="ai-placeholder-text">选择功能开始使用AI助手</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div id="toast" class="toast"></div>
+
+    <!-- 脚本 -->
+    <script type="module" src="js/core/app.js"></script>
+</body>
+</html>

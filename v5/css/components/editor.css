@@ -1,0 +1,582 @@
+/* ============================================
+   编辑器样式
+   ============================================ */
+
+/* 编辑器布局 */
+.editor-layout {
+    display: flex;
+    height: calc(100vh - var(--header-height) - 48px);
+    background: var(--bg-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+/* 编辑器侧边栏 */
+.editor-sidebar {
+    width: 260px;
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-card);
+}
+
+.editor-sidebar-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 14px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.back-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.editor-sidebar-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.sidebar-tab {
+    flex: 1;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.sidebar-tab:hover {
+    color: var(--primary);
+}
+
+.sidebar-tab.active {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.sidebar-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    background: var(--primary);
+}
+
+.sidebar-panel {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+}
+
+.sidebar-panel.active {
+    display: block;
+}
+
+.panel-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.panel-action-btn {
+    flex: 1;
+    padding: 8px;
+    background: var(--bg-body);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.panel-action-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* 章节树 */
+.chapter-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.volume-item {
+    margin-bottom: 8px;
+}
+
+.volume-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    border-radius: var(--border-radius-sm);
+    transition: background 0.2s;
+}
+
+.volume-header:hover {
+    background: var(--bg-hover);
+}
+
+.volume-toggle {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    transition: transform 0.2s;
+}
+
+.volume-item.expanded .volume-toggle {
+    transform: rotate(90deg);
+}
+
+.volume-chapters {
+    display: none;
+    padding-left: 20px;
+}
+
+.volume-item.expanded .volume-chapters {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.chapter-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: var(--border-radius-sm);
+    transition: all 0.2s;
+}
+
+.chapter-item:hover {
+    background: var(--bg-hover);
+    color: var(--primary);
+}
+
+.chapter-item.active {
+    background: var(--bg-active);
+    color: var(--primary);
+}
+
+.chapter-item-number {
+    font-weight: 500;
+}
+
+/* 人物列表 */
+.character-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.character-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg-body);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.character-item:hover {
+    background: var(--bg-hover);
+    box-shadow: var(--shadow-card);
+}
+
+.character-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.character-avatar.protagonist {
+    background: #fff2e8;
+    color: #fa8c16;
+}
+
+.character-avatar.antagonist {
+    background: #fff1f0;
+    color: #f5222d;
+}
+
+.character-avatar.supporting {
+    background: #e6f7ff;
+    color: #1890ff;
+}
+
+.character-avatar.minor {
+    background: #f6ffed;
+    color: #52c41a;
+}
+
+.character-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.character-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.character-role {
+    font-size: 12px;
+    color: var(--text-tertiary);
+}
+
+/* 编辑器主体 */
+.editor-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.toolbar-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+}
+
+.toolbar-book {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.toolbar-divider {
+    color: var(--border-color);
+}
+
+.toolbar-chapter {
+    color: var(--text-secondary);
+}
+
+.toolbar-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.toolbar-btn {
+    padding: 6px 16px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 14px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.toolbar-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.toolbar-btn.primary {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+.toolbar-btn.primary:hover {
+    background: var(--primary-hover);
+}
+
+/* 编辑器内容区 */
+.editor-content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chapter-title-input {
+    padding: 16px 20px;
+    border: none;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-primary);
+    outline: none;
+}
+
+.chapter-title-input::placeholder {
+    color: var(--text-placeholder);
+}
+
+.editor-textarea-wrapper {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+
+.line-numbers {
+    width: 50px;
+    padding: 16px 8px;
+    background: var(--bg-body);
+    border-right: 1px solid var(--border-light);
+    text-align: right;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-tertiary);
+    overflow: hidden;
+    user-select: none;
+}
+
+.line-number {
+    cursor: pointer;
+    padding: 0 4px;
+    border-radius: 3px;
+    transition: all 0.2s;
+}
+
+.line-number:hover {
+    background: var(--bg-hover);
+}
+
+.line-number.has-mark {
+    position: relative;
+}
+
+.line-number.has-mark::after {
+    content: '';
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.line-number.has-mark.todo::after {
+    background: #fa8c16;
+}
+
+.line-number.has-mark.question::after {
+    background: #1890ff;
+}
+
+.line-number.has-mark.idea::after {
+    background: #52c41a;
+}
+
+.line-number.has-mark.issue::after {
+    background: #f5222d;
+}
+
+.editor-textarea {
+    flex: 1;
+    padding: 16px 20px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text-primary);
+    resize: none;
+    font-family: inherit;
+}
+
+.editor-textarea::placeholder {
+    color: var(--text-placeholder);
+}
+
+/* 编辑器底部 */
+.editor-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-top: 1px solid var(--border-light);
+    background: var(--bg-body);
+}
+
+.footer-stats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text-tertiary);
+}
+
+.footer-divider {
+    color: var(--border-color);
+}
+
+.footer-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.footer-btn {
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.footer-btn:hover {
+    color: var(--primary);
+}
+
+/* 标记面板 */
+.marks-panel {
+    width: 200px;
+    border-left: 1px solid var(--border-light);
+    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+}
+
+.marks-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-light);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.marks-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+}
+
+.mark-item {
+    padding: 10px;
+    margin-bottom: 8px;
+    background: var(--bg-body);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mark-item:hover {
+    background: var(--bg-hover);
+}
+
+.mark-item-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.mark-item-type {
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 500;
+}
+
+.mark-item-type.todo {
+    background: #fff2e8;
+    color: #fa8c16;
+}
+
+.mark-item-type.question {
+    background: #e6f7ff;
+    color: #1890ff;
+}
+
+.mark-item-type.idea {
+    background: #f6ffed;
+    color: #52c41a;
+}
+
+.mark-item-type.issue {
+    background: #fff1f0;
+    color: #f5222d;
+}
+
+.mark-item-line {
+    font-size: 12px;
+    color: var(--text-tertiary);
+}
+
+.mark-item-note {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* 专注模式 */
+body.focus-mode .top-header,
+body.focus-mode .sidebar,
+body.focus-mode .editor-sidebar,
+body.focus-mode .marks-panel,
+body.focus-mode .editor-toolbar,
+body.focus-mode .editor-footer {
+    display: none !important;
+}
+
+body.focus-mode .main-content {
+    margin-left: 0;
+    margin-top: 0;
+    padding: 0;
+}
+
+body.focus-mode .editor-layout {
+    height: 100vh;
+    border-radius: 0;
+}
+
+body.focus-mode .editor-main {
+    width: 800px;
+    max-width: 100%;
+    margin: 0 auto;
+}

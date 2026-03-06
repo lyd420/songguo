@@ -1,0 +1,104 @@
+/* ============================================
+   码字日历样式
+   ============================================ */
+
+.calendar-card {
+    padding-bottom: 16px;
+}
+
+.calendar-card .card-header {
+    padding-bottom: 12px;
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px 16px;
+}
+
+.calendar-month {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.calendar-arrow {
+    font-size: 10px;
+    color: var(--text-tertiary);
+}
+
+.calendar-book-select {
+    font-size: 13px;
+    color: var(--text-tertiary);
+}
+
+.calendar-body {
+    padding: 0 20px;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.calendar-weekdays span {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-tertiary);
+    padding: 8px 0;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 44px;
+}
+
+.calendar-day:hover {
+    background: var(--bg-hover);
+}
+
+.calendar-day.other-month {
+    color: var(--text-placeholder);
+}
+
+.calendar-day.today {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.calendar-day-number {
+    font-size: 14px;
+    line-height: 1.2;
+}
+
+.calendar-day-count {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+}
+
+.calendar-day.has-words .calendar-day-count {
+    color: var(--primary);
+    font-weight: 500;
+}

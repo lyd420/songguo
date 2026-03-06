@@ -1,0 +1,296 @@
+/* ============================================
+   弹窗样式
+   ============================================ */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.modal-content {
+    position: relative;
+    background: var(--bg-card);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+}
+
+.modal-small {
+    max-width: 400px;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.modal-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.modal-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    border-radius: var(--border-radius-sm);
+    transition: all 0.2s;
+}
+
+.modal-close:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-light);
+}
+
+/* AI 建议区域 */
+.ai-suggestion-box {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--bg-body);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-light);
+}
+
+.ai-suggestion-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+.ai-suggestion-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ai-suggestion-item {
+    padding: 6px 12px;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 13px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ai-suggestion-item:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.ai-inspiration-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ai-inspiration-item {
+    padding: 12px;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ai-inspiration-item:hover {
+    border-color: var(--primary);
+}
+
+.ai-inspiration-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.ai-inspiration-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+/* 目标预设 */
+.goal-presets {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.goal-preset {
+    flex: 1;
+    padding: 8px;
+    background: var(--bg-body);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.goal-preset:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* 行标记弹窗 */
+.mark-popup {
+    position: absolute;
+    background: var(--bg-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-dropdown);
+    padding: 16px;
+    z-index: 1500;
+    display: none;
+    min-width: 200px;
+}
+
+.mark-popup.show {
+    display: block;
+}
+
+.mark-popup-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.mark-types {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.mark-type-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    background: var(--bg-body);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 13px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mark-type-btn:hover {
+    border-color: var(--primary);
+}
+
+.mark-type-btn.selected {
+    border-color: var(--primary);
+    background: var(--bg-active);
+}
+
+.mark-type-icon {
+    font-size: 16px;
+}
+
+.mark-note-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 13px;
+    resize: none;
+    margin-bottom: 12px;
+    font-family: inherit;
+}
+
+.mark-note-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.mark-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.mark-btn-secondary,
+.mark-btn-primary {
+    flex: 1;
+    padding: 8px;
+    border-radius: var(--border-radius-sm);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mark-btn-secondary {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.mark-btn-secondary:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.mark-btn-primary {
+    background: var(--primary);
+    border: 1px solid var(--primary);
+    color: #fff;
+}
+
+.mark-btn-primary:hover {
+    background: var(--primary-hover);
+}

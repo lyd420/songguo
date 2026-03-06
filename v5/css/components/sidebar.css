@@ -1,0 +1,122 @@
+/* ============================================
+   侧边栏导航样式
+   ============================================ */
+
+.sidebar-nav {
+    padding: 12px 0;
+}
+
+/* 导航项 */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+    border-right: 3px solid transparent;
+}
+
+.nav-item:hover {
+    background: var(--bg-hover);
+    color: var(--primary);
+}
+
+.nav-item.active {
+    background: var(--bg-active);
+    color: var(--primary);
+    border-right-color: var(--primary);
+}
+
+.nav-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+.nav-text {
+    flex: 1;
+}
+
+/* 导航分组 */
+.nav-section {
+    margin: 4px 0;
+}
+
+.nav-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    color: var(--text-primary);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.nav-section-header:hover {
+    background: var(--bg-hover);
+    color: var(--primary);
+}
+
+.nav-section.expanded .nav-section-header {
+    color: var(--primary);
+}
+
+.nav-arrow {
+    font-size: 10px;
+    margin-left: auto;
+    transition: transform 0.2s;
+    color: var(--text-tertiary);
+}
+
+.nav-section.expanded .nav-arrow {
+    transform: rotate(180deg);
+}
+
+/* 子菜单 */
+.nav-section-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.nav-section.expanded .nav-section-content {
+    max-height: 200px;
+}
+
+.nav-subitem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 24px 10px 54px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.nav-subitem:hover {
+    color: var(--primary);
+    background: var(--bg-hover);
+}
+
+.nav-subitem.active {
+    color: var(--primary);
+    background: var(--bg-active);
+}
+
+.nav-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-tertiary);
+}
+
+.nav-subitem:hover .nav-dot,
+.nav-subitem.active .nav-dot {
+    background: var(--primary);
+}
