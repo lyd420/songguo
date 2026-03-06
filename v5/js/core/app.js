@@ -21,7 +21,7 @@ import {
     switchChapter, goBack, initChapterTree, renderChapterTree,
     addChapter, closeChapterModal, confirmAddChapter,
     showAddVolumeModal, closeVolumeModal, confirmAddVolume,
-    deleteChapter, deleteVolume, autoSaveContent
+    deleteChapter, deleteVolume, autoSaveContent, setChapterManagerCallbacks
 } from '../modules/chapterManager.js';
 
 import {
@@ -61,6 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
             initLineMarkEvents,
             loadChapterMarks,
             initCharacterCards
+        });
+        
+        // 设置章节管理器回调
+        setChapterManagerCallbacks({
+            updateLineNumbers,
+            updateMarksList
         });
 
         // 加载主题

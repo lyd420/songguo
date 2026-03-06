@@ -175,8 +175,35 @@ export function saveVolumes(bookId, volumes) {
     saveToStorage(STORAGE_KEYS.VOLUMES + bookId, volumes);
 }
 
+// 示例书籍的章节数据（书籍ID=1）
+const defaultVolumesForDemo = [
+    {
+        id: 1,
+        name: '第一卷：觉醒',
+        chapters: [
+            { id: 1, title: '龙王归来', wordCount: 3500 },
+            { id: 2, title: '离婚协议', wordCount: 4200 },
+            { id: 3, title: '身份暴露', wordCount: 3800 },
+            { id: 14, title: '宴会邀请', wordCount: 4100 },
+            { id: 15, title: '打脸丈母娘', wordCount: 0 },
+            { id: 16, title: '宴会风波', wordCount: 0 }
+        ]
+    },
+    {
+        id: 2,
+        name: '第二卷：崛起',
+        chapters: [
+            { id: 25, title: '待添加', wordCount: 0 }
+        ]
+    }
+];
+
 export function loadVolumes(bookId) {
-    // 如果没有数据，返回null，让调用方创建默认结构
+    // 示例书籍（id=1）返回默认章节数据
+    if (bookId === 1 || bookId === '1') {
+        return loadFromStorage(STORAGE_KEYS.VOLUMES + bookId, defaultVolumesForDemo);
+    }
+    // 其他书籍如果没有数据，返回null
     return loadFromStorage(STORAGE_KEYS.VOLUMES + bookId, null);
 }
 

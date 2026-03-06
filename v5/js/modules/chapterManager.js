@@ -3,8 +3,17 @@
    ============================================ */
 
 import { state, countWords, formatWordCount } from '../core/state.js';
-import { loadVolumes, saveVolumes, saveChapterContent, loadChapterContent, saveNextChapterId, createDefaultVolumes } from '../core/storage.js';
-import { showToast, updateWordCountDisplay, updateSaveStatus } from '../utils/ui.js';
+import { loadVolumes, saveVolumes, saveChapterContent, loadChapterContent, saveNextChapterId, createDefaultVolumes, loadLineMarks } from '../core/storage.js';
+import { showToast, updateWordCountDisplay, updateSaveStatus, updateMarksList } from '../utils/ui.js';
+
+// UI更新回调（由app.js设置）
+let updateLineNumbersCallback = null;
+let updateMarksListCallback = null;
+
+export function setChapterManagerCallbacks(callbacks) {
+    updateLineNumbersCallback = callbacks.updateLineNumbers;
+    updateMarksListCallback = callbacks.updateMarksList;
+}
 
 // 初始化章节树 - 根据当前书籍加载
 export function initChapterTree() {
@@ -102,7 +111,12 @@ function doSwitchChapter(chapterId) {
     updateWordCountDisplay();
     
     // 加载新章节标记
-    loadChapterMarks(chapterId);
+    const chapterKey = state.currentBook ? `${state.currentBook.id}_${chapterId}` : chapterId;
+    state.lineMarks = loadLineMarks(chapterKey);
+    
+    // 更新UI
+    if (updateLineNumbersCallback) updateLineNumbersCallback();
+    if (updateMarksListCallback) updateMarksListCallback();
     
     showToast(`已切换到第${chapterId}章`);
 }
@@ -297,5 +311,4 @@ export function deleteVolume(volumeId) {
     showToast('卷已删除');
 }
 
-// 导入
-import { saveBooks, saveLineMarks, loadLineMarks } from '../core/storage.js';
+
