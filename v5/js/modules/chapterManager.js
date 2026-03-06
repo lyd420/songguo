@@ -3,7 +3,7 @@
    ============================================ */
 
 import { state, countWords, formatWordCount } from '../core/state.js';
-import { loadVolumes, saveVolumes, saveChapterContent, loadChapterContent, saveNextChapterId, createDefaultVolumes, loadLineMarks } from '../core/storage.js';
+import { loadVolumes, saveVolumes, saveChapterContent, loadChapterContent, saveNextChapterId, createDefaultVolumes, loadLineMarks, saveLineMarks } from '../core/storage.js';
 import { showToast, updateWordCountDisplay, updateSaveStatus, updateMarksList } from '../utils/ui.js';
 
 // UI更新回调（由app.js设置）

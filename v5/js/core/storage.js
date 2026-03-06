@@ -199,11 +199,11 @@ const defaultVolumesForDemo = [
 ];
 
 export function loadVolumes(bookId) {
-    // 示例书籍（id=1）返回默认章节数据
+    // 示例书籍（id=1）总是返回默认章节数据（避免LocalStorage中的错误数据）
     if (bookId === 1 || bookId === '1') {
-        return loadFromStorage(STORAGE_KEYS.VOLUMES + bookId, defaultVolumesForDemo);
+        return JSON.parse(JSON.stringify(defaultVolumesForDemo));
     }
-    // 其他书籍如果没有数据，返回null
+    // 其他书籍从LocalStorage读取，如果没有数据返回null
     return loadFromStorage(STORAGE_KEYS.VOLUMES + bookId, null);
 }
 
