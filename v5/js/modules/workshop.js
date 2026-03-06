@@ -206,6 +206,9 @@ function initEditor() {
 
         state.editor = editor;
         
+        // 初始化章节树
+        initChapterTree();
+        
         // 加载章节内容
         const content = loadChapterContent(state.currentBook.id + '_' + state.currentChapter);
         editor.value = content;
@@ -577,11 +580,12 @@ export function switchSidebarTab(tabName) {
 }
 
 // 导入
-let initEditorEvents, initLineMarkEvents, loadChapterMarks, initCharacterCards;
+let initEditorEvents, initLineMarkEvents, loadChapterMarks, initCharacterCards, initChapterTree;
 
 export function setEditorCallbacks(callbacks) {
     initEditorEvents = callbacks.initEditorEvents;
     initLineMarkEvents = callbacks.initLineMarkEvents;
     loadChapterMarks = callbacks.loadChapterMarks;
     initCharacterCards = callbacks.initCharacterCards;
+    initChapterTree = callbacks.initChapterTree;
 }

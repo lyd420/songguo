@@ -60,7 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
             initEditorEvents,
             initLineMarkEvents,
             loadChapterMarks,
-            initCharacterCards
+            initCharacterCards,
+            initChapterTree
         });
         
         // 设置章节管理器回调
